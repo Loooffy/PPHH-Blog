@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+/* CSS 變數預設值 - 使用 tech-light 主題作為預設 */
+:root {
+  --color-primary: #00bcd4;
+  --color-secondary: #0097a7;
+  --color-background: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-text: #212121;
+  --color-text-secondary: #757575;
+  --color-border: #e0e0e0;
+  --color-accent: #00acc1;
+  --font-heading: monospace;
+  --font-body: system-ui, sans-serif;
+}
+
+html,
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}

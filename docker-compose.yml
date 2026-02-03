@@ -1,0 +1,87 @@
+services:
+  # PostgreSQL 資料庫服務
+  postgres:
+    image: postgres:latest
+    container_name: pp_hh_blog_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  # Rails Backend API 服務
+  backend:
+    build:
+      context: ./backend-avo
+      dockerfile: Dockerfile.dev
+    container_name: pp_hh_blog_backend
+    environment:
+      - RAILS_ENV=development
+      - DATABASE_HOST=postgres
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=password
+      - RAILS_MAX_THREADS=5
+      - PORT=3001
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend-avo:/rails
+      - backend_bundle:/usr/local/bundle
+      - backend_node_modules:/rails/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "
+        rm -f /rails/tmp/pids/server.pid &&
+        bundle install &&
+        bin/rails db:create db:migrate &&
+        bin/rails server -b 0.0.0.0 -p 3001
+      "
+    networks:
+      - app-network
+
+  # Next.js Frontend 服務
+  frontend:
+    build:
+      context: ./frontend-nextjs
+      dockerfile: Dockerfile.dev
+    container_name: pp_hh_blog_frontend
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://backend:3001
+      - API_INTERNAL_URL=http://172.27.0.3:3001
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend-nextjs:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+    command: npm run dev
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+    driver: local
+  backend_bundle:
+    driver: local
+  backend_node_modules:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
