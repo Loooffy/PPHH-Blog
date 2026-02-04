@@ -82,42 +82,50 @@ export function TopNavbar() {
             <Link
               key={cat}
               href={categoryRoutes[cat]}
-              className={`px-4 py-2 cursor-pointer transition-all duration-300 text-text-secondary font-bold text-sm md:text-xs md:px-2 md:py-1 hover:text-text ${isActive ? 'text-text' : ''
+              className={`group px-4 py-2 cursor-pointer transition-all duration-300 text-text-secondary font-bold text-sm md:text-xs md:px-2 md:py-1 hover:text-text ${isActive ? 'text-text' : ''
                 }`}
               onClick={() => setCategory(cat)}
             >
               {cat === 'tech' ? (
-                <Image
-                  src="/blog-image/blog-dev.png"
-                  alt={categoryNames[cat]}
-                  width={160}
-                  height={160}
-                  className={`absolute bottom-[-35px] left-[120px] z-999`}
-                />
+                <span className="absolute bottom-[-35px] left-[120px] z-999 navbar-float">
+                  <Image
+                    src="/blog-image/logging.png"
+                    alt={categoryNames[cat]}
+                    width={160}
+                    height={160}
+                    className="block"
+                  />
+                </span>
               ) : cat === 'game' ? (
-                <Image
-                  src="/blog-image/blog-game.png"
-                  alt={categoryNames[cat]}
-                  width={120}
-                  height={120}
-                  className={`absolute bottom-[-35px] left-[320px] z-999`}
-                />
+                <span className="absolute bottom-[-35px] left-[320px] z-999 navbar-float">
+                  <Image
+                    src="/blog-image/game.png"
+                    alt={categoryNames[cat]}
+                    width={140}
+                    height={130}
+                    className="block"
+                  />
+                </span>
               ) : cat === 'movie' ? (
-                <Image
-                  src="/blog-image/blog-film.png"
-                  alt={categoryNames[cat]}
-                  width={120}
-                  height={120}
-                  className={`absolute bottom-[-40px] left-[480px] z-999`}
-                />
+                <span className="absolute bottom-[-40px] left-[480px] z-999 navbar-float">
+                  <Image
+                    src="/blog-image/pinkman.png"
+                    alt={categoryNames[cat]}
+                    width={150}
+                    height={150}
+                    className="block"
+                  />
+                </span>
               ) : cat === 'book' ? (
-                <Image
-                  src="/blog-image/blog-book.png"
-                  alt={categoryNames[cat]}
-                  width={120}
-                  height={120}
-                  className={`absolute bottom-[-32px] left-[640px] z-999`}
-                />
+                <span className="absolute bottom-[-32px] left-[640px] z-999 navbar-float">
+                  <Image
+                    src="/blog-image/book.png"
+                    alt={categoryNames[cat]}
+                    width={120}
+                    height={120}
+                    className="block"
+                  />
+                </span>
               ) : null}
             </Link>
           );
