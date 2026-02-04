@@ -120,35 +120,35 @@ export const themes: Record<Category, { light: Theme; dark: Theme }> = {
   movie: {
     light: {
       colors: {
-        primary: '#9c27b0', // 紫色
-        secondary: '#7b1fa2',
-        background: '#faf5ff',
+        primary: '#222222', // 淺鵝黃
+        secondary: '#444444',
+        background: '#FFF9E8',
         surface: '#ffffff',
-        text: '#2d1b3d',
-        textSecondary: '#6b5b73',
+        text: '#222222',
+        textSecondary: '#333333',
         border: '#e1bee7',
-        accent: '#ba68c8',
+        accent: '#334033',
       },
       fonts: {
-        heading: 'Georgia, serif',
-        body: 'Georgia, serif',
+        heading: "'Inter', sans-serif",
+        body: "'Inter', sans-serif",
       },
       layout: 'masonry',
     },
     dark: {
       colors: {
-        primary: '#ce93d8', // 淡紫色
-        secondary: '#ba68c8',
-        background: '#1a0d1f',
-        surface: '#2a1a2f',
-        text: '#f3e5f5',
-        textSecondary: '#e1bee7',
-        border: '#4a2d4f',
-        accent: '#e1bee7',
+        primary: '#dfdfdf', // Light grey
+        secondary: '#e2d7a7', // Accent gold
+        background: '#1c1c1c', // Dark background
+        surface: '#2a2a2a',
+        text: '#dfdfdf', // Light text
+        textSecondary: '#b0b0b0',
+        border: '#dfdfdf', // Light border
+        accent: '#e2d7a7', // Golden accent
       },
       fonts: {
-        heading: 'Georgia, serif',
-        body: 'Georgia, serif',
+        heading: "'Inter', sans-serif",
+        body: "'Inter', sans-serif",
       },
       layout: 'masonry',
     },
