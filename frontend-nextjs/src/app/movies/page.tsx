@@ -1,5 +1,10 @@
+'use client';
+
 import { MovieList } from '@/components/MovieList';
+import { useTheme } from '@/contexts/ThemeContext';
 import { API_ENDPOINTS } from '@/lib/api';
+import { getTheme } from '@/lib/theme';
+import { useEffect, useState } from 'react';
 
 interface Post {
   id: number;
@@ -22,12 +27,21 @@ async function getPosts(): Promise<Post[]> {
   }
 }
 
-export default async function MoviesPage() {
-  const posts = await getPosts();
+export default function MoviesPage() {
+  const { category, mode } = useTheme();
+  const theme = getTheme(category || 'movie', mode);
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    getPosts().then(setPosts);
+  }, []);
 
   return (
     <>
-      <main className="fixed top-[160px] left-0 right-0 bottom-0 overflow-y-auto z-[1001] bg-background">
+      <main
+        className="fixed top-[160px] left-0 right-0 bottom-0 overflow-y-auto z-[1001] transition-colors duration-300"
+        style={{ backgroundColor: theme.colors.background }}
+      >
         <div className="px-6 md:px-8 py-6">
           <MovieList posts={posts} />
         </div>
