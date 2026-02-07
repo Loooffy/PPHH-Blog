@@ -48,7 +48,7 @@ export function TopNavbar() {
   // 根據當前頁面決定 navbar 的背景色
   const getNavbarBgColor = () => {
     if (pathname.startsWith('/game')) {
-      return 'bg-[#c4d4a0]';
+      return 'bg-[#3bcbe5]';
     }
     return 'bg-surface';
   };
@@ -56,7 +56,7 @@ export function TopNavbar() {
   // 根據當前頁面決定遮罩的背景色
   const getMaskBgColor = () => {
     if (pathname.startsWith('/game')) {
-      return '#c4d4a0';
+      return '#3bcbe5';
     }
     return 'var(--color-background)';
   };
@@ -139,7 +139,7 @@ export function TopNavbar() {
       {/* Mask the navbar images overlap area */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 bottom-[-40px] h-[40px] z-1000 border-t-2 border-[var(--color-text)]"
+        className="pointer-events-none absolute left-0 right-0 bottom-[-40px] h-[40px] z-1002 border-t-2 border-var(--color-text)"
         style={{ backgroundColor: getMaskBgColor() }}
       />
     </nav>

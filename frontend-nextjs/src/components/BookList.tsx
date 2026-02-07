@@ -15,6 +15,7 @@ interface Post {
   layout_type?: string;
   book_title?: string;
   book_author?: string;
+  book_year?: string;
 }
 
 interface BookListProps {
@@ -46,109 +47,61 @@ function extractFirstImageUrl(content: string): string | null {
   return null;
 }
 
-// 從 content 中提取純文字（移除 HTML 標籤）
-function extractText(content: string, maxLength?: number): string {
-  if (!content) return '';
-  let text = content.replace(/<[^>]*>/g, '').trim();
-  if (maxLength && text.length > maxLength) {
-    text = text.substring(0, maxLength) + '...';
-  }
-  return text;
-}
-
-// 格式化日期
-function formatDate(dateString: string): string {
+// 格式化日期為年份
+function formatYear(dateString: string): string {
   const date = new Date(dateString);
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${months[date.getMonth()]} ${date.getDate().toString().padStart(2, '0')}, ${date.getFullYear()}`;
-}
-
-// Featured Book 組件
-function FeaturedBook({ post, category }: { post: Post; category: string }) {
-  const [imageError, setImageError] = useState(false);
-  const coverImageUrl = extractFirstImageUrl(post.content) || defaultCoverImage;
-  const contentText = extractText(post.content, 150);
-  const displayImage = imageError ? defaultCoverImage : coverImageUrl;
-  const bookTitle = post.book_title || post.title;
-
-  return (
-    <Link
-      href={`/${category}/${post.slug || post.id}`}
-      className="no-underline text-inherit block mb-12"
-    >
-      <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
-        {/* 左側：書籍封面 */}
-        <div className="w-full md:w-auto shrink-0">
-          <div className="relative w-full md:w-[300px] aspect-3/4 bg-surface shadow-sm flex flex-col p-5">
-            <div className="flex-1 flex items-center justify-center">
-              <Image
-                src={displayImage}
-                alt={bookTitle}
-                width={300}
-                height={450}
-                className="max-w-full max-h-full w-auto h-auto object-contain"
-                sizes="(max-width: 768px) 100vw, 300px"
-                onError={() => setImageError(true)}
-              />
-            </div>
-            <div className="mt-4 border border-border bg-background px-4 py-3 text-center">
-              <h3 className="text-base md:text-lg font-semibold text-text leading-snug font-heading">
-                {bookTitle}
-              </h3>
-              {post.book_author && (
-                <p className="text-sm text-text-secondary font-body mt-1">
-                  {post.book_author}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* 右側：標題和摘要 */}
-        <div className="flex-1 flex flex-col justify-start pt-2">
-          {contentText && (
-            <p className="text-base md:text-lg text-text-secondary leading-relaxed font-body">
-              {contentText}
-            </p>
-          )}
-        </div>
-      </div>
-    </Link>
-  );
+  return date.getFullYear().toString();
 }
 
 // Book List Item 組件
 function BookListItem({ post, category }: { post: Post; category: string }) {
   const [imageError, setImageError] = useState(false);
   const bookTitle = post.book_title || post.title;
+  const bookAuthor = post.book_author || '';
+  const bookYear = post.book_year || formatYear(post.created_at);
   const coverImageUrl = extractFirstImageUrl(post.content) || defaultCoverImage;
   const displayImage = imageError ? defaultCoverImage : coverImageUrl;
-  const fallbackMeta = formatDate(post.created_at);
 
   return (
     <Link
       href={`/${category}/${post.slug || post.id}`}
-      className="no-underline text-inherit block hover:-translate-y-0.5 transition-transform"
+      className="no-underline text-inherit block group"
     >
-      <div className="relative w-full aspect-3/4 bg-surface shadow-sm flex flex-col p-5">
-        <div className="flex-1 flex items-center justify-center">
-          <Image
-            src={displayImage}
-            alt={bookTitle}
-            width={240}
-            height={360}
-            className="max-w-full max-h-full w-auto h-auto object-contain"
-            sizes="(max-width: 768px) 100vw, 240px"
-            onError={() => setImageError(true)}
-          />
-        </div>
-        <div className="mt-4 border border-border bg-background px-4 py-3 text-center">
-          <h3 className="text-base md:text-lg font-semibold text-text leading-snug font-heading">
+      <div className="flex gap-4 items-start">
+        {/* 左側垂直線 */}
+        <div className="shrink-0 w-px bg-black self-stretch mt-2 mb-8" />
+        
+        {/* 內容區域 */}
+        <div className="flex-1 flex flex-col">
+          {/* 書籍封面 */}
+          <div className="relative mb-6">
+            <Image
+              src={displayImage}
+              alt={bookTitle}
+              width={240}
+              height={360}
+              className="w-full h-auto object-cover"
+              style={{
+                boxShadow: '4px 11px 4px rgba(0, 0, 0, 0.25)',
+              }}
+              onError={() => setImageError(true)}
+            />
+          </div>
+
+          {/* 標題 */}
+          <h3 className="text-[32px] font-normal text-black mb-4" style={{ fontFamily: 'Inter, sans-serif' }}>
             {bookTitle}
           </h3>
-          <p className="text-sm text-text-secondary font-body mt-1">
-            {post.book_author || fallbackMeta}
-          </p>
+
+          {/* 作者和年份 */}
+          <div className="flex justify-between items-center">
+            <p className="text-base font-extralight text-black" style={{ fontFamily: 'Inter, sans-serif' }}>
+              {bookAuthor}
+            </p>
+            <p className="text-base font-extrabold text-black" style={{ fontFamily: 'Inter, sans-serif' }}>
+              {bookYear}
+            </p>
+          </div>
         </div>
       </div>
     </Link>
@@ -168,25 +121,14 @@ export function BookList({ posts }: BookListProps) {
     );
   }
 
-  // 第一個 post 作為 Featured，其餘作為列表
-  const featuredPost = posts[0];
-  const remainingPosts = posts.slice(1);
-
   return (
-    <div className="pt-2 pb-4">
-      {/* Featured Book Section */}
-      {featuredPost && (
-        <FeaturedBook post={featuredPost} category={category || 'books'} />
-      )}
-
-      {/* Book List Section */}
-      {remainingPosts.length > 0 && (
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {remainingPosts.map((post) => (
-            <BookListItem key={post.id} post={post} category={category || 'books'} />
-          ))}
-        </div>
-      )}
+    <div className="pt-8 pb-8">
+      {/* Book Grid Layout - 4 columns */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+        {posts.map((post) => (
+          <BookListItem key={post.id} post={post} category={category || 'books'} />
+        ))}
+      </div>
     </div>
   );
 }

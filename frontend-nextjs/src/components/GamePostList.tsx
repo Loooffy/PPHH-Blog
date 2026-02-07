@@ -24,17 +24,12 @@ interface GamePostListProps {
 export function GamePostList({ posts }: GamePostListProps) {
   if (posts.length === 0) {
     return (
-      <div className="flex flex-row gap-0 min-h-screen relative bg-[#c4d4a0] p-5 box-border shadow-[inset_0_0_0_4px_#6a6a6a,inset_0_0_0_8px_#4a4a4a]">
-        <div className="w-[200px] min-w-[200px] max-w-[200px] shrink-0 bg-[#4a4a4a] p-4 flex flex-col gap-3 shadow-[inset_0_0_0_2px_#6a6a6a] order-1">
-          <div className="bg-[#c4d4a0] border-[3px] border-[#2a2a2a] p-2 shadow-[inset_0_0_0_1px_#6a6a6a,2px_2px_0_0_#2a2a2a]">
-            <div className={`text-[10px] text-[#2a2a2a] text-center mb-1 tracking-[0.5px] ${pressStart2P.className}`}>POSTS</div>
-            <div className={`text-base text-[#2a2a2a] text-center py-1 px-2 bg-[#e8f0d8] border-2 border-[#2a2a2a] shadow-[inset_0_0_0_1px_#6a6a6a] ${pressStart2P.className}`}>0</div>
+      <div className="fixed inset-0 flex items-center justify-center p-5 bg-fixed bg-cover bg-center pointer-events-none -translate-y-[6px]" style={{ backgroundImage: 'url(/island.jpg)' }}>
+        <div className="w-full max-w-[500px] p-5 bg-[#2e6f8e]/50 border-[6px] border-[#0e2a38]/50 rounded-[18px] shadow-[0_0_0_6px_#5fa8c6/50,0_12px_0_#0e2a38/50] text-center pointer-events-auto">
+          <div className={`text-[#ffd54a] text-[clamp(18px,4vw,32px)] tracking-[2px] mb-4 drop-shadow-[3px_3px_0_#7a5a00] ${pressStart2P.className}`}>
+            GAME DEV LOG
           </div>
-        </div>
-        <div className="flex-1 min-w-0 bg-[#c4d4a0] p-4 overflow-y-auto border-l-4 border-[#2a2a2a] shadow-[inset_0_0_0_2px_#6a6a6a] order-2">
-          <div className="text-center py-10 px-5 text-[#2a2a2a]">
-            <p className={`text-sm ${pressStart2P.className}`}>目前還沒有文章</p>
-          </div>
+          <div className={`text-white text-sm ${pressStart2P.className}`}>目前還沒有文章</div>
         </div>
       </div>
     );
@@ -50,40 +45,64 @@ export function GamePostList({ posts }: GamePostListProps) {
   }).length;
 
   return (
-    <div className="flex flex-col md:flex-row gap-0 min-h-[60vh] relative bg-[#c4d4a0] p-3 md:p-5 box-border mt-8">
-      {/* 左側 Sidebar */}
-      <div className="w-full md:w-[200px] md:min-w-[200px] md:max-w-[200px] md:shrink-0 bg-[#4a4a4a] p-4 flex flex-row md:flex-col flex-wrap md:flex-nowrap gap-3 border-b-4 md:border-b-0 border-r-0 border-[#2a2a2a] shadow-[inset_0_0_0_2px_#6a6a6a] order-1">
-        <div className="bg-[#c4d4a0] p-2 shadow-[inset_0_0_0_1px_#6a6a6a,2px_2px_0_0_#2a2a2a] flex-1 md:flex-none min-w-[120px] rounded-lg">
-          <div className={`text-[10px] text-[#2a2a2a] text-center mb-1 tracking-[0.5px] ${pressStart2P.className}`}>POSTS</div>
-          <div className={`text-base text-[#2a2a2a] text-center py-1 px-2 bg-[#e8f0d8] border-2 border-[#888888] shadow-[inset_0_0_0_1px_#6a6a6a] ${pressStart2P.className}`}>{totalPosts}</div>
+    <div className="fixed inset-0 flex items-center justify-center p-5 bg-fixed bg-cover bg-center pointer-events-none -translate-y-[6px]" style={{ backgroundImage: 'url(/island.jpg)' }}>
+      <div className="w-full max-w-[500px] p-5 bg-[#2e6f8e]/50 border-[6px] border-[#0e2a38]/50 rounded-[18px] shadow-[0_0_0_6px_#5fa8c6/50,0_12px_0_#0e2a38/50] text-center flex flex-col max-h-[90vh] pointer-events-auto">
+        {/* 標題 */}
+        <div className={`text-[#ffd54a] text-[clamp(18px,4vw,32px)] tracking-[2px] mb-4 drop-shadow-[3px_3px_0_#7a5a00] shrink-0 ${pressStart2P.className}`}>
+          PIXEL DEV LOG
         </div>
 
-        <div className="bg-[#c4d4a0] p-2 shadow-[inset_0_0_0_1px_#6a6a6a,2px_2px_0_0_#2a2a2a] flex-1 md:flex-none min-w-[120px] rounded-lg">
-          <div className={`text-[10px] text-[#2a2a2a] text-center mb-1 tracking-[0.5px] ${pressStart2P.className}`}>RECENT</div>
-          <div className={`text-base text-[#2a2a2a] text-center py-1 px-2 bg-[#e8f0d8] border-2 border-[#888888] shadow-[inset_0_0_0_1px_#6a6a6a] ${pressStart2P.className}`}>{recentPosts}</div>
-        </div>
-
-        <div className="bg-[#c4d4a0] p-2 shadow-[inset_0_0_0_1px_#6a6a6a,2px_2px_0_0_#2a2a2a] flex-1 md:flex-none min-w-[120px] rounded-lg">
-          <div className={`text-[10px] text-[#2a2a2a] text-center mb-1 tracking-[0.5px] ${pressStart2P.className}`}>CATEGORY</div>
-          <div className={`text-base text-[#2a2a2a] text-center py-1 px-2 bg-[#e8f0d8] border-2 border-[#888888] shadow-[inset_0_0_0_1px_#6a6a6a] ${pressStart2P.className}`}>GAME</div>
-        </div>
-      </div>
-
-      {/* 右側主區域 - 文章列表 */}
-      <div className="flex-1 min-w-0 bg-[#c4d4a0] p-4 overflow-y-auto border-t-4 md:border-t-0 md:border-l-4 border-l-0 border-[#2a2a2a] shadow-[inset_0_0_0_2px_#6a6a6a] order-2">
-        <div className="flex flex-col gap-3">
-          {posts.map((post) => (
-            <Link
-              key={post.id}
-              href={`/game/${post.slug || post.id}`}
-              className="block bg-[#e8f0d8] border-[3px] border-[#2a2a2a] py-3 px-4 no-underline text-[#2a2a2a] transition-all duration-150 shadow-[inset_0_0_0_1px_#6a6a6a,2px_2px_0_0_#2a2a2a] hover:bg-[#e8f0d8] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[inset_0_0_0_1px_#6a6a6a,4px_4px_0_0_#2a2a2a] active:translate-x-0 active:translate-y-0 active:shadow-[inset_0_0_0_1px_#6a6a6a,2px_2px_0_0_#2a2a2a] relative"
+        {/* 可滾動內容區域 */}
+        <div className="flex-1 overflow-y-auto min-h-0">
+          {/* 按鈕區域 */}
+          <div className="flex flex-col gap-4 mb-6">
+            <button
+              className="block w-full max-w-[320px] mx-auto py-1.5 px-2.5 text-[clamp(10px,1.8vw,14px)] font-bold tracking-[1px] text-white bg-[#c84a42] cursor-pointer select-none border-[3px] border-black rounded-[12px] shadow-[0_6px_0_#000,inset_-2px_-2px_0_rgba(0,0,0,0.25),inset_2px_2px_0_rgba(255,255,255,0.18)] transition-all duration-150 ease-out hover:scale-[1.02] active:translate-y-[4px] active:shadow-[0_2px_0_#000,inset_-2px_-2px_0_rgba(0,0,0,0.25),inset_2px_2px_0_rgba(255,255,255,0.18)] focus-visible:outline-[3px] focus-visible:outline-[#ffd54a] focus-visible:outline-offset-3"
+              onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(1.15)'}
+              onMouseLeave={(e) => e.currentTarget.style.filter = ''}
             >
-              <div className={`text-[11px] md:text-xs text-[#2a2a2a] mb-1 leading-snug break-words ${pressStart2P.className}`}>{post.title}</div>
-              <div className={`text-[8px] text-[#4a4a4a] opacity-80 ${pressStart2P.className}`}>
-                {new Date(post.created_at).toLocaleDateString('zh-TW')}
-              </div>
-            </Link>
-          ))}
+              <span className={pressStart2P.className}>FIRST QUEST</span>
+            </button>
+            <button
+              className="block w-full max-w-[320px] mx-auto py-1.5 px-2.5 text-[clamp(10px,1.8vw,14px)] font-bold tracking-[1px] text-white bg-[#c84a42] cursor-pointer select-none border-[3px] border-black rounded-[12px] shadow-[0_6px_0_#000,inset_-2px_-2px_0_rgba(0,0,0,0.25),inset_2px_2px_0_rgba(255,255,255,0.18)] transition-all duration-150 ease-out hover:scale-[1.02] active:translate-y-[4px] active:shadow-[0_2px_0_#000,inset_-2px_-2px_0_rgba(0,0,0,0.25),inset_2px_2px_0_rgba(255,255,255,0.18)] focus-visible:outline-[3px] focus-visible:outline-[#ffd54a] focus-visible:outline-offset-3"
+              onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(1.15)'}
+              onMouseLeave={(e) => e.currentTarget.style.filter = ''}
+            >
+              <span className={pressStart2P.className}>NEW POST</span>
+            </button>
+          </div>
+
+          {/* 文章列表 */}
+          <div className="flex flex-col gap-3">
+            {posts.map((post) => {
+              const postDate = new Date(post.created_at);
+              const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+              const month = monthNames[postDate.getMonth()];
+              const day = postDate.getDate();
+
+              return (
+                <div
+                  key={post.id}
+                  className="mt-4 first:mt-0 bg-[#f4e3b2] p-3.5 text-left border-4 border-black rounded-[14px] shadow-[0_6px_0_#000]"
+                >
+                  <h3 className={`m-0 mb-1.5 text-black text-sm ${pressStart2P.className}`}>
+                    DEV LOG · {month} {day}
+                  </h3>
+                  <p className="m-0 leading-normal text-black font-mono text-xs">
+                    {post.title}
+                  </p>
+                  <Link
+                    href={`/game/${post.slug || post.id}`}
+                    className="block w-full max-w-[320px] mx-auto mt-3 py-1.5 px-2.5 text-[clamp(10px,1.8vw,14px)] font-bold tracking-[1px] text-white bg-[#c84a42] cursor-pointer select-none border-[3px] border-black rounded-[12px] shadow-[0_6px_0_#000,inset_-2px_-2px_0_rgba(0,0,0,0.25),inset_2px_2px_0_rgba(255,255,255,0.18)] transition-all duration-150 ease-out hover:scale-[1.02] active:translate-y-[4px] active:shadow-[0_2px_0_#000,inset_-2px_-2px_0_rgba(0,0,0,0.25),inset_2px_2px_0_rgba(255,255,255,0.18)] focus-visible:outline-[3px] focus-visible:outline-[#ffd54a] focus-visible:outline-offset-3 text-center no-underline"
+                    onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(1.15)'}
+                    onMouseLeave={(e) => e.currentTarget.style.filter = ''}
+                  >
+                    <span className={pressStart2P.className}>READ MORE</span>
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
