@@ -1,4 +1,4 @@
-import { BookList } from '@/components/BookList';
+import { BookList } from '@/components/Book/BookList';
 import { API_ENDPOINTS } from '@/lib/api';
 
 interface Post {
@@ -31,7 +31,7 @@ export default async function BooksPage() {
   return (
     <>
       <main className="fixed top-[160px] left-0 right-0 bottom-0 overflow-y-auto z-[1001] bg-background">
-        <div className="max-w-[1200px] mx-auto px-6 py-6">
+        <div className="max-w-[1200px] mx-auto">
           <BookList posts={posts} />
         </div>
       </main>

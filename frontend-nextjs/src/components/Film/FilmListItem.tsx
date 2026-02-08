@@ -1,7 +1,5 @@
 'use client';
 
-import { useTheme } from '@/contexts/ThemeContext';
-import { getTheme } from '@/lib/theme';
 import Link from 'next/link';
 
 interface Post {
@@ -13,8 +11,10 @@ interface Post {
   category?: string;
 }
 
-interface MovieListProps {
-  posts: Post[];
+interface FilmCardProps {
+  post: Post;
+  category: string;
+  theme: any;
 }
 
 // Extract first image URL from HTML content
@@ -54,8 +54,8 @@ function extractMetadata(post: Post): { country?: string; duration?: string; gen
   };
 }
 
-function WideMovieCard({ post, category, theme }: { post: Post; category: string; theme: any }) {
-  const defaultImage = '/movie-poster-1.png';
+export function WideFilmCard({ post, category, theme }: FilmCardProps) {
+  const defaultImage = '/film-poster-1.png';
   const imageUrl = extractFirstImageUrl(post.content) || defaultImage;
   const metadata = extractMetadata(post);
   const postDate = new Date(post.created_at);
@@ -68,7 +68,7 @@ function WideMovieCard({ post, category, theme }: { post: Post; category: string
           <div className="w-3/5 min-w-2/5 flex flex-col">
             <div className="flex items-center gap-4">
               <span
-                className="font-['Inter',sans-serif] text-sm font-semibold uppercase tracking-wider"
+                className="font-['Inter',sans-serif] text-sm font-normal uppercase tracking-wider"
                 style={{ color: theme.colors.text }}
               >
                 {metadata.country} / {metadata.duration} / {metadata.genre}
@@ -117,8 +117,8 @@ function WideMovieCard({ post, category, theme }: { post: Post; category: string
   );
 }
 
-function FullWidthMovieCard({ post, category, theme }: { post: Post; category: string; theme: any }) {
-  const defaultImage = '/movie-poster-2.png';
+export function FullWidthFilmCard({ post, category, theme }: FilmCardProps) {
+  const defaultImage = '/film-poster-2.png';
   const imageUrl = extractFirstImageUrl(post.content) || defaultImage;
   const metadata = extractMetadata(post);
   const postDate = new Date(post.created_at);
@@ -175,61 +175,5 @@ function FullWidthMovieCard({ post, category, theme }: { post: Post; category: s
         </div>
       </Link>
     </article>
-  );
-}
-
-export function MovieList({ posts }: MovieListProps) {
-  const { category, mode } = useTheme();
-  const theme = getTheme(category || 'movie', mode);
-
-  if (posts.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p style={{ color: theme.colors.textSecondary }}>
-          目前還沒有電影評論
-        </p>
-      </div>
-    );
-  }
-
-  // Pair posts for the layout
-  const rows = [];
-  for (let i = 0; i < posts.length; i += 2) {
-    rows.push(posts.slice(i, i + 2));
-  }
-
-  return (
-    <div
-      className="w-full py-4 max-w-[1200px] mx-auto"
-      style={{ backgroundColor: theme.colors.background }}
-    >
-      <div className="flex flex-col gap-8">
-        {rows.map((pair, rowIndex) => (
-          <div key={rowIndex} className="flex gap-4 items-stretch md:flex-col md:gap-8">
-            {pair[0] && (
-              <FullWidthMovieCard
-                post={pair[0]}
-                category={category || 'movies'}
-                theme={theme}
-              />
-            )}
-            <div className="w-full mt-0 mb-0">
-              <img src="/movie-divider-bottom.svg" alt="" className="w-full h-auto" />
-            </div>
-            {pair[0] && (
-              <WideMovieCard
-                post={pair[0]}
-                category={category || 'movies'}
-                theme={theme}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-
-      <div className="w-full mt-8 mb-0">
-        <img src="/movie-divider-bottom.svg" alt="" className="w-full h-auto" />
-      </div>
-    </div>
   );
 }

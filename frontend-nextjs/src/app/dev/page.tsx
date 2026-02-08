@@ -1,4 +1,4 @@
-import { TechPostList } from '@/components/TechPostList';
+import { DevPostList } from '@/components/Dev/DevPostList';
 import { API_ENDPOINTS } from '@/lib/api';
 
 interface Post {
@@ -22,7 +22,7 @@ async function getPosts(): Promise<Post[]> {
   }
 }
 
-export default async function TechPage() {
+export default async function DevPage() {
   const posts = await getPosts();
 
   return (
@@ -73,7 +73,7 @@ export default async function TechPage() {
 
           {/* 右側：文章列表 */}
           <div className="flex-1 w-full md:max-w-[75%] md:pr-[60px]">
-            <TechPostList posts={posts} />
+            <DevPostList posts={posts} />
           </div>
         </div>
       </main>

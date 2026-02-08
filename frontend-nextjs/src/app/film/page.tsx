@@ -1,6 +1,7 @@
 'use client';
 
-import { MovieList } from '@/components/MovieList';
+import { FilmList } from '@/components/Film/FilmList';
+import { WideFilmCard } from '@/components/Film/FilmListItem';
 import { useTheme } from '@/contexts/ThemeContext';
 import { API_ENDPOINTS } from '@/lib/api';
 import { getTheme } from '@/lib/theme';
@@ -27,9 +28,9 @@ async function getPosts(): Promise<Post[]> {
   }
 }
 
-export default function MoviesPage() {
+export default function FilmsPage() {
   const { category, mode } = useTheme();
-  const theme = getTheme(category || 'movie', mode);
+  const theme = getTheme(category || 'film', mode);
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
@@ -43,7 +44,16 @@ export default function MoviesPage() {
         style={{ backgroundColor: theme.colors.background }}
       >
         <div className="px-6 md:px-8 py-6">
-          <MovieList posts={posts} />
+          <FilmList posts={posts} />
+          {posts.length > 0 && (
+            <div className="mt-8 max-w-[1200px] mx-auto">
+              <WideFilmCard
+                post={posts[0]}
+                category={category || 'films'}
+                theme={theme}
+              />
+            </div>
+          )}
         </div>
       </main>
     </>

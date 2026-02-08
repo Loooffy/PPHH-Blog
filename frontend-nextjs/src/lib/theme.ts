@@ -1,20 +1,20 @@
 // 主題類型定義
-export type Category = 'tech' | 'game' | 'movie' | 'book';
+export type Category = 'dev' | 'game' | 'film' | 'book';
 export type ThemeMode = 'light' | 'dark';
 
 // 類別中文名稱對應
 export const categoryNames: Record<Category, string> = {
-  tech: '軟體開發',
+  dev: '軟體開發',
   game: '遊戲開發',
-  movie: '影評',
+  film: '影評',
   book: '書評',
 };
 
 // 類別路由對應
 export const categoryRoutes: Record<Category, string> = {
-  tech: '/tech',
+  dev: '/dev',
   game: '/game',
-  movie: '/movies',
+  film: '/films',
   book: '/books',
 };
 
@@ -43,7 +43,7 @@ export interface Theme {
 // 4個類別的主題配置
 export const themes: Record<Category, { light: Theme; dark: Theme }> = {
   // 軟體開發 - 科技風格
-  tech: {
+  dev: {
     light: {
       colors: {
         primary: '#00bcd4', // 青色
@@ -117,7 +117,7 @@ export const themes: Record<Category, { light: Theme; dark: Theme }> = {
     },
   },
   // 影評 - 電影風格
-  movie: {
+  film: {
     light: {
       colors: {
         primary: '#222222', // 淺鵝黃
@@ -164,7 +164,7 @@ export const themes: Record<Category, { light: Theme; dark: Theme }> = {
         text: '#3e2723',
         textSecondary: '#5d4037',
         border: '#d7ccc8',
-        accent: '#a1887f',
+        accent: '#fffaf0',
       },
       fonts: {
         heading: 'Georgia, serif',

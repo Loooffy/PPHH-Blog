@@ -13,16 +13,16 @@ export function TopNavbar() {
   const pathname = usePathname();
   const logoSrc = mode === 'dark' ? '/blog-logo-white.png' : '/blog-logo-black.png';
 
-  const categories: Category[] = ['tech', 'game', 'movie', 'book'];
+  const categories: Category[] = ['dev', 'game', 'film', 'book'];
 
   // 根據路徑自動設定類別
   React.useEffect(() => {
-    if (pathname === '/' || pathname.startsWith('/tech')) {
-      setCategory('tech');
+    if (pathname === '/' || pathname.startsWith('/dev')) {
+      setCategory('dev');
     } else if (pathname.startsWith('/game')) {
       setCategory('game');
-    } else if (pathname.startsWith('/movies')) {
-      setCategory('movie');
+    } else if (pathname.startsWith('/films')) {
+      setCategory('film');
     } else if (pathname.startsWith('/books')) {
       setCategory('book');
     }
@@ -31,12 +31,12 @@ export function TopNavbar() {
   // 根據路徑決定 active 的 tab，優先使用 pathname 而不是 category state
   // 這樣可以避免 localStorage 造成的視覺不一致
   const getActiveCategory = (): Category => {
-    if (pathname === '/' || pathname.startsWith('/tech')) {
-      return 'tech';
+    if (pathname === '/' || pathname.startsWith('/dev')) {
+      return 'dev';
     } else if (pathname.startsWith('/game')) {
       return 'game';
-    } else if (pathname.startsWith('/movies')) {
-      return 'movie';
+    } else if (pathname.startsWith('/films')) {
+      return 'film';
     } else if (pathname.startsWith('/books')) {
       return 'book';
     }
@@ -86,7 +86,7 @@ export function TopNavbar() {
                 }`}
               onClick={() => setCategory(cat)}
             >
-              {cat === 'tech' ? (
+              {cat === 'dev' ? (
                 <span className="absolute bottom-[-35px] left-[120px] z-999 navbar-float">
                   <Image
                     src="/blog-image/logging.png"
@@ -106,7 +106,7 @@ export function TopNavbar() {
                     className="block"
                   />
                 </span>
-              ) : cat === 'movie' ? (
+              ) : cat === 'film' ? (
                 <span className="absolute bottom-[-40px] left-[480px] z-999 navbar-float">
                   <Image
                     src="/blog-image/pinkman.png"

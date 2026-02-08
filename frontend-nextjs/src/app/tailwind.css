@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Glegoo:wght@400&family=Inter:wght@300;500;600&display=swap');
 @import "tailwindcss";
 
-/* CSS 變數預設值 - 使用 tech-light 主題作為預設 */
+/* CSS 變數預設值 - 使用 dev-light 主題作為預設 */
 :root {
   --color-primary: #00bcd4;
   --color-secondary: #0097a7;
@@ -14,10 +14,10 @@
   --font-heading: monospace;
   --font-body: system-ui, sans-serif;
 
-  /* Movie theme specific colors */
-  --color-movie-bg: #1c1c1c;
-  --color-movie-text: #dfdfdf;
-  --color-movie-accent: #e2d7a7;
+  /* Film theme specific colors */
+  --color-film-bg: #1c1c1c;
+  --color-film-text: #dfdfdf;
+  --color-film-accent: #e2d7a7;
 }
 
 html,

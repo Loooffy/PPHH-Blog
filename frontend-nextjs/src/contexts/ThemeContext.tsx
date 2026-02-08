@@ -34,15 +34,15 @@ function applyTheme(theme: ReturnType<typeof getTheme>) {
 
 // 初始化函數：在組件渲染前設置 CSS 變數
 function initializeTheme() {
-  if (typeof window === 'undefined') return { category: 'tech' as Category, mode: 'light' as ThemeMode };
+  if (typeof window === 'undefined') return { category: 'dev' as Category, mode: 'light' as ThemeMode };
 
   const savedCategory = localStorage.getItem('blog-category') as Category;
   const savedMode = localStorage.getItem('blog-theme-mode') as ThemeMode;
 
-  let category: Category = 'tech';
+  let category: Category = 'dev';
   let mode: ThemeMode = 'light';
 
-  if (savedCategory && ['tech', 'game', 'movie', 'book'].includes(savedCategory)) {
+  if (savedCategory && ['dev', 'game', 'film', 'book'].includes(savedCategory)) {
     category = savedCategory;
   }
 
@@ -63,7 +63,7 @@ function initializeTheme() {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [category, setCategory] = useState<Category>('tech');
+  const [category, setCategory] = useState<Category>('dev');
   const [mode, setMode] = useState<ThemeMode>('light');
   const [mounted, setMounted] = useState(false);
   // 使用 ref 保存最新的值，以便在 toggleMode 中訪問

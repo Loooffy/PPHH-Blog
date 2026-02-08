@@ -2,6 +2,7 @@
 
 import { useTheme } from '@/contexts/ThemeContext';
 import Link from 'next/link';
+import { DevListItem } from './DevListItem';
 
 interface Post {
   id: number;
@@ -12,15 +13,15 @@ interface Post {
   category?: string;
 }
 
-interface TechPostListProps {
+interface DevPostListProps {
   posts: Post[];
 }
 
-export function TechPostList({ posts }: TechPostListProps) {
+export function DevPostList({ posts }: DevPostListProps) {
   const { category } = useTheme();
   if (posts.length === 0) {
     return (
-      <div className="tech-empty-state">
+      <div className="dev-empty-state">
         <p>目前還沒有文章</p>
       </div>
     );
@@ -75,22 +76,12 @@ export function TechPostList({ posts }: TechPostListProps) {
       {/* 其他文章列表 */}
       <div className="flex flex-col">
         {otherPosts.map((post, index) => (
-          <div key={post.id} className="pb-4">
-            <Link
-              href={`/${category}/${post.slug || post.id}`}
-              className="flex items-baseline justify-between gap-6 no-underline text-inherit pb-4"
-            >
-              <h3 className="text-lg font-bold leading-[1.4] text-text m-0 flex-1">
-                {post.title}
-              </h3>
-              <span className="text-sm font-normal text-text-secondary whitespace-nowrap shrink-0">
-                {formatDate(post.created_at)}
-              </span>
-            </Link>
-            {index < otherPosts.length - 1 && (
-              <div className="h-px bg-border m-0" />
-            )}
-          </div>
+          <DevListItem
+            key={post.id}
+            post={post}
+            category={category}
+            isLast={index === otherPosts.length - 1}
+          />
         ))}
       </div>
     </div>

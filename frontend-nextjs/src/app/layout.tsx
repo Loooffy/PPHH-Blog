@@ -40,13 +40,13 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  const savedCategory = localStorage.getItem('blog-category') || 'tech';
+                  const savedCategory = localStorage.getItem('blog-category') || 'dev';
                   const savedMode = localStorage.getItem('blog-theme-mode');
                   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                   const mode = savedMode && ['light', 'dark'].includes(savedMode) ? savedMode : (prefersDark ? 'dark' : 'light');
                   
                   const themes = {
-                    tech: {
+                    dev: {
                       light: { background: '#f5f5f5', surface: '#ffffff', text: '#212121', textSecondary: '#757575', border: '#e0e0e0', primary: '#00bcd4', secondary: '#0097a7', accent: '#00acc1' },
                       dark: { background: '#121212', surface: '#1e1e1e', text: '#e0e0e0', textSecondary: '#b0b0b0', border: '#333333', primary: '#00bcd4', secondary: '#00acc1', accent: '#00e5ff' }
                     },
@@ -54,7 +54,7 @@ export default function RootLayout({
                       light: { background: '#fff8f0', surface: '#ffffff', text: '#2c2c2c', textSecondary: '#666666', border: '#ffd4c4', primary: '#ff6b35', secondary: '#f7931e', accent: '#ff8c42' },
                       dark: { background: '#1a0f0a', surface: '#2a1f1a', text: '#f5f5f5', textSecondary: '#d0d0d0', border: '#4a2f1f', primary: '#ff6b35', secondary: '#ff8c42', accent: '#ff9f5e' }
                     },
-                    movie: {
+                    film: {
                       light: { background: '#faf5ff', surface: '#ffffff', text: '#2d1b3d', textSecondary: '#6b5b73', border: '#e1bee7', primary: '#9c27b0', secondary: '#7b1fa2', accent: '#ba68c8' },
                       dark: { background: '#1a0d1f', surface: '#2a1a2f', text: '#f3e5f5', textSecondary: '#e1bee7', border: '#4a2d4f', primary: '#ce93d8', secondary: '#ba68c8', accent: '#e1bee7' }
                     },
@@ -64,7 +64,7 @@ export default function RootLayout({
                     }
                   };
                   
-                  const category = ['tech', 'game', 'movie', 'book'].includes(savedCategory) ? savedCategory : 'tech';
+                  const category = ['dev', 'game', 'film', 'book'].includes(savedCategory) ? savedCategory : 'dev';
                   const theme = themes[category][mode];
                   const root = document.documentElement;
                   

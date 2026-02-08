@@ -1,6 +1,5 @@
 'use client';
 
-import { useTheme } from '@/contexts/ThemeContext';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -18,8 +17,9 @@ interface Post {
   book_year?: string;
 }
 
-interface BookListProps {
-  posts: Post[];
+interface BookListItemProps {
+  post: Post;
+  category: string;
 }
 
 const defaultCoverImage =
@@ -54,7 +54,7 @@ function formatYear(dateString: string): string {
 }
 
 // Book List Item 組件
-function BookListItem({ post, category }: { post: Post; category: string }) {
+export function BookListItem({ post, category }: BookListItemProps) {
   const [imageError, setImageError] = useState(false);
   const bookTitle = post.book_title || post.title;
   const bookAuthor = post.book_author || '';
@@ -65,70 +65,48 @@ function BookListItem({ post, category }: { post: Post; category: string }) {
   return (
     <Link
       href={`/${category}/${post.slug || post.id}`}
-      className="no-underline text-inherit block group"
+      className="no-underline ml-4 px-0 w-full text-inherit block group relative"
     >
-      <div className="flex gap-4 items-start">
-        {/* 左側垂直線 */}
-        <div className="shrink-0 w-px bg-black self-stretch mt-2 mb-8" />
-        
-        {/* 內容區域 */}
-        <div className="flex-1 flex flex-col">
-          {/* 書籍封面 */}
-          <div className="relative mb-6">
+      {/* 左側垂直線 - 深灰色，在卡片外面 */}
+      <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-600" />
+
+      {/* 內容區域 */}
+      <div className="flex flex-col w-full pt-4 pb-10 pl-4 pr-4 bg-gray-100 ml-6" style={{
+        boxShadow: 'inset 3px 4px 4px rgba(0, 0, 0, 0.3)',
+      }}>
+        {/* 書籍封面 - 帶白色邊框和陰影 */}
+        <div className="relative mb-6">
+          <div className="relative w-3/4 aspect-3/4" style={{
+            border: '2px solid white',
+            boxShadow: '3px 4px 4px rgba(0, 0, 0, 0.3)',
+          }}>
             <Image
               src={displayImage}
               alt={bookTitle}
-              width={240}
-              height={360}
-              className="w-full h-auto object-cover"
-              style={{
-                boxShadow: '4px 11px 4px rgba(0, 0, 0, 0.25)',
-              }}
+              fill
+              className="object-cover"
+              // sizes="(max-width: 640px) (max-width: 1024px)"
               onError={() => setImageError(true)}
             />
           </div>
+        </div>
+      </div>
+      <div className='w-full ml-5'>
+        {/* 標題 */}
+        <h3 className="text-[32px] mt-2 font-normal text-black mb-2" style={{ fontFamily: 'Inter, sans-serif' }}>
+          {bookTitle}
+        </h3>
 
-          {/* 標題 */}
-          <h3 className="text-[32px] font-normal text-black mb-4" style={{ fontFamily: 'Inter, sans-serif' }}>
-            {bookTitle}
-          </h3>
-
-          {/* 作者和年份 */}
-          <div className="flex justify-between items-center">
-            <p className="text-base font-extralight text-black" style={{ fontFamily: 'Inter, sans-serif' }}>
-              {bookAuthor}
-            </p>
-            <p className="text-base font-extrabold text-black" style={{ fontFamily: 'Inter, sans-serif' }}>
-              {bookYear}
-            </p>
-          </div>
+        {/* 作者和年份 */}
+        <div className="flex ml-1 justify-between items-start">
+          <p className="text-base font-light text-black" style={{ fontFamily: 'Inter, sans-serif' }}>
+            {bookAuthor}
+          </p>
+          <p className="text-base font-bold text-black pr-0" style={{ fontFamily: 'Inter, sans-serif' }}>
+            {bookYear}
+          </p>
         </div>
       </div>
     </Link>
-  );
-}
-
-export function BookList({ posts }: BookListProps) {
-  const { category } = useTheme();
-
-  if (posts.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-text-secondary">
-          目前還沒有書評
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="pt-8 pb-8">
-      {/* Book Grid Layout - 4 columns */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
-        {posts.map((post) => (
-          <BookListItem key={post.id} post={post} category={category || 'books'} />
-        ))}
-      </div>
-    </div>
   );
 }
