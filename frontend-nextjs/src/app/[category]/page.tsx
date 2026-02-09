@@ -36,7 +36,7 @@ export default async function CategoryPage({
 
   return (
     <>
-      <main className="main-content">
+      <main className="main-content pt-[160px]">
         <h1>{categoryName}</h1>
         <PostList posts={posts} />
       </main>

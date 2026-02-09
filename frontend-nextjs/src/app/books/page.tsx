@@ -30,7 +30,7 @@ export default async function BooksPage() {
 
   return (
     <>
-      <main className="fixed top-[160px] left-0 right-0 bottom-0 overflow-y-auto z-[1001] bg-background">
+      <main className="pt-[160px] bg-background">
         <div className="max-w-[1200px] mx-auto">
           <BookList posts={posts} />
         </div>

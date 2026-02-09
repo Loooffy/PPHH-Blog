@@ -40,7 +40,7 @@ export default function FilmsPage() {
   return (
     <>
       <main
-        className="fixed top-[160px] left-0 right-0 bottom-0 overflow-y-auto z-[1001] transition-colors duration-300"
+        className="pt-[160px] transition-colors duration-300"
         style={{ backgroundColor: theme.colors.background }}
       >
         <div className="px-6 md:px-8 py-6">

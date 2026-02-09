@@ -17,7 +17,21 @@ class Api::V1::PostsController < Api::BaseController
   end
 
   def show
-    @post = Post.where(status: 'published').find(params[:id])
-    render json: @post
+    # 支持通過 ID 或 slug 查找文章
+    id_or_slug = params[:id]
+    
+    # 嘗試作為 ID 查找（數字）
+    if id_or_slug.to_i.to_s == id_or_slug
+      @post = Post.where(status: 'published').find_by(id: id_or_slug)
+    else
+      # 作為 slug 查找
+      @post = Post.where(status: 'published').find_by(slug: id_or_slug)
+    end
+    
+    if @post
+      render json: @post
+    else
+      render json: { error: 'Post not found' }, status: :not_found
+    end
   end
 end

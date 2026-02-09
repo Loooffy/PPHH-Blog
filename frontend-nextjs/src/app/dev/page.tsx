@@ -27,11 +27,11 @@ export default async function DevPage() {
 
   return (
     <>
-      <main className="fixed top-[160px] left-0 right-0 bottom-0 overflow-y-auto z-900 bg-background">
+      <main className="pt-[160px] bg-background">
         <div className="flex flex-col md:flex-row gap-6 items-start px-6 md:px-8">
           {/* 左側：SVG 圖片 */}
           <div className="w-full md:w-[25%] md:shrink-0 md:max-w-[25%]">
-            <div className="w-full aspect-2/3 sticky top-6">
+            <div className="w-full aspect-2/3 sticky top-[184px]">
               <svg
                 className="block w-full h-full"
                 viewBox="0 0 400 600"

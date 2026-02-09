@@ -33,7 +33,7 @@ export default async function GamePage() {
 
   return (
     <>
-      <main className="fixed top-[120px] left-0 right-0 bottom-0 overflow-y-auto z-1001 bg-[#c4d4a0]">
+      <main className="pt-[160px] bg-[#c4d4a0]">
         <div>
           <GamePostList posts={posts} />
         </div>

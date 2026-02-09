@@ -1,3 +1,4 @@
+import { DevPost } from '@/components/Dev/DevPost';
 import { TrixContent } from '@/components/TrixContent';
 import { API_ENDPOINTS } from '@/lib/api';
 import { categoryNames } from '@/lib/theme';
@@ -9,6 +10,10 @@ interface Post {
   slug: string;
   content: string;
   created_at: string;
+  updated_at?: string;
+  series?: string;
+  series_number?: number;
+  category?: string;
 }
 
 async function getPost(slug: string): Promise<Post | null> {
@@ -37,7 +42,7 @@ export default async function PostPage({
   if (!post) {
     return (
       <>
-        <main className="main-content">
+        <main className="main-content pt-[160px]">
           <h1>文章不存在</h1>
           <Link href={`/${categoryPath}`}>返回 {categoryName}</Link>
         </main>
@@ -45,9 +50,21 @@ export default async function PostPage({
     );
   }
 
+  // 如果是 dev 類別（路由參數為 'dev' 或文章 category 為 '軟體開發'），使用 DevPost 組件
+  if (category === 'dev' || post.category === '軟體開發') {
+    return (
+      <>
+        <main className="main-content mt-[160px] h-[calc(100vh-160px)] overflow-y-auto">
+          <DevPost post={post} />
+        </main>
+      </>
+    );
+  }
+
+  // 其他類別使用原本的布局
   return (
     <>
-      <main className="main-content" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <main className="main-content pt-[160px]" style={{ maxWidth: '800px', margin: '0 auto' }}>
         <Link
           href={`/${categoryPath}`}
           className="inline-block mb-8 text-primary no-underline"
