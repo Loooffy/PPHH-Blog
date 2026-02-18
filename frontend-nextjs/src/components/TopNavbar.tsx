@@ -92,7 +92,7 @@ export function TopNavbar() {
               {cat === 'dev' ? (
                 <span className="absolute bottom-[-35px] left-[120px] z-999 navbar-float">
                   <Image
-                    src="/blog-image/logging.png"
+                    src="/logging.png"
                     alt={categoryNames[cat]}
                     width={160}
                     height={160}
@@ -102,7 +102,7 @@ export function TopNavbar() {
               ) : cat === 'game' ? (
                 <span className="absolute bottom-[-35px] left-[320px] z-999 navbar-float">
                   <Image
-                    src="/blog-image/game.png"
+                    src="/game.png"
                     alt={categoryNames[cat]}
                     width={140}
                     height={130}
@@ -112,7 +112,7 @@ export function TopNavbar() {
               ) : cat === 'film' ? (
                 <span className="absolute bottom-[-40px] left-[480px] z-999 navbar-float">
                   <Image
-                    src="/blog-image/pinkman.png"
+                    src="/pinkman.png"
                     alt={categoryNames[cat]}
                     width={150}
                     height={150}
@@ -122,7 +122,7 @@ export function TopNavbar() {
               ) : cat === 'book' ? (
                 <span className="absolute bottom-[-32px] left-[640px] z-999 navbar-float">
                   <Image
-                    src="/blog-image/book.png"
+                    src="/book.png"
                     alt={categoryNames[cat]}
                     width={120}
                     height={120}
