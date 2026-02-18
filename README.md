@@ -275,7 +275,7 @@ blog-project/
 │   │   ├── app/
 │   │   │   ├── layout.tsx
 │   │   │   ├── page.tsx
-│   │   │   ├── tech/          # 軟體開發文章
+│   │   │   ├── dev/          # 軟體開發文章
 │   │   │   │   ├── page.tsx
 │   │   │   │   └── [slug]/
 │   │   │   │       └── page.tsx
@@ -283,11 +283,11 @@ blog-project/
 │   │   │   │   ├── page.tsx
 │   │   │   │   └── [slug]/
 │   │   │   │       └── page.tsx
-│   │   │   ├── movies/        # 影評
+│   │   │   ├── film/        # 影評
 │   │   │   │   ├── page.tsx
 │   │   │   │   └── [slug]/
 │   │   │   │       └── page.tsx
-│   │   │   ├── books/         # 書評
+│   │   │   ├── book/         # 書評
 │   │   │   │   ├── page.tsx
 │   │   │   │   └── [slug]/
 │   │   │   │       └── page.tsx

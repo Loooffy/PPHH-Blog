@@ -15,15 +15,13 @@ interface Post {
   book_title?: string;
   book_author?: string;
   book_year?: string;
+  book_cover_image_url?: string;
 }
 
 interface BookListItemProps {
   post: Post;
   category: string;
 }
-
-const defaultCoverImage =
-  'https://www.bookrep.com.tw/sites/default/files/products/img/%EF%BC%88%E5%B7%A6%E5%B2%B8%EF%BC%890GGK0261%E4%BE%9D%E6%B5%B7%E4%B9%8B%E4%BA%BA_%E6%9B%B8%E5%B0%81_%E5%B9%B3%E9%9D%A2.jpg';
 
 // 從 HTML content 中提取第一張圖片 URL
 function extractFirstImageUrl(content: string): string | null {
@@ -59,8 +57,9 @@ export function BookListItem({ post, category }: BookListItemProps) {
   const bookTitle = post.book_title || post.title;
   const bookAuthor = post.book_author || '';
   const bookYear = post.book_year || formatYear(post.created_at);
-  const coverImageUrl = extractFirstImageUrl(post.content) || defaultCoverImage;
-  const displayImage = imageError ? defaultCoverImage : coverImageUrl;
+  const coverImageUrl =
+    post.book_cover_image_url || extractFirstImageUrl(post.content) || null;
+  const showImage = coverImageUrl && !imageError;
 
   return (
     <Link
@@ -80,14 +79,17 @@ export function BookListItem({ post, category }: BookListItemProps) {
             border: '2px solid white',
             boxShadow: '3px 4px 4px rgba(0, 0, 0, 0.3)',
           }}>
-            <Image
-              src={displayImage}
-              alt={bookTitle}
-              fill
-              className="object-cover"
-              // sizes="(max-width: 640px) (max-width: 1024px)"
-              onError={() => setImageError(true)}
-            />
+            {showImage ? (
+              <Image
+                src={coverImageUrl}
+                alt={bookTitle}
+                fill
+                className="object-cover"
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gray-200" />
+            )}
           </div>
         </div>
       </div>

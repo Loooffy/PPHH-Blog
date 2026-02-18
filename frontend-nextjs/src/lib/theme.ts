@@ -14,8 +14,8 @@ export const categoryNames: Record<Category, string> = {
 export const categoryRoutes: Record<Category, string> = {
   dev: '/dev',
   game: '/game',
-  film: '/films',
-  book: '/books',
+  film: '/film',
+  book: '/book',
 };
 
 // 主題顏色定義
@@ -159,7 +159,7 @@ export const themes: Record<Category, { light: Theme; dark: Theme }> = {
       colors: {
         primary: '#8d6e63', // 棕色
         secondary: '#6d4c41',
-        background: '#fffaf0', // 奶油白
+        background: '#fafafa  ', // 淺灰
         surface: '#ffffff',
         text: '#3e2723',
         textSecondary: '#5d4037',

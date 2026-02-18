@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :admins
   mount Avo::Engine => Avo.configuration.root_path
 
   namespace :api do

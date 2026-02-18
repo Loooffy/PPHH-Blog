@@ -1,3 +1,4 @@
+import { BookPost } from '@/components/Book/BookPost';
 import { DevPost } from '@/components/Dev/DevPost';
 import { TrixContent } from '@/components/TrixContent';
 import { API_ENDPOINTS } from '@/lib/api';
@@ -14,6 +15,9 @@ interface Post {
   series?: string;
   series_number?: number;
   category?: string;
+  book_title?: string;
+  book_author?: string;
+  book_year?: string;
 }
 
 async function getPost(slug: string): Promise<Post | null> {
@@ -50,12 +54,27 @@ export default async function PostPage({
     );
   }
 
-  // 如果是 dev 類別（路由參數為 'dev' 或文章 category 為 '軟體開發'），使用 DevPost 組件
-  if (category === 'dev' || post.category === '軟體開發') {
+  if (category === 'dev') {
     return (
       <>
         <main className="main-content mt-[160px] h-[calc(100vh-160px)] overflow-y-auto">
           <DevPost post={post} />
+        </main>
+      </>
+    );
+  }
+
+  if (category === 'book') {
+    return (
+      <>
+        <main className="main-content relative pt-[160px]">
+          <Link
+            href={`/${categoryPath}`}
+            className="absolute top-10 left-12 z-10 text-primary no-underline hover:text-secondary"
+          >
+            ← 返回 {categoryName}
+          </Link>
+          <BookPost post={post} />
         </main>
       </>
     );

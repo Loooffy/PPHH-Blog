@@ -31,7 +31,7 @@ export function DevListItem({ post, category, isLast }: DevListItemProps) {
         href={`/${category}/${post.slug || post.id}`}
         className="flex items-baseline justify-between gap-6 no-underline text-inherit pb-4"
       >
-        <h3 className="text-lg font-bold leading-[1.4] text-text m-0 flex-1">
+        <h3 className="text-xl font-bold leading-[1.4] text-text m-0 flex-1 pb-5 border-b">
           {post.title}
         </h3>
         <span className="text-sm font-normal text-text-secondary whitespace-nowrap shrink-0">

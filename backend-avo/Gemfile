@@ -69,3 +69,6 @@ gem "avo"
 gem "avo-rhino_field"
 gem 'rack-cors'
 gem "activestorage"
+gem 'bcrypt', '~> 3.1.18'
+gem 'pundit'
+gem 'devise'

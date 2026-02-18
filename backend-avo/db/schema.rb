@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_31_105600) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_10_100046) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,10 +52,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_31_105600) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "admins", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.string "encrypted_password", default: "", null: false
+    t.string "password_digest"
+    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at"
+    t.string "reset_password_token"
+    t.datetime "updated_at", null: false
+    t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string "author"
     t.string "book_author"
+    t.string "book_cover_image_url"
     t.string "book_genre"
+    t.integer "book_isbn"
     t.integer "book_published_year"
     t.decimal "book_rating", precision: 3, scale: 1
     t.string "book_title"

@@ -48,7 +48,7 @@ export function FilmList({ posts }: FilmListProps) {
             {pair[0] && (
               <FullWidthFilmCard
                 post={pair[0]}
-                category={category || 'films'}
+                category={category || 'film'}
                 theme={theme}
               />
             )}
@@ -59,7 +59,7 @@ export function FilmList({ posts }: FilmListProps) {
                 </div>
                 <WideFilmCard
                   post={pair[1]}
-                  category={category || 'films'}
+                  category={category || 'film'}
                   theme={theme}
                 />
               </>

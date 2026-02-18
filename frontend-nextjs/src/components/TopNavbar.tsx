@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
+import { GameNavBar } from './Game/GameNavBar';
 import { ThemeToggle } from './ThemeToggle';
 
 export function TopNavbar() {
@@ -21,9 +22,9 @@ export function TopNavbar() {
       setCategory('dev');
     } else if (pathname.startsWith('/game')) {
       setCategory('game');
-    } else if (pathname.startsWith('/films')) {
+    } else if (pathname.startsWith('/film')) {
       setCategory('film');
-    } else if (pathname.startsWith('/books')) {
+    } else if (pathname.startsWith('/book')) {
       setCategory('book');
     }
   }, [pathname, setCategory]);
@@ -35,9 +36,9 @@ export function TopNavbar() {
       return 'dev';
     } else if (pathname.startsWith('/game')) {
       return 'game';
-    } else if (pathname.startsWith('/films')) {
+    } else if (pathname.startsWith('/film')) {
       return 'film';
-    } else if (pathname.startsWith('/books')) {
+    } else if (pathname.startsWith('/book')) {
       return 'book';
     }
     return category; // fallback to state
@@ -45,20 +46,17 @@ export function TopNavbar() {
 
   const activeCategory = getActiveCategory();
 
+  // /game 頁面不顯示 TopNavbar
+  if (pathname.startsWith('/game')) {
+    return <GameNavBar />;
+  }
+
   // 根據當前頁面決定 navbar 的背景色
   const getNavbarBgColor = () => {
     if (pathname.startsWith('/game')) {
       return 'bg-[#3bcbe5]';
     }
     return 'bg-surface';
-  };
-
-  // 根據當前頁面決定遮罩的背景色
-  const getMaskBgColor = () => {
-    if (pathname.startsWith('/game')) {
-      return '#3bcbe5';
-    }
-    return 'var(--color-background)';
   };
 
   return (
@@ -137,11 +135,11 @@ export function TopNavbar() {
       </div>
 
       {/* Mask the navbar images overlap area */}
-      <div
+      {/* <div
         aria-hidden="true"
         className="pointer-events-none absolute left-0 right-0 bottom-[-40px] h-[40px] z-1002 border-t-2 border-var(--color-text)"
         style={{ backgroundColor: getMaskBgColor() }}
-      />
+      /> */}
     </nav>
   );
 }

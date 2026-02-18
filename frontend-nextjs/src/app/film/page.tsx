@@ -17,7 +17,7 @@ interface Post {
 
 async function getPosts(): Promise<Post[]> {
   try {
-    const res = await fetch(API_ENDPOINTS.postsByCategory('影評'), {
+    const res = await fetch(API_ENDPOINTS.postsByCategory('film'), {
       cache: 'no-store',
     });
     if (!res.ok) return [];
@@ -49,7 +49,7 @@ export default function FilmsPage() {
             <div className="mt-8 max-w-[1200px] mx-auto">
               <WideFilmCard
                 post={posts[0]}
-                category={category || 'films'}
+                category={category || 'film'}
                 theme={theme}
               />
             </div>

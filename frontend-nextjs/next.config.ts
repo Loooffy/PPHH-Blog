@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
         hostname: 'm.media-amazon.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '**.mm.bing.net',
+        pathname: '/**',
+      },
     ],
   },
   // 在 Docker/WSL2 環境中啟用 polling 模式以確保檔案變更能被正確偵測

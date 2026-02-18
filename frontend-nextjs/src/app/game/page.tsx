@@ -1,11 +1,5 @@
 import { GamePostList } from '@/components/Game/GamePostList';
 import { API_ENDPOINTS } from '@/lib/api';
-import { Press_Start_2P } from 'next/font/google';
-
-const pressStart2P = Press_Start_2P({
-  subsets: ['latin'],
-  weight: '400',
-});
 
 interface Post {
   id: number;
@@ -17,7 +11,7 @@ interface Post {
 
 async function getPosts(): Promise<Post[]> {
   try {
-    const res = await fetch(API_ENDPOINTS.postsByCategory('遊戲開發'), {
+    const res = await fetch(API_ENDPOINTS.postsByCategory('game'), {
       cache: 'no-store',
     });
     if (!res.ok) return [];

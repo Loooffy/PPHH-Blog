@@ -1,7 +1,7 @@
 import { TopNavbar } from "@/components/TopNavbar";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Press_Start_2P } from "next/font/google";
+import { Geist, Geist_Mono, Potta_One } from "next/font/google";
 import "./tailwind.css";
 
 const geistSans = Geist({
@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const pressStart2P = Press_Start_2P({
+const pottaOne = Potta_One({
   variable: "--font-pixel",
   subsets: ["latin"],
   weight: "400",
@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="zh-TW" className="bg-background">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${pressStart2P.variable} antialiased bg-background text-text font-body transition-colors duration-300`}
+        className={`${geistSans.variable} ${geistMono.variable} ${pottaOne.variable} antialiased bg-background text-text font-body transition-colors duration-300`}
       >
         <script
           dangerouslySetInnerHTML={{
