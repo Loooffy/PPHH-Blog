@@ -34,7 +34,7 @@ export default async function DevPage() {
             <div className="w-full sticky top-30">
               <div className="flex flex-row gap-1">
                 <div className="flex-1"></div>
-                <div className="flex-2 text-l text-black text-center py-1 mb-3 border-b-2 border-gray-400">系列文章</div>
+                <div className="flex-2 text-l text-black text-center font-bold py-1 mb-3 border-b-2 border-gray-400">系列文章</div>
                 <div className="flex-1"></div>
               </div>
               <div className="flex flex-col gap-1">
@@ -46,7 +46,7 @@ export default async function DevPage() {
               </div>
               <div className="flex flex-row gap-1">
                 <div className="flex-1"></div>
-                <div className="flex-2 text-l text-center my-6 border-b-2 border-gray-400">標籤</div>
+                <div className="flex-2 text-l text-center font-bold my-6 border-b-2 border-gray-400">標籤</div>
                 <div className="flex-1"></div>
               </div>
               <div className="grid grid-col gap-2 justify-items-center">

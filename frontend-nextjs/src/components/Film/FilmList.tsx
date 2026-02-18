@@ -21,16 +21,6 @@ export function FilmList({ posts }: FilmListProps) {
   const { category, mode } = useTheme();
   const theme = getTheme(category || 'film', mode);
 
-  if (posts.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p style={{ color: theme.colors.textSecondary }}>
-          目前還沒有電影評論
-        </p>
-      </div>
-    );
-  }
-
   // Pair posts for the layout
   const rows = [];
   for (let i = 0; i < posts.length; i += 2) {
@@ -39,7 +29,7 @@ export function FilmList({ posts }: FilmListProps) {
 
   return (
     <div
-      className="w-full py-4 max-w-[1200px] mx-auto"
+      className="w-full max-w-[1200px] mx-auto"
       style={{ backgroundColor: theme.colors.background }}
     >
       <div className="flex flex-col gap-8">

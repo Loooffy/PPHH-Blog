@@ -47,20 +47,20 @@ export default function RootLayout({
                   
                   const themes = {
                     dev: {
-                      light: { background: '#f5f5f5', surface: '#ffffff', text: '#212121', textSecondary: '#757575', border: '#e0e0e0', primary: '#00bcd4', secondary: '#0097a7', accent: '#00acc1' },
-                      dark: { background: '#121212', surface: '#1e1e1e', text: '#e0e0e0', textSecondary: '#b0b0b0', border: '#333333', primary: '#00bcd4', secondary: '#00acc1', accent: '#00e5ff' }
+                      light: { background: '#f5f5f5', surface: '#ffffff', text: '#212121', textSecondary: '#757575', border: '#e0e0e0', primary: '#00bcd4', secondary: '#0097a7', accent: '#00acc1', fontHeading: 'monospace', fontBody: 'system-ui, sans-serif' },
+                      dark: { background: '#121212', surface: '#1e1e1e', text: '#e0e0e0', textSecondary: '#b0b0b0', border: '#333333', primary: '#00bcd4', secondary: '#00acc1', accent: '#00e5ff', fontHeading: 'monospace', fontBody: 'system-ui, sans-serif' }
                     },
                     game: {
-                      light: { background: '#fff8f0', surface: '#ffffff', text: '#2c2c2c', textSecondary: '#666666', border: '#ffd4c4', primary: '#ff6b35', secondary: '#f7931e', accent: '#ff8c42' },
-                      dark: { background: '#1a0f0a', surface: '#2a1f1a', text: '#f5f5f5', textSecondary: '#d0d0d0', border: '#4a2f1f', primary: '#ff6b35', secondary: '#ff8c42', accent: '#ff9f5e' }
+                      light: { background: '#fff8f0', surface: '#ffffff', text: '#2c2c2c', textSecondary: '#666666', border: '#ffd4c4', primary: '#ff6b35', secondary: '#f7931e', accent: '#ff8c42', fontHeading: 'system-ui, sans-serif', fontBody: 'system-ui, sans-serif' },
+                      dark: { background: '#1a0f0a', surface: '#2a1f1a', text: '#f5f5f5', textSecondary: '#d0d0d0', border: '#4a2f1f', primary: '#ff6b35', secondary: '#ff8c42', accent: '#ff9f5e', fontHeading: 'system-ui, sans-serif', fontBody: 'system-ui, sans-serif' }
                     },
                     film: {
-                      light: { background: '#faf5ff', surface: '#ffffff', text: '#2d1b3d', textSecondary: '#6b5b73', border: '#e1bee7', primary: '#9c27b0', secondary: '#7b1fa2', accent: '#ba68c8' },
-                      dark: { background: '#1a0d1f', surface: '#2a1a2f', text: '#f3e5f5', textSecondary: '#e1bee7', border: '#4a2d4f', primary: '#ce93d8', secondary: '#ba68c8', accent: '#e1bee7' }
+                      light: { background: '#f9f9f9', surface: '#ffffff', text: '#222222', textSecondary: '#333333', border: '#e1bee7', primary: '#222222', secondary: '#444444', accent: '#334033', fontHeading: "'Inter', sans-serif", fontBody: "'Inter', sans-serif" },
+                      dark: { background: '#1c1c1c', surface: '#2a2a2a', text: '#dfdfdf', textSecondary: '#b0b0b0', border: '#dfdfdf', primary: '#dfdfdf', secondary: '#e2d7a7', accent: '#e2d7a7', fontHeading: "'Inter', sans-serif", fontBody: "'Inter', sans-serif" }
                     },
                     book: {
-                      light: { background: '#fffaf0', surface: '#ffffff', text: '#3e2723', textSecondary: '#5d4037', border: '#d7ccc8', primary: '#8d6e63', secondary: '#6d4c41', accent: '#a1887f' },
-                      dark: { background: '#1a1614', surface: '#2a2520', text: '#efebe9', textSecondary: '#d7ccc8', border: '#4a3f38', primary: '#d7ccc8', secondary: '#bcaaa4', accent: '#a1887f' }
+                      light: { background: '#fafafa', surface: '#ffffff', text: '#3e2723', textSecondary: '#5d4037', border: '#d7ccc8', primary: '#8d6e63', secondary: '#6d4c41', accent: '#fffaf0', fontHeading: 'Georgia, serif', fontBody: 'Georgia, serif' },
+                      dark: { background: '#1a1614', surface: '#2a2520', text: '#efebe9', textSecondary: '#d7ccc8', border: '#4a3f38', primary: '#d7ccc8', secondary: '#bcaaa4', accent: '#a1887f', fontHeading: 'Georgia, serif', fontBody: 'Georgia, serif' }
                     }
                   };
                   
@@ -76,6 +76,8 @@ export default function RootLayout({
                   root.style.setProperty('--color-primary', theme.primary);
                   root.style.setProperty('--color-secondary', theme.secondary);
                   root.style.setProperty('--color-accent', theme.accent);
+                  root.style.setProperty('--font-heading', theme.fontHeading);
+                  root.style.setProperty('--font-body', theme.fontBody);
                 } catch (e) {}
               })();
             `,

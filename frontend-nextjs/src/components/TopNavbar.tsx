@@ -46,21 +46,26 @@ export function TopNavbar() {
 
   const activeCategory = getActiveCategory();
 
-  // /game 頁面不顯示 TopNavbar
   if (pathname.startsWith('/game')) {
     return <GameNavBar />;
   }
 
-  // 根據當前頁面決定 navbar 的背景色
-  const getNavbarBgColor = () => {
+  const getNavbarBgClassName = () => {
     if (pathname.startsWith('/game')) {
       return 'bg-[#3bcbe5]';
     }
     return 'bg-surface';
   };
 
+  const getNavbarBgStyle = () => {
+    if (pathname.startsWith('/game')) {
+      return '#3bcbe5';
+    }
+    return 'var(--color-surface)';
+  };
+
   return (
-    <nav className={`fixed top-0 left-0 right-0 ${getNavbarBgColor()} border-b border-border flex items-center justify-between px-6 py-4 z-1100 shadow-[0_2px_8px_rgba(0,0,0,0.1)] min-h-[120px] md:min-h-[120px] md:px-4`}>
+    <nav className={`fixed top-0 left-0 right-0 ${getNavbarBgClassName()} border-b border-border flex items-center justify-between px-6 py-4 z-1100 shadow-[0_2px_8px_rgba(0,0,0,0.1)] min-h-[120px] md:min-h-[120px] md:px-4`}>
       <Link href="/" className="flex items-center transition-opacity duration-300 hover:opacity-80">
         <Image
           src={logoSrc}
@@ -133,13 +138,11 @@ export function TopNavbar() {
       <div className="flex items-center gap-4">
         <ThemeToggle />
       </div>
-
-      {/* Mask the navbar images overlap area */}
-      {/* <div
+      <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 bottom-[-40px] h-[40px] z-1002 border-t-2 border-var(--color-text)"
-        style={{ backgroundColor: getMaskBgColor() }}
-      /> */}
+        className="pointer-events-none absolute left-0 right-0 bottom-[-40px] h-[40px] z-900 border-t-2 border-var(--color-text)"
+        style={{ backgroundColor: getNavbarBgStyle() }}
+      />
     </nav>
   );
 }

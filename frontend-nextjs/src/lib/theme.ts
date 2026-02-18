@@ -120,14 +120,14 @@ export const themes: Record<Category, { light: Theme; dark: Theme }> = {
   film: {
     light: {
       colors: {
-        primary: '#222222', // 淺鵝黃
+        primary: '#222222',
         secondary: '#444444',
-        background: '#FFF9E8',
+        background: '#fafafa',
         surface: '#ffffff',
         text: '#222222',
         textSecondary: '#333333',
         border: '#e1bee7',
-        accent: '#334033',
+        accent: '#fafafa',
       },
       fonts: {
         heading: "'Inter', sans-serif",
@@ -137,14 +137,14 @@ export const themes: Record<Category, { light: Theme; dark: Theme }> = {
     },
     dark: {
       colors: {
-        primary: '#dfdfdf', // Light grey
-        secondary: '#e2d7a7', // Accent gold
-        background: '#1c1c1c', // Dark background
+        primary: '#dfdfdf', 
+        secondary: '#e2d7a7', 
+        background: '#1c1c1c', 
         surface: '#2a2a2a',
-        text: '#dfdfdf', // Light text
+        text: '#dfdfdf', 
         textSecondary: '#b0b0b0',
-        border: '#dfdfdf', // Light border
-        accent: '#e2d7a7', // Golden accent
+        border: '#dfdfdf', 
+        accent: '#e2d7a7', 
       },
       fonts: {
         heading: "'Inter', sans-serif",
@@ -157,14 +157,14 @@ export const themes: Record<Category, { light: Theme; dark: Theme }> = {
   book: {
     light: {
       colors: {
-        primary: '#8d6e63', // 棕色
+        primary: '#8d6e63',
         secondary: '#6d4c41',
-        background: '#fafafa  ', // 淺灰
+        background: '#fafafa',
         surface: '#ffffff',
         text: '#3e2723',
         textSecondary: '#5d4037',
         border: '#d7ccc8',
-        accent: '#fffaf0',
+        accent: '#fafafa',
       },
       fonts: {
         heading: 'Georgia, serif',
