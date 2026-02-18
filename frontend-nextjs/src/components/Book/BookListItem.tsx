@@ -66,17 +66,16 @@ export function BookListItem({ post, category }: BookListItemProps) {
       href={`/${category}/${post.slug || post.id}`}
       className="no-underline ml-4 px-0 w-full text-inherit block group relative"
     >
-      {/* 左側垂直線 - 深灰色，在卡片外面 */}
-      <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-600" />
+      {/* 左側垂直線 - 深灰色 */}
+      <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-400" />
 
       {/* 內容區域 */}
       <div className="flex flex-col w-full pt-4 pb-10 pl-4 pr-4 bg-gray-100 ml-6" style={{
         boxShadow: 'inset 3px 4px 4px rgba(0, 0, 0, 0.3)',
       }}>
-        {/* 書籍封面 - 帶白色邊框和陰影 */}
+        {/* 書籍封面 */}
         <div className="relative mb-6">
           <div className="relative w-3/4 aspect-3/4" style={{
-            border: '2px solid white',
             boxShadow: '3px 4px 4px rgba(0, 0, 0, 0.3)',
           }}>
             {showImage ? (
@@ -95,7 +94,7 @@ export function BookListItem({ post, category }: BookListItemProps) {
       </div>
       <div className='w-full ml-5'>
         {/* 標題 */}
-        <h3 className="text-[32px] mt-2 font-normal text-black mb-2" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <h3 className="text-[24px] mt-2 font-normal text-black mb-2" style={{ fontFamily: 'Inter, sans-serif' }}>
           {bookTitle}
         </h3>
 
