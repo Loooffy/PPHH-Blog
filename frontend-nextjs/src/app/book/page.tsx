@@ -1,3 +1,4 @@
+import { ThemedMain } from '@/components/layout/ThemedMain';
 import { BookList } from '@/components/Book/BookList';
 import { API_ENDPOINTS } from '@/lib/api';
 
@@ -30,11 +31,13 @@ export default async function BooksPage() {
 
   return (
     <>
-      <main className="pt-[160px] bg-background">
-        <div className="max-w-[1200px] mx-auto">
-          <BookList posts={posts} />
+      <ThemedMain category="book">
+        <div className="px-6 md:px-8 py-6">
+          <div className="max-w-[1200px] mx-auto">
+            <BookList posts={posts} />
+          </div>
         </div>
-      </main>
+      </ThemedMain>
     </>
   );
 }

@@ -1,3 +1,4 @@
+import { ThemedMain } from '@/components/layout/ThemedMain';
 import { DevPostList } from '@/components/Dev/DevPostList';
 import { API_ENDPOINTS } from '@/lib/api';
 import Link from 'next/link';
@@ -28,8 +29,8 @@ export default async function DevPage() {
 
   return (
     <>
-      <main className="pt-[160px] bg-background">
-        <div className="flex flex-col md:flex-row gap-6 items-start px-6 md:px-8">
+      <ThemedMain category="dev">
+        <div className="px-6 md:px-8 py-6 flex flex-col md:flex-row gap-6 items-start">
           <div className="w-full md:w-[20%] md:shrink-0 md:max-w-[20%] mr-6 mt-3">
             <div className="w-full sticky top-30">
               <div className="flex flex-row gap-1">
@@ -68,7 +69,7 @@ export default async function DevPage() {
             <DevPostList posts={posts} />
           </div>
         </div>
-      </main >
+      </ThemedMain>
     </>
   );
 }
