@@ -4,16 +4,16 @@ services:
     image: postgres:latest
     container_name: pp_hh_blog_postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,14 +27,15 @@ services:
       dockerfile: Dockerfile.dev
     container_name: pp_hh_blog_backend
     environment:
-      - RAILS_ENV=development
-      - DATABASE_HOST=postgres
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=password
+      - RAILS_ENV=${ENVIRONMENT}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_USERNAME=${POSTGRES_USER}
+      - DATABASE_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_NAME=${POSTGRES_DB}
       - RAILS_MAX_THREADS=5
-      - PORT=3001
+      - PORT=${RAILS_PORT}
     ports:
-      - "3001:3001"
+      - "${EXTERNAL_BACKEND_PORT}:${RAILS_PORT}"
     volumes:
       - ./backend-avo:/rails
       - backend_bundle:/usr/local/bundle
@@ -47,7 +48,7 @@ services:
         rm -f /rails/tmp/pids/server.pid &&
         bundle install &&
         bin/rails db:create db:migrate &&
-        bin/rails server -b 0.0.0.0 -p 3001
+        bin/rails server -b 0.0.0.0 -p ${RAILS_PORT}
       "
     networks:
       - app-network
@@ -59,11 +60,10 @@ services:
       dockerfile: Dockerfile.dev
     container_name: pp_hh_blog_frontend
     environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://backend:3001
-      - API_INTERNAL_URL=http://172.27.0.3:3001
+      - NODE_ENV=${ENVIRONMENT}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     ports:
-      - "3000:3000"
+      - "${EXTERNAL_FRONTEND_PORT}:${NEXT_JS_PORT}"
     volumes:
       - ./frontend-nextjs:/app
       - /app/node_modules
