@@ -19,7 +19,7 @@ interface FilmListProps {
 
 export function FilmList({ posts }: FilmListProps) {
   const { category, mode } = useTheme();
-  const theme = getTheme(category || 'film', mode);
+  const theme = getTheme(category, mode);
 
   // Pair posts for the layout
   const rows = [];
@@ -37,8 +37,8 @@ export function FilmList({ posts }: FilmListProps) {
           <div key={rowIndex} className="flex gap-4 items-stretch md:flex-col md:gap-8">
             {pair[0] && (
               <FullWidthFilmCard
-                post={pair[0]}
                 category={category || 'film'}
+                post={pair[0]}
                 theme={theme}
               />
             )}

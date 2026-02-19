@@ -1,6 +1,6 @@
-import { ThemedMain } from '@/components/layout/ThemedMain';
 import { DevPostList } from '@/components/Dev/DevPostList';
-import { API_ENDPOINTS } from '@/lib/api';
+import { ThemedMain } from '@/components/layout/ThemedMain';
+import { getPostsByCategory } from '@/lib/api';
 import Link from 'next/link';
 
 interface Post {
@@ -11,21 +11,8 @@ interface Post {
   created_at: string;
 }
 
-async function getPosts(): Promise<Post[]> {
-  try {
-    const res = await fetch(API_ENDPOINTS.postsByCategory('dev'), {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    return res.json();
-  } catch (error) {
-    console.error('Failed to fetch posts:', error);
-    return [];
-  }
-}
-
 export default async function DevPage() {
-  const posts = await getPosts();
+  const posts = await getPostsByCategory<Post>('dev');
 
   return (
     <>

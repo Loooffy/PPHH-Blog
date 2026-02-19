@@ -1,8 +1,3 @@
-// API 基礎 URL 配置
-// 在 Docker 環境中，Server-Side 使用環境變數 API_INTERNAL_URL (使用 IP 地址，因為 Next.js fetch 無法解析 Docker 服務名稱)
-// Client-Side 使用 localhost:3001 (因為瀏覽器無法解析 Docker 服務名稱)
-// 本地開發時，預設為 http://localhost:3001
-
 export const getApiBaseUrl = () => {
   // 在服務器端（Server Component），使用環境變數 API_INTERNAL_URL（IP 地址）
   // 這是因為 Next.js 的 fetch API 無法解析 Docker 服務名稱 'backend'
@@ -25,5 +20,18 @@ export const API_ENDPOINTS = {
   postsByCategory: (category: string) => `${getApiBaseUrl()}/api/v1/posts?category=${category}`,
   postsByLayoutType: (layoutType: string) => `${getApiBaseUrl()}/api/v1/posts?layout_type=${layoutType}`,
 };
+
+export async function getPostsByCategory<T = Record<string, unknown>>(category: string): Promise<T[]> {
+  try {
+    const res = await fetch(API_ENDPOINTS.postsByCategory(category), {
+      cache: 'no-store',
+    });
+    if (!res.ok) return [];
+    return res.json();
+  } catch (error) {
+    console.error('Failed to fetch posts:', error);
+    return [];
+  }
+}
 
 export default API_BASE_URL;

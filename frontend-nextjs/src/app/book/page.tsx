@@ -1,6 +1,6 @@
 import { ThemedMain } from '@/components/layout/ThemedMain';
 import { BookList } from '@/components/Book/BookList';
-import { API_ENDPOINTS } from '@/lib/api';
+import { getPostsByCategory } from '@/lib/api';
 
 interface Post {
   id: number;
@@ -13,21 +13,8 @@ interface Post {
   book_author?: string;
 }
 
-async function getPosts(): Promise<Post[]> {
-  try {
-    const res = await fetch(API_ENDPOINTS.postsByCategory('book'), {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    return res.json();
-  } catch (error) {
-    console.error('Failed to fetch posts:', error);
-    return [];
-  }
-}
-
 export default async function BooksPage() {
-  const posts = await getPosts();
+  const posts = await getPostsByCategory<Post>('book');
 
   return (
     <>

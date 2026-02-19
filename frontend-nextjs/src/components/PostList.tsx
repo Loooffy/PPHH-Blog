@@ -22,21 +22,6 @@ export function PostList({ posts }: PostListProps) {
   const { category, mode } = useTheme();
   const theme = getTheme(category, mode);
 
-  const getLayoutClass = () => {
-    switch (theme.layout) {
-      case 'grid':
-        return 'layout-grid';
-      case 'masonry':
-        return 'layout-masonry';
-      case 'single':
-        return 'layout-single';
-      case 'card':
-        return 'layout-card';
-      default:
-        return 'layout-grid';
-    }
-  };
-
   if (posts.length === 0) {
     return (
       <div className="text-center py-12">

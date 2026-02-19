@@ -1,5 +1,5 @@
 import { GamePostList } from '@/components/Game/GamePostList';
-import { API_ENDPOINTS } from '@/lib/api';
+import { getPostsByCategory } from '@/lib/api';
 
 interface Post {
   id: number;
@@ -9,25 +9,12 @@ interface Post {
   created_at: string;
 }
 
-async function getPosts(): Promise<Post[]> {
-  try {
-    const res = await fetch(API_ENDPOINTS.postsByCategory('game'), {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    return res.json();
-  } catch (error) {
-    console.error('Failed to fetch posts:', error);
-    return [];
-  }
-}
-
 export default async function GamePage() {
-  const posts = await getPosts();
+  const posts = await getPostsByCategory<Post>('game');
 
   return (
     <>
-      <main className="pt-[160px] bg-[#c4d4a0]">
+      <main className="pt-[160px]>
         <div>
           <GamePostList posts={posts} />
         </div>
