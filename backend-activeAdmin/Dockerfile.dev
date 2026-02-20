@@ -1,0 +1,39 @@
+FROM ruby:3.2.2-slim
+
+# 安裝系統依賴
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y \
+    build-essential \
+    git \
+    libpq-dev \
+    libvips \
+    libyaml-dev \
+    postgresql-client \
+    curl \
+    nodejs \
+    npm \
+    && rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+WORKDIR /rails
+
+# 安裝 Bundler
+RUN gem install bundler
+
+# 複製 Gemfile
+COPY Gemfile Gemfile.lock ./
+
+# 安裝 gems
+RUN bundle install
+
+# 複製 package.json 並安裝 npm 依賴
+COPY package.json package-lock.json* ./
+RUN npm install || true
+
+# 複製應用程式碼
+COPY . .
+
+# 暴露端口
+EXPOSE 3001
+
+# 預設命令（可以在 docker-compose 中覆蓋）
+CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "3001"]

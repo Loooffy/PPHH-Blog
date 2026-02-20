@@ -23,7 +23,7 @@ services:
   # Rails Backend API 服務
   backend:
     build:
-      context: ./backend-avo
+      context: ./backend-activeAdmin
       dockerfile: Dockerfile.dev
     container_name: pp_hh_blog_backend
     environment:
@@ -37,7 +37,7 @@ services:
     ports:
       - "${EXTERNAL_BACKEND_PORT}:${RAILS_PORT}"
     volumes:
-      - ./backend-avo:/rails
+      - ./backend-activeAdmin:/rails
       - backend_bundle:/usr/local/bundle
       - backend_node_modules:/rails/node_modules
     depends_on:
@@ -47,7 +47,7 @@ services:
       sh -c "
         rm -f /rails/tmp/pids/server.pid &&
         bundle install &&
-        bin/rails db:create db:migrate &&
+        bin/rails db:create db:migrate db:seed &&
         bin/rails server -b 0.0.0.0 -p ${RAILS_PORT}
       "
     networks:

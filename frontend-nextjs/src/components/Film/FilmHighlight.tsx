@@ -2,19 +2,11 @@
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { getTheme } from '@/lib/theme';
+import type { PostListItem } from '@/types/api';
 import { WideFilmCard } from './FilmListItem';
 
-interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  created_at: string;
-  category?: string;
-}
-
 interface FilmHighlightProps {
-  post: Post;
+  post: PostListItem;
 }
 
 export function FilmHighlight({ post }: FilmHighlightProps) {

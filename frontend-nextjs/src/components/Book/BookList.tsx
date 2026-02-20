@@ -1,23 +1,11 @@
 'use client';
 
 import { useTheme } from '@/contexts/ThemeContext';
+import type { PostListItem } from '@/types/api';
 import { BookListItem } from './BookListItem';
 
-interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  created_at: string;
-  category?: string;
-  layout_type?: string;
-  book_title?: string;
-  book_author?: string;
-  book_year?: string;
-}
-
 interface BookListProps {
-  posts: Post[];
+  posts: PostListItem[];
 }
 
 export function BookList({ posts }: BookListProps) {

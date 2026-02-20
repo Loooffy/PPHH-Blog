@@ -1,37 +1,9 @@
 import { BookPost } from '@/components/Book/BookPost';
 import { DevPost } from '@/components/Dev/DevPost';
 import { TrixContent } from '@/components/TrixContent';
-import { API_ENDPOINTS } from '@/lib/api';
+import { getPost } from '@/lib/api';
 import { categoryNames } from '@/lib/theme';
 import Link from 'next/link';
-
-interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  created_at: string;
-  updated_at?: string;
-  series?: string;
-  series_number?: number;
-  category?: string;
-  book_title?: string;
-  book_author?: string;
-  book_year?: string;
-}
-
-async function getPost(slug: string): Promise<Post | null> {
-  try {
-    const res = await fetch(API_ENDPOINTS.post(slug), {
-      cache: 'no-store',
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch (error) {
-    console.error('Failed to fetch post:', error);
-    return null;
-  }
-}
 
 export default async function PostPage({
   params,
@@ -95,7 +67,7 @@ export default async function PostPage({
           <div className="mb-8 text-sm text-text-secondary">
             發佈於：{new Date(post.created_at).toLocaleDateString('zh-TW')}
           </div>
-          <TrixContent content={post.content || ''} />
+          <TrixContent content={post.content ?? ''} />
         </article>
       </main>
     </>

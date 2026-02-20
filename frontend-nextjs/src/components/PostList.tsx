@@ -3,19 +3,11 @@
 import { TrixContent } from '@/components/TrixContent';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getTheme } from '@/lib/theme';
+import type { PostListItem } from '@/types/api';
 import Link from 'next/link';
 
-interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  created_at: string;
-  category?: string;
-}
-
 interface PostListProps {
-  posts: Post[];
+  posts: PostListItem[];
 }
 
 export function PostList({ posts }: PostListProps) {
@@ -56,7 +48,9 @@ export function PostList({ posts }: PostListProps) {
             className="no-underline text-inherit"
           >
             <h3 className="font-heading text-text text-[1.4rem] font-semibold mb-3">{post.title}</h3>
-            <TrixContent content={post.content || ''} className="mt-4" />
+            {post.description && (
+              <TrixContent content={post.description} className="mt-4" />
+            )}
             <div className="mt-4 text-sm text-text-secondary">
               發佈於：{new Date(post.created_at).toLocaleDateString('zh-TW')}
             </div>

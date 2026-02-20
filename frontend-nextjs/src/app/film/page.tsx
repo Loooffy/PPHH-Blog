@@ -3,16 +3,8 @@ import { FilmList } from '@/components/Film/FilmList';
 import { ThemedMain } from '@/components/layout/ThemedMain';
 import { getPostsByCategory } from '@/lib/api';
 
-interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  created_at: string;
-}
-
 export default async function FilmsPage() {
-  const posts = await getPostsByCategory<Post>('film');
+  const posts = await getPostsByCategory('film');
 
   return (
     <>

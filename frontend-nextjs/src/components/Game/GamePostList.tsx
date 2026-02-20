@@ -1,20 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import type { PostListItem } from '@/types/api';
 import { GameListItem } from './GameListItem';
 import { GamePostListLayout } from './GamePostListLayout';
 
-interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  created_at: string;
-  category?: string;
-}
-
 interface GamePostListProps {
-  posts: Post[];
+  posts: PostListItem[];
 }
 
 export function GamePostList({ posts }: GamePostListProps) {

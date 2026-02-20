@@ -2,21 +2,10 @@
 
 import { TrixContent } from '@/components/TrixContent';
 import { useEffect, useRef, useState } from 'react';
-
-interface Post {
-    id: number;
-    title: string;
-    slug: string;
-    content: string;
-    created_at: string;
-    updated_at?: string;
-    series?: string;
-    series_number?: number;
-    category?: string;
-}
+import type { PostDetail } from '@/types/api';
 
 interface DevPostProps {
-    post: Post;
+    post: PostDetail & { series?: string; series_number?: number };
 }
 
 interface TocItem {
@@ -265,7 +254,7 @@ export function DevPost({ post }: DevPostProps) {
 
                 {/* 文章內容 */}
                 <div ref={contentRef} className="prose prose-lg max-w-none">
-                    <TrixContent content={post.content || ''} />
+                    <TrixContent content={post.content ?? ''} />
                 </div>
             </div>
 

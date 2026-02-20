@@ -1,20 +1,12 @@
 'use client';
 
 import { useTheme } from '@/contexts/ThemeContext';
+import type { PostListItem } from '@/types/api';
 import { DevFeaturedPost } from './DevFeaturedPost';
 import { DevListItem } from './DevListItem';
 
-interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  created_at: string;
-  category?: string;
-}
-
 interface DevPostListProps {
-  posts: Post[];
+  posts: PostListItem[];
 }
 
 export function DevPostList({ posts }: DevPostListProps) {

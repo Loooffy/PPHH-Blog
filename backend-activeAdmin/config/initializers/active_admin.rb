@@ -2,16 +2,11 @@ ActiveAdmin.setup do |config|
   # == Site Title
   #
   # Set the title that is displayed on the main layout
-  # for each of the active admin pages.
+  # for each of the active admin pages. Can also be customized
+  # by extracting the _site_header partial into your project
+  # to use your own logo, styles, etc.
   #
   config.site_title = "Backend Active Admin"
-
-  # Set an optional image to be displayed for the header
-  # instead of a string (overrides :site_title)
-  #
-  # Note: Aim for an image that's 21px high so it fits in the header.
-  #
-  # config.site_title_image = "logo.png"
 
   # == Load Paths
   #
@@ -73,8 +68,10 @@ ActiveAdmin.setup do |config|
   # Active Admin will automatically call an authorization
   # method in a before filter of all controller actions to
   # ensure that there is a user with proper rights. You can use
-  # CanCanAdapter or make your own. Please refer to documentation.
+  # CanCanAdapter, PunditAdapter, or make your own. Please
+  # refer to the documentation.
   # config.authorization_adapter = ActiveAdmin::CanCanAdapter
+  # config.authorization_adapter = ActiveAdmin::PunditAdapter
 
   # In case you prefer Pundit over other solutions you can here pass
   # the name of default policy class. This policy will be used in every
@@ -111,7 +108,7 @@ ActiveAdmin.setup do |config|
   # settings configure the location and method used for the link.
   #
   # This setting changes the path where the link points to. If it's
-  # a string, the strings is used as the path. If it's a Symbol, we
+  # a string, the string is used as the path. If it's a Symbol, we
   # will call the method to return the path.
   #
   # Default:
@@ -190,8 +187,6 @@ ActiveAdmin.setup do |config|
   #
   # config.create_another = true
 
-  # Markdown editor (EasyMDE) - add via _head.html.erb partial after running active_admin:views
-
   # == CSV options
   #
   # Set the CSV builder separator
@@ -204,20 +199,11 @@ ActiveAdmin.setup do |config|
   #
   # You can add a navigation menu to be used in your application, or configure a provided menu
   #
-  # To change the default utility navigation to show a link to your website & a logout btn
-  #
-  #   config.namespace :admin do |admin|
-  #     admin.build_menu :utility_navigation do |menu|
-  #       menu.add label: "My Great Website", url: "http://www.mygreatwebsite.com", html_options: { target: :blank }
-  #       admin.add_logout_button_to_menu menu
-  #     end
-  #   end
-  #
   # If you wanted to add a static menu item to the default menu provided:
   #
   #   config.namespace :admin do |admin|
   #     admin.build_menu :default do |menu|
-  #       menu.add label: "My Great Website", url: "http://www.mygreatwebsite.com", html_options: { target: "_blank" }
+  #       menu.add label: "My Great Website", url: "https://mygreatwebsite.example.com", html_options: { target: "_blank" }
   #     end
   #   end
 
@@ -233,11 +219,10 @@ ActiveAdmin.setup do |config|
   #     # Disable the links entirely
   #     admin.download_links = false
   #
-  #     # Only show XML & PDF options
+  #     # Only show XML & PDF options. You must register the format mime type with `Mime::Type.register`.
   #     admin.download_links = [:xml, :pdf]
   #
-  #     # Enable/disable the links based on block
-  #     #   (for example, with cancan)
+  #     # Enable/disable the links based on block (for example, with cancan)
   #     admin.download_links = proc { can?(:view_download_links) }
   #
   #   end
@@ -281,32 +266,10 @@ ActiveAdmin.setup do |config|
   #  ]
   # config.filter_method_for_large_association = '_start'
 
-  # == Head
-  #
-  # You can add your own content to the site head like analytics. Make sure
-  # you only pass content you trust.
-  #
-  # config.head = ''.html_safe
-
-  # == Footer
-  #
-  # By default, the footer shows the current Active Admin version. You can
-  # override the content of the footer here.
-  #
-  # config.footer = 'my custom footer text'
-
   # == Sorting
   #
   # By default ActiveAdmin::OrderClause is used for sorting logic
   # You can inherit it with own class and inject it for all resources
   #
   # config.order_clause = MyOrderClause
-
-  # == Webpacker
-  #
-  # By default, Active Admin uses Sprocket's asset pipeline.
-  # You can switch to using Webpacker here.
-  #
-  # config.use_webpacker = true
-  # config.browser_support = nil
 end

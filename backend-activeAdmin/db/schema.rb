@@ -11,13 +11,16 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.2].define(version: 2026_02_20_054252) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
     t.string "resource_type"
-    t.integer "resource_id"
+    t.bigint "resource_id"
     t.string "author_type"
-    t.integer "author_id"
+    t.bigint "author_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author"
@@ -46,8 +49,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_20_054252) do
   end
 
   create_table "post_tags", force: :cascade do |t|
-    t.integer "post_id", null: false
-    t.integer "tag_id", null: false
+    t.bigint "post_id", null: false
+    t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["post_id", "tag_id"], name: "index_post_tags_on_post_id_and_tag_id", unique: true
@@ -56,9 +59,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_20_054252) do
   end
 
   create_table "posts", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "author_id"
-    t.integer "director_id"
+    t.bigint "user_id"
+    t.bigint "author_id"
+    t.bigint "director_id"
     t.string "type", null: false
     t.string "title"
     t.string "description"

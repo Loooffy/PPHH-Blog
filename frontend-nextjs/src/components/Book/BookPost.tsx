@@ -3,22 +3,18 @@
 import { TrixContent } from '@/components/TrixContent';
 import Image from 'next/image';
 import { useState } from 'react';
-
-interface Post {
-    id: number;
-    title: string;
-    slug: string;
-    content: string;
-    created_at: string;
-    updated_at?: string;
-    category?: string;
-    book_title?: string;
-    book_author?: string;
-    book_year?: string;
-}
+import type { Person } from '@/types/api';
 
 interface BookPostProps {
-    post: Post;
+    post: {
+        id: number;
+        title: string;
+        content: string | null;
+        created_at: string;
+        updated_at?: string;
+        author?: Person | null;
+        year?: number | null;
+    };
 }
 
 const defaultCoverImage =
@@ -59,14 +55,19 @@ function removeImagesFromContent(content: string): string {
     return content.replace(/<img[^>]*>/gi, '');
 }
 
+function getAuthorName(author: BookPostProps['post']['author']): string {
+    if (!author) return '';
+    return typeof author === 'object' ? (author.name ?? '') : String(author);
+}
+
 export function BookPost({ post }: BookPostProps) {
     const [imageError, setImageError] = useState(false);
-    const bookTitle = post.book_title || post.title;
-    const bookAuthor = post.book_author || '';
-    const bookYear = post.book_year || '';
-    const coverImageUrl = extractFirstImageUrl(post.content) || defaultCoverImage;
+    const bookTitle = post.title;
+    const bookAuthor = getAuthorName(post.author);
+    const bookYear = post.year != null ? String(post.year) : '';
+    const coverImageUrl = extractFirstImageUrl(post.content ?? '') || defaultCoverImage;
     const displayImage = imageError ? defaultCoverImage : coverImageUrl;
-    const contentWithoutImages = removeImagesFromContent(post.content);
+    const contentWithoutImages = removeImagesFromContent(post.content ?? '');
     const updatedAt = post.updated_at || post.created_at;
 
     return (

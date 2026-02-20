@@ -1,18 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-
-interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  created_at: string;
-  category?: string;
-}
+import type { PostListItem } from '@/types/api';
 
 interface DevListItemProps {
-  post: Post;
+  post: PostListItem;
   category: string;
   isLast: boolean;
 }

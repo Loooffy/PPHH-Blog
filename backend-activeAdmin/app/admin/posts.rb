@@ -30,7 +30,7 @@ ActiveAdmin.register Post do
   filter :status
   filter :published_at
   filter :created_at
-  filter :tags_id_eq, as: :select, collection: Tag.pluck(:name, :id), label: "Tag"
+  filter :tags_id_eq, as: :select, collection: proc { Tag.pluck(:name, :id) }, label: "Tag"
 
   form do |f|
     f.inputs "Post" do
@@ -80,7 +80,8 @@ ActiveAdmin.register Post do
     def sync_post_status_params!
       params[:post] ||= {}
       if params[:post][:status] == "published"
-        params[:post][:published_at] = Time.current if resource&.published_at.blank?
+        # For create: always set. For update: only set if not already published
+        params[:post][:published_at] = Time.current if action_name != "update" || resource.published_at.blank?
       else
         params[:post][:published_at] = nil
       end

@@ -3,16 +3,8 @@ import { ThemedMain } from '@/components/layout/ThemedMain';
 import { getPostsByCategory } from '@/lib/api';
 import Link from 'next/link';
 
-interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  created_at: string;
-}
-
 export default async function DevPage() {
-  const posts = await getPostsByCategory<Post>('dev');
+  const posts = await getPostsByCategory('dev');
 
   return (
     <>

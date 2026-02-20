@@ -2,19 +2,11 @@
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { getTheme } from '@/lib/theme';
+import type { PostListItem } from '@/types/api';
 import { FullWidthFilmCard, WideFilmCard } from './FilmListItem';
 
-interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  created_at: string;
-  category?: string;
-}
-
 interface FilmListProps {
-  posts: Post[];
+  posts: PostListItem[];
 }
 
 export function FilmList({ posts }: FilmListProps) {

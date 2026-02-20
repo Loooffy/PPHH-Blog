@@ -3,47 +3,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-
-interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  created_at: string;
-  category?: string;
-  layout_type?: string;
-  book_title?: string;
-  book_author?: string;
-  book_year?: string;
-  book_cover_image_url?: string;
-}
+import type { PostListItem } from '@/types/api';
 
 interface BookListItemProps {
-  post: Post;
+  post: PostListItem;
   category: string;
 }
 
-// 從 HTML content 中提取第一張圖片 URL
-function extractFirstImageUrl(content: string): string | null {
-  if (!content) return null;
-
-  // 使用正則表達式尋找 img 標籤
-  const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/i);
-  if (imgMatch && imgMatch[1]) {
-    return imgMatch[1];
-  }
-
-  // 也檢查是否有完整的 img 標籤
-  const imgTagMatch = content.match(/<img[^>]+>/i);
-  if (imgTagMatch) {
-    const srcMatch = imgTagMatch[0].match(/src=["']([^"']+)["']/i);
-    if (srcMatch && srcMatch[1]) {
-      return srcMatch[1];
-    }
-  }
-
-  return null;
-}
+const defaultCoverImage =
+  'https://www.bookrep.com.tw/sites/default/files/products/img/%EF%BC%88%E5%B7%A6%E5%B2%B8%EF%BC%890GGK0261%E4%BE%9D%E6%B5%B7%E4%B9%8B%E4%BA%BA_%E6%9B%B8%E5%B0%81_%E5%B9%B3%E9%9D%A2.jpg';
 
 // 格式化日期為年份
 function formatYear(dateString: string): string {
@@ -51,15 +19,14 @@ function formatYear(dateString: string): string {
   return date.getFullYear().toString();
 }
 
-// Book List Item 組件
+// Book List Item 組件 - PostListItem 無 content，封面使用預設圖
 export function BookListItem({ post, category }: BookListItemProps) {
   const [imageError, setImageError] = useState(false);
-  const bookTitle = post.book_title || post.title;
-  const bookAuthor = post.book_author || '';
-  const bookYear = post.book_year || formatYear(post.created_at);
-  const coverImageUrl =
-    post.book_cover_image_url || extractFirstImageUrl(post.content) || null;
-  const showImage = coverImageUrl && !imageError;
+  const bookTitle = post.title;
+  const bookAuthor = post.author ?? '';
+  const bookYear = post.year != null ? String(post.year) : formatYear(post.created_at);
+  const coverImageUrl = defaultCoverImage;
+  const showImage = !imageError;
 
   return (
     <Link
