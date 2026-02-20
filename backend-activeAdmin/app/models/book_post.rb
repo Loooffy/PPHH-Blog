@@ -1,0 +1,2 @@
+class BookPost < Post
+end

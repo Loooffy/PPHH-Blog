@@ -59,6 +59,9 @@ group :test do
   gem "selenium-webdriver"
 end
 
+# CORS for Next.js / API consumers
+gem "rack-cors"
+
 # ActiveAdmin
 gem "sassc-rails"
 gem "activeadmin"

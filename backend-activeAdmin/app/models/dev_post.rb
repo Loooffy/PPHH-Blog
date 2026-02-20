@@ -1,0 +1,2 @@
+class DevPost < Post
+end

@@ -13,4 +13,11 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  namespace :api do
+    namespace :v1, defaults: { format: :json } do
+      resources :posts, only: [:index, :show], param: :slug
+      resources :tags, only: [:index]
+    end
+  end
 end

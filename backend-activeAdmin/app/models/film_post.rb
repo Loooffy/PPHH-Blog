@@ -1,0 +1,2 @@
+class FilmPost < Post
+end

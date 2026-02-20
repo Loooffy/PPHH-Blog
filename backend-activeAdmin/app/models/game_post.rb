@@ -1,0 +1,2 @@
+class GamePost < Post
+end
