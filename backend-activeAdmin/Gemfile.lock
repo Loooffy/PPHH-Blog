@@ -47,15 +47,14 @@ GEM
       erubi (~> 1.11)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.6)
-    activeadmin (3.4.0)
-      arbre (~> 1.2, >= 1.2.1)
+    activeadmin (4.0.0.beta21)
+      arbre (~> 2.0)
       csv
-      formtastic (>= 3.1)
-      formtastic_i18n (>= 0.4)
-      inherited_resources (~> 1.7)
-      jquery-rails (>= 4.2)
+      formtastic (>= 5.0)
+      formtastic_i18n (>= 0.7)
+      inherited_resources (~> 2.0)
       kaminari (>= 1.2.1)
-      railties (>= 6.1)
+      railties (>= 7.2)
       ransack (>= 4.0)
     activejob (7.2.3)
       activesupport (= 7.2.3)
@@ -90,9 +89,8 @@ GEM
       tzinfo (~> 2.0, >= 2.0.5)
     addressable (2.8.8)
       public_suffix (>= 2.0.2, < 8.0)
-    arbre (1.7.0)
-      activesupport (>= 3.0.0)
-      ruby2_keywords (>= 0.0.2)
+    arbre (2.2.1)
+      activesupport (>= 7.0)
     ast (2.4.3)
     base64 (0.3.0)
     bcrypt (3.1.21)
@@ -116,7 +114,7 @@ GEM
       xpath (~> 3.2)
     cgi (0.5.1)
     concurrent-ruby (1.3.6)
-    connection_pool (2.5.5)
+    connection_pool (3.0.2)
     crass (1.0.6)
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
@@ -139,11 +137,9 @@ GEM
       request_store (>= 1.0)
       ruby2_keywords
     drb (2.2.3)
-    erb (4.0.4)
-      cgi (>= 0.3.3)
+    erb (6.0.1)
     error_highlight (0.7.0)
     erubi (1.13.1)
-    ffi (1.17.3)
     formtastic (5.0.0)
       actionpack (>= 6.0.0)
     formtastic_i18n (0.7.0)
@@ -158,10 +154,10 @@ GEM
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
-    inherited_resources (1.14.0)
-      actionpack (>= 6.0)
+    inherited_resources (2.1.0)
+      actionpack (>= 7.0)
       has_scope (>= 0.6)
-      railties (>= 6.0)
+      railties (>= 7.0)
       responders (>= 2)
     io-console (0.8.2)
     irb (1.17.0)
@@ -172,10 +168,6 @@ GEM
     jbuilder (2.14.1)
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
-    jquery-rails (4.6.1)
-      rails-dom-testing (>= 1, < 3)
-      railties (>= 4.2.0)
-      thor (>= 0.14, < 2.0)
     json (2.18.1)
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
@@ -204,8 +196,8 @@ GEM
     marcel (1.1.0)
     matrix (0.4.3)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.9)
-    minitest (5.27.0)
+    minitest (6.0.1)
+      prism (~> 1.5)
     msgpack (1.8.0)
     net-imap (0.5.13)
       date
@@ -217,8 +209,7 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.5)
-    nokogiri (1.18.10)
-      mini_portile2 (~> 2.8.2)
+    nokogiri (1.19.1-x86_64-linux-gnu)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     parallel (1.27.0)
@@ -290,6 +281,7 @@ GEM
       erb
       psych (>= 4.0.0)
       tsort
+    redcarpet (3.6.1)
     regexp_parser (2.11.3)
     reline (0.6.3)
       io-console (~> 0.5)
@@ -330,14 +322,6 @@ GEM
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.4.1)
-    sassc (2.4.0)
-      ffi (~> 1.9)
-    sassc-rails (2.1.2)
-      railties (>= 4.0.0)
-      sassc (>= 2.0)
-      sprockets (> 3.0)
-      sprockets-rails
-      tilt
     securerandom (0.4.1)
     selenium-webdriver (4.32.0)
       base64 (~> 0.2)
@@ -353,13 +337,11 @@ GEM
       actionpack (>= 6.1)
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
-    sqlite3 (2.8.1)
-      mini_portile2 (~> 2.8.0)
+    sqlite3 (2.8.1-x86_64-linux-gnu)
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.2.0)
     thor (1.5.0)
-    tilt (2.7.0)
     timeout (0.6.0)
     tsort (0.2.0)
     turbo-rails (2.0.23)
@@ -385,13 +367,13 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.6.18)
+    zeitwerk (2.7.5)
 
 PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activeadmin
+  activeadmin (= 4.0.0.beta21)
   bootsnap
   brakeman
   cancancan
@@ -407,8 +389,8 @@ DEPENDENCIES
   pundit
   rack-cors
   rails (~> 7.2.3)
+  redcarpet
   rubocop-rails-omakase
-  sassc-rails
   selenium-webdriver
   sprockets-rails
   sqlite3 (>= 1.4)
@@ -418,4 +400,4 @@ DEPENDENCIES
   web-console
 
 BUNDLED WITH
-   2.3.7
+   2.4.10

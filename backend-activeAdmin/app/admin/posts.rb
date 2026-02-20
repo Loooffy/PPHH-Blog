@@ -41,7 +41,7 @@ ActiveAdmin.register Post do
       f.input :title
       f.input :description
       f.input :slug
-      f.input :content, as: :text
+      f.input :content, as: :markdown_editor
       f.input :year
       f.input :rating
       f.input :status
@@ -58,7 +58,9 @@ ActiveAdmin.register Post do
       row :description
       row :slug
       row :content do |post|
-        simple_format(post.content)
+        div class: "markdown-content" do
+          text_node helpers.render_markdown(post.content)
+        end
       end
       row :user
       row :author

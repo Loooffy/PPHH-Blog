@@ -62,9 +62,11 @@ end
 # CORS for Next.js / API consumers
 gem "rack-cors"
 
-# ActiveAdmin
-gem "sassc-rails"
-gem "activeadmin"
+# Markdown parsing
+gem "redcarpet"
+
+# ActiveAdmin v4 (requires Ruby >= 3.2)
+gem "activeadmin", "4.0.0.beta21"
 gem "devise", "~> 4.0"
 gem "cancancan"
 gem "draper"
