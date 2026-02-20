@@ -62,6 +62,9 @@ end
 # CORS for Next.js / API consumers
 gem "rack-cors"
 
+# API request/response validation with OpenAPI
+gem "committee"
+
 # Markdown parsing
 gem "redcarpet"
 

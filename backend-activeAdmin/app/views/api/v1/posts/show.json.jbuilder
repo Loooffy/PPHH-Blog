@@ -11,13 +11,17 @@ json.rating @post.rating
 json.published_at @post.published_at
 json.created_at @post.created_at
 json.updated_at @post.updated_at
-json.author do
-  json.id @post.author&.id
-  json.name @post.author&.name
+if @post.is_a?(BookPost)
+  json.author do
+    json.id @post.author&.id
+    json.name @post.author&.name
+  end
 end
-json.director do
-  json.id @post.director&.id
-  json.name @post.director&.name
+if @post.is_a?(FilmPost)
+  json.director do
+    json.id @post.director&.id
+    json.name @post.director&.name
+  end
 end
 json.tags @post.tags do |tag|
   json.id tag.id

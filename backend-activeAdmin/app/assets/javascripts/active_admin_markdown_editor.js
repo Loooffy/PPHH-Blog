@@ -12,7 +12,7 @@
           autosave: { enabled: false },
           toolbar: [
             'bold', 'italic', 'heading', '|',
-            'quote', 'unordered-list', 'ordered-list', '|',
+            'quote', 'code', 'unordered-list', 'ordered-list', '|',
             'link', 'image', '|',
             'preview', 'side-by-side', 'fullscreen', '|',
             'guide'

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register Post do
-  permit_params :user_id, :author_id, :director_id, :type, :title, :description, :slug, :content,
+  permit_params :user_id, :author_id, :director_id, :type, :title, :description, :content,
                 :year, :rating, :status, :published_at, tag_ids: []
 
   scope :all, default: true
@@ -40,15 +40,77 @@ ActiveAdmin.register Post do
       f.input :director, collection: Director.all, label: "Director (for FilmPost)"
       f.input :title
       f.input :description
-      f.input :slug
       f.input :content, as: :markdown_editor
       f.input :year
       f.input :rating
-      f.input :status
-      f.input :published_at
-      f.input :tags, as: :select, multiple: true, collection: Tag.all
+      f.input :status, as: :select, collection: [["Draft", "draft"], ["Published", "published"]], include_blank: false
+      f.input :tags, as: :check_boxes, collection: Tag.pluck(:name, :id)
     end
-    f.actions
+    f.actions do
+      f.action :submit, label: "Save"
+      f.cancel_link
+    end
+  end
+
+  controller do
+    def build_resource
+      resource = super
+      if resource.new_record?
+        resource.user ||= User.find_by(email: current_admin_user&.email)
+      end
+      resource
+    end
+
+    def create
+      sync_post_status_params!
+      create! do |success, failure|
+        success.html { redirect_to admin_post_path(resource), notice: "已儲存！" }
+      end
+    end
+
+    def update
+      sync_post_status_params!
+      update! do |success, failure|
+        success.html { redirect_to admin_post_path(resource), notice: "已儲存！" }
+      end
+    end
+
+    private
+
+    def sync_post_status_params!
+      params[:post] ||= {}
+      if params[:post][:status] == "published"
+        params[:post][:published_at] = Time.current if resource&.published_at.blank?
+      else
+        params[:post][:published_at] = nil
+      end
+    end
+  end
+
+  action_item :publish, only: :show, if: proc { resource.status != "published" } do
+    link_to "Publish",
+            publish_admin_post_path(resource),
+            method: :put,
+            data: { confirm: "確定要發布此文章嗎？" },
+            class: "action-item-button"
+  end
+
+  action_item :unpublish, only: :show, if: proc { resource.status == "published" } do
+    link_to "Unpublish",
+            unpublish_admin_post_path(resource),
+            method: :put,
+            data: { confirm: "確定要取消發布此文章嗎？" },
+            class: "action-item-button"
+  end
+
+  member_action :publish, method: :put do
+    resource.update!(status: "published", published_at: Time.current)
+    redirect_to admin_post_path(resource), notice: "已成功發布！"
+  end
+
+  member_action :unpublish, method: :put do
+    resource.update!(status: "draft", published_at: nil)
+    redirect_to admin_post_path(resource), notice: "已取消發布！"
   end
 
   show do

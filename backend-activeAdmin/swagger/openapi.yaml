@@ -1,0 +1,191 @@
+openapi: 3.0.3
+info:
+  title: PPHH Blog API
+  description: API for PPHH Blog - posts and tags
+  version: 1.0.0
+
+servers:
+  - url: /api/v1
+    description: API v1 base path
+
+paths:
+  /posts:
+    get:
+      summary: List published posts
+      operationId: listPosts
+      parameters:
+        - name: type
+          in: query
+          description: Filter by post type (DevPost, GamePost, BookPost, FilmPost)
+          required: false
+          schema:
+            type: string
+            enum: [DevPost, GamePost, BookPost, FilmPost]
+        - name: tag_id
+          in: query
+          description: Filter by tag ID
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          description: Items per page
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: List of published posts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostsListResponse"
+
+  /posts/{slug}:
+    get:
+      summary: Get a single post by slug
+      operationId: getPost
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Post details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostDetail"
+        "404":
+          description: Post not found
+
+  /tags:
+    get:
+      summary: List all tags
+      operationId: listTags
+      responses:
+        "200":
+          description: List of tags
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagsListResponse"
+
+components:
+  schemas:
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Ruby"
+
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+          nullable: true
+        name:
+          type: string
+          nullable: true
+
+    PostListItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [DevPost, GamePost, BookPost, FilmPost]
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        slug:
+          type: string
+        year:
+          type: integer
+          nullable: true
+        rating:
+          type: number
+          nullable: true
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        author:
+          type: string
+          nullable: true
+          description: "Author name (BookPost only)"
+        director:
+          type: string
+          nullable: true
+          description: "Director name (FilmPost only)"
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tag"
+
+    PostDetail:
+      allOf:
+        - $ref: "#/components/schemas/PostListItem"
+        - type: object
+          properties:
+            content:
+              type: string
+              nullable: true
+            updated_at:
+              type: string
+              format: date-time
+            author:
+              $ref: "#/components/schemas/Person"
+            director:
+              $ref: "#/components/schemas/Person"
+
+    PaginationMeta:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        total_pages:
+          type: integer
+        total_count:
+          type: integer
+        per_page:
+          type: integer
+
+    PostsListResponse:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: "#/components/schemas/PostListItem"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    TagsListResponse:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tag"

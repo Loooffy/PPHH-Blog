@@ -5,3 +5,45 @@
 @utility ring-opacity-5 {
   --tw-ring-opacity: 0.05;
 }
+
+/* EasyMDE overrides: ensure preview, fullscreen, side-by-side display above ActiveAdmin UI (z-50) */
+.EasyMDEContainer .CodeMirror-fullscreen {
+  z-index: 9998 !important;
+}
+
+.EasyMDEContainer .editor-toolbar.fullscreen {
+  z-index: 9999 !important;
+}
+
+.EasyMDEContainer .editor-preview-side,
+.EasyMDEContainer .editor-preview-active-side {
+  z-index: 9999 !important;
+}
+
+.EasyMDEContainer .editor-preview-full,
+.EasyMDEContainer .editor-preview-active {
+  z-index: 9999 !important;
+}
+
+/* EasyMDE toolbar: fix hover/active - bg and icon color were same, now contrasting */
+.EasyMDEContainer .editor-toolbar button:hover,
+.EasyMDEContainer .editor-toolbar button.active {
+  background-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+.EasyMDEContainer .editor-toolbar button:hover i,
+.EasyMDEContainer .editor-toolbar button.active i {
+  color: #334155 !important;
+}
+
+.dark .EasyMDEContainer .editor-toolbar button:hover,
+.dark .EasyMDEContainer .editor-toolbar button.active {
+  background-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .EasyMDEContainer .editor-toolbar button:hover i,
+.dark .EasyMDEContainer .editor-toolbar button.active i {
+  color: #f1f5f9 !important;
+}
