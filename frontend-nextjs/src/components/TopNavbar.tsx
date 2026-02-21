@@ -69,7 +69,7 @@ export function TopNavbar() {
       className={`fixed top-0 left-0 right-0 z-1100 min-h-[110px] overflow-visible border-b border-border md:min-h-[110px] ${getNavbarBgClassName()}`}
     >
       {/* 底層 (z-0)：Logo + ThemeToggle，高度與 nav 一致 */}
-      <div className="fixed top-0 left-0 right-0 z-0 flex min-h-[110px] items-center justify-between px-6 py-4 md:min-h-[110px] md:px-4">
+      <div className="fixed top-0 left-0 right-0 z-0 flex min-h-[110px] items-center justify-between px-2 py-4 md:min-h-[110px] md:px-8">
         <Link href="/" className="flex items-center transition-opacity duration-300 hover:opacity-80">
           <Image
             src={logoSrc}
@@ -87,14 +87,14 @@ export function TopNavbar() {
 
       {/* 上層 (z-10)：類別導航標籤，z 方向疊在 logo/toggle 之上，pointer-events-none 讓空白處可穿透點擊 */}
       <div className="pointer-events-none fixed top-0 left-0 right-0 z-10 flex min-h-[110px] items-center justify-end px-6 py-4 md:min-h-[110px] md:px-4">
-        <div className="pointer-events-auto mr-14 flex min-w-0 shrink items-center justify-end gap-2 md:mr-12 md:gap-1">
+        <div className="pointer-events-auto mr-14 flex min-w-0 shrink items-center justify-end gap-1 md:mr-12 md:gap-1">
           {categories.map((cat) => {
             const isActive = activeCategory === cat;
             return (
               <Link
                 key={cat}
                 href={categoryRoutes[cat]}
-                className={`group flex min-w-0 shrink flex-col items-center cursor-pointer transition-all duration-300 text-text-secondary font-bold text-xs px-2 py-1 sm:text-sm sm:px-3 sm:py-1.5 md:px-4 md:py-2 hover:text-text ${isActive ? 'text-text' : ''
+                className={`group flex min-w-0 shrink flex-col items-center cursor-pointer transition-all duration-300 text-text-secondary font-bold text-xs px-2 py-1 sm:text-sm sm:px-3 sm:py-1.5 md:px-1 md:py-2 hover:text-text ${isActive ? 'text-text' : ''
                   }`}
                 onClick={() => setCategory(cat)}
               >

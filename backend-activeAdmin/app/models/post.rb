@@ -18,6 +18,7 @@ class Post < ApplicationRecord
   accepts_nested_attributes_for :series_posts, allow_destroy: true, reject_if: ->(attrs) { attrs["series_id"].blank? }
 
   validates :slug, uniqueness: true, allow_blank: true
+  validates :title, presence: true
   validates :post_type, presence: true
 
   before_validation :set_default_slug, on: :create

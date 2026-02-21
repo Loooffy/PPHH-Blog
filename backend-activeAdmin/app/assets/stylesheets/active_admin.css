@@ -25,25 +25,52 @@
   z-index: 9999 !important;
 }
 
-/* EasyMDE toolbar: fix hover/active - bg and icon color were same, now contrasting */
-.EasyMDEContainer .editor-toolbar button:hover,
-.EasyMDEContainer .editor-toolbar button.active {
+/* EasyMDE toolbar: clear inactive / hover / active states for light theme */
+.EasyMDEContainer .editor-toolbar button {
+  background-color: transparent !important;
+  color: #64748b !important;
+}
+.EasyMDEContainer .editor-toolbar button i {
+  color: #64748b !important;
+}
+
+.EasyMDEContainer .editor-toolbar button:hover {
   background-color: #e2e8f0 !important;
   color: #334155 !important;
 }
-
-.EasyMDEContainer .editor-toolbar button:hover i,
-.EasyMDEContainer .editor-toolbar button.active i {
+.EasyMDEContainer .editor-toolbar button:hover i {
   color: #334155 !important;
 }
 
-.dark .EasyMDEContainer .editor-toolbar button:hover,
-.dark .EasyMDEContainer .editor-toolbar button.active {
+.EasyMDEContainer .editor-toolbar button.active {
+  background-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+.EasyMDEContainer .editor-toolbar button.active i {
+  color: #1e293b !important;
+}
+
+/* EasyMDE toolbar: dark theme */
+.dark .EasyMDEContainer .editor-toolbar button {
+  background-color: transparent !important;
+  color: #94a3b8 !important;
+}
+.dark .EasyMDEContainer .editor-toolbar button i {
+  color: #94a3b8 !important;
+}
+
+.dark .EasyMDEContainer .editor-toolbar button:hover {
   background-color: #475569 !important;
   color: #f1f5f9 !important;
 }
-
-.dark .EasyMDEContainer .editor-toolbar button:hover i,
-.dark .EasyMDEContainer .editor-toolbar button.active i {
+.dark .EasyMDEContainer .editor-toolbar button:hover i {
   color: #f1f5f9 !important;
+}
+
+.dark .EasyMDEContainer .editor-toolbar button.active {
+  background-color: #64748b !important;
+  color: #f8fafc !important;
+}
+.dark .EasyMDEContainer .editor-toolbar button.active i {
+  color: #f8fafc !important;
 }

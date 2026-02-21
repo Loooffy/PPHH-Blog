@@ -37,7 +37,7 @@ ActiveAdmin.register Post do
   form do |f|
     f.inputs "Post" do
       f.input :post_type, as: :select, collection: PostType.pluck(:name, :id), include_blank: false
-      f.input :title
+      f.input :title, required: true
       f.input :description
       f.input :content, as: :markdown_editor
       f.input :user
