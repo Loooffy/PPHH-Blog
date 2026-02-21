@@ -22,6 +22,7 @@ export interface PostListItem {
   title: string;
   description: string | null;
   slug: string;
+  image_url: string | null;
   year: number | null;
   rating: number | null;
   published_at: string | null;

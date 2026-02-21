@@ -10,7 +10,6 @@ interface FilmCardProps {
 }
 
 export function WideFilmCard({ post, category, theme }: FilmCardProps) {
-  const defaultImage = '/film-poster-1.png';
   const director = post.director ?? '';
   const year = post.year ?? new Date(post.created_at).getFullYear();
 
@@ -58,13 +57,15 @@ export function WideFilmCard({ post, category, theme }: FilmCardProps) {
             </div>
           </div>
 
-          <div className="overflow-hidden h-full md:w-auto md:flex-none md:h-auto md:aspect-[1.1/1]">
-            <img
-              src={defaultImage}
-              alt={post.title}
-              className="w-auto h-full object-cover"
-            />
-          </div>
+          {post.image_url && (
+            <div className="overflow-hidden h-full md:w-auto md:flex-none md:h-auto md:aspect-[1.1/1]">
+              <img
+                src={post.image_url}
+                alt={post.title}
+                className="w-auto h-full object-cover"
+              />
+            </div>
+          )}
         </div>
       </Link>
     </article>
@@ -72,7 +73,6 @@ export function WideFilmCard({ post, category, theme }: FilmCardProps) {
 }
 
 export function NarrowFilmCard({ post, category, theme }: FilmCardProps) {
-  const defaultImage = '/film-poster-1.png';
   const director = post.director ?? '';
   const year = post.year ?? new Date(post.created_at).getFullYear();
 
@@ -80,14 +80,15 @@ export function NarrowFilmCard({ post, category, theme }: FilmCardProps) {
     <article className="w-1/4 min-w-0 shrink-0 transition-transform duration-300 hover:-translate-y-1">
       <Link href={`/${category}/${post.slug || post.id}`} className="no-underline text-inherit block h-full">
         <div className="h-[280px] flex flex-col gap-4">
-          <div className="overflow-hidden rounded-sm">
-            <img
-              src={defaultImage}
-              alt={post.title}
-              // className="w-full h-full object-cover"
-              className="w-auto h-auto object-cover"
-            />
-          </div>
+          {post.image_url && (
+            <div className="overflow-hidden rounded-sm">
+              <img
+                src={post.image_url}
+                alt={post.title}
+                className="w-auto h-auto object-cover"
+              />
+            </div>
+          )}
 
           <div className="flex flex-col gap-1">
             <h2
@@ -122,7 +123,6 @@ export function NarrowFilmCard({ post, category, theme }: FilmCardProps) {
 }
 
 export function FullWidthFilmCard({ post, category, theme }: FilmCardProps) {
-  const defaultImage = '/film-poster-2.png';
   const director = post.director ?? '';
   const year = post.year ?? new Date(post.created_at).getFullYear();
 
@@ -130,13 +130,15 @@ export function FullWidthFilmCard({ post, category, theme }: FilmCardProps) {
     <article className="flex-1 transition-transform duration-300 hover:-translate-y-1">
       <Link href={`/${category}/${post.slug || post.id}`} className="no-underline text-inherit block h-full">
         <div className="flex flex-col gap-8">
-          <div className="aspect-[1.5/1] overflow-hidden rounded-sm">
-            <img
-              src={defaultImage}
-              alt={post.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
+          {post.image_url && (
+            <div className="aspect-[1.5/1] overflow-hidden rounded-sm">
+              <img
+                src={post.image_url}
+                alt={post.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
 
           <div className="flex gap-8 items-start pl-2">
             <div className="flex flex-col gap-4 min-w-[120px]">
