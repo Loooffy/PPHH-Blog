@@ -21,15 +21,15 @@ export function DevFeaturedPost({ post, category }: DevFeaturedPostProps) {
         href={`/${category}/${post.slug || post.id}`}
         className="block no-underline text-inherit"
       >
-        <div className="flex flex-col gap-3">
-          <div className="flex items-baseline justify-between gap-6 w-full">
-            <div flex-row>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-baseline justify-between gap-1 w-full">
+            <div flex-row className="w-4/5">
               <h2 className="text-[2rem] font-bold leading-[1.2] text-text mb-1 flex-1 min-w-0">
                 {post.title}
               </h2>
               {post.description && (
                 <div className="w-4/5 mt-4">
-                  <span className="w-1/2 text-[1.1rem] font-normal text-text-secondary shrink-0">
+                  <span className="w-full text-[1.1rem] font-normal text-text-secondary shrink-0">
                     {post.description}
                   </span>
                 </div>

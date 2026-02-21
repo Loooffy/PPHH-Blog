@@ -14,12 +14,12 @@ ActiveAdmin.register Post do
   index do
     selectable_column
     id_column
-    column :post_type
     column :title
     column :user
     column :status
     column :published_at
-    column :created_at
+    column :post_type
+    column :slug
     actions
   end
 
