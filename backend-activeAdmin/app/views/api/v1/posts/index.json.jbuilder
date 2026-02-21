@@ -8,6 +8,7 @@ json.posts @posts do |post|
   json.slug post.slug
   json.year post.year
   json.rating post.rating
+  json.image_url post.image_url
   json.published_at post.published_at
   json.created_at post.created_at
   json.author post.author&.name if post.book_post?

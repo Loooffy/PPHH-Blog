@@ -3,7 +3,7 @@
 module Api
   module V1
     class PostsController < BaseController
-      before_action :set_post, only: [:show]
+      before_action :set_post, only: [:show, :update]
 
       def index
         @posts = Post.where(status: "published")
@@ -23,10 +23,50 @@ module Api
         end
       end
 
+      def create
+        @post = Post.new(post_params.except(:image_file))
+        process_image_upload!(@post)
+        if @post.save
+          render :show, status: :created
+        else
+          render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+
+      def update
+        return render json: { error: "Not found" }, status: :not_found if @post.blank?
+
+        @post.assign_attributes(post_params.except(:image_file))
+        process_image_upload!(@post)
+        if @post.save
+          render :show
+        else
+          render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+
       private
 
       def set_post
         @post = Post.includes(:tags, :series_posts => :series).find_by(slug: params[:slug])
+      end
+
+      def post_params
+        params.require(:post).permit(
+          :user_id, :author_id, :director_id, :post_type_id,
+          :title, :description, :content, :year, :rating, :status, :published_at,
+          :image_file, tag_ids: [], series_posts_attributes: [:id, :series_id, :position, :_destroy]
+        )
+      end
+
+      def process_image_upload!(post)
+        image_file = params[:post]&.dig(:image_file)
+        return if image_file.blank?
+
+        key = R2StorageService.new.upload(image_file)
+        post.image_key = key
+      rescue R2StorageService::UploadError => e
+        post.errors.add(:image_file, e.message)
       end
     end
   end

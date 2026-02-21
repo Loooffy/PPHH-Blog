@@ -2,7 +2,7 @@
 
 ActiveAdmin.register Post do
   permit_params :user_id, :author_id, :director_id, :post_type_id, :title, :description, :content,
-                :year, :rating, :status, :published_at, tag_ids: [],
+                :year, :rating, :status, :published_at, :image_key, tag_ids: [],
                 series_posts_attributes: [:id, :series_id, :position, :_destroy]
 
   scope :all, default: true
@@ -34,10 +34,11 @@ ActiveAdmin.register Post do
   filter :tags_id_eq, as: :select, collection: proc { Tag.includes(:post_type).map { |t| ["#{t.name} (#{t.post_type.name})", t.id] } }, label: "Tag"
   filter :series_id, as: :select, collection: proc { Series.pluck(:series_name, :id) }, label: "Series"
 
-  form do |f|
+    form do |f|
     f.inputs "Post" do
       f.input :post_type, as: :select, collection: PostType.pluck(:name, :id), include_blank: false
       f.input :title, required: true
+      f.input :image_file, as: :file, hint: f.object.image_url.present? ? image_tag(f.object.image_url, height: 100) : "上傳圖片至 R2，由 Cloudflare 輸出"
       f.input :description
       f.input :content, as: :markdown_editor
       f.input :user
@@ -69,6 +70,7 @@ ActiveAdmin.register Post do
 
     def create
       sync_post_status_params!
+      process_image_upload!
       create! do |success, failure|
         success.html { redirect_to admin_post_path(resource), notice: "已儲存！" }
       end
@@ -76,6 +78,7 @@ ActiveAdmin.register Post do
 
     def update
       sync_post_status_params!
+      process_image_upload!
       update! do |success, failure|
         success.html { redirect_to admin_post_path(resource), notice: "已儲存！" }
       end
@@ -91,6 +94,16 @@ ActiveAdmin.register Post do
       else
         params[:post][:published_at] = nil
       end
+    end
+
+    def process_image_upload!
+      image_file = params[:post]&.dig(:image_file)
+      return if image_file.blank?
+
+      key = R2StorageService.new.upload(image_file)
+      params[:post][:image_key] = key
+    rescue R2StorageService::UploadError => e
+      flash[:error] = "圖片上傳失敗: #{e.message}"
     end
   end
 
@@ -136,6 +149,9 @@ ActiveAdmin.register Post do
       row :director
       row :year
       row :rating
+      row :image_url do |post|
+        post.image_url.present? ? image_tag(post.image_url, height: 150) : "無"
+      end
       row :status
       row :published_at
       row :created_at
