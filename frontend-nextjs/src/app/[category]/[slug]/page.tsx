@@ -1,5 +1,6 @@
 import { BookPost } from '@/components/Book/BookPost';
 import { DevPost } from '@/components/Dev/DevPost';
+import { FilmPost } from '@/components/Film/FilmPost';
 import { TrixContent } from '@/components/TrixContent';
 import { getPost } from '@/lib/api';
 import { categoryNames } from '@/lib/theme';
@@ -47,6 +48,22 @@ export default async function PostPage({
             ← 返回 {categoryName}
           </Link>
           <BookPost post={post} />
+        </main>
+      </>
+    );
+  }
+
+  if (category === 'film') {
+    return (
+      <>
+        <main className="main-content relative pt-[160px]">
+          <Link
+            href={`/${categoryPath}`}
+            className="absolute top-10 left-12 z-10 text-primary no-underline hover:text-secondary"
+          >
+            ← 返回 {categoryName}
+          </Link>
+          <FilmPost post={post} />
         </main>
       </>
     );
