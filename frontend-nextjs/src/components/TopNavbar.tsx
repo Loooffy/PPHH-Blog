@@ -16,6 +16,13 @@ export function TopNavbar() {
 
   const categories: Category[] = ['dev', 'game', 'film', 'book'];
 
+  const categoryImages: Record<Category, string> = {
+    dev: '/logging.png',
+    game: '/game.png',
+    film: '/pinkman.png',
+    book: '/book.png',
+  };
+
   // 根據路徑自動設定類別
   React.useEffect(() => {
     if (pathname === '/' || pathname.startsWith('/dev')) {
@@ -57,86 +64,54 @@ export function TopNavbar() {
     return 'bg-surface';
   };
 
-  const getNavbarBgStyle = () => {
-    if (pathname.startsWith('/game')) {
-      return '#3bcbe5';
-    }
-    return 'var(--color-surface)';
-  };
-
   return (
-    <nav className={`fixed top-0 left-0 right-0 ${getNavbarBgClassName()} border-b border-border flex items-center justify-between px-6 py-4 z-1100 min-h-[110px] md:min-h-[110px] md:px-4`}>
-      <Link href="/" className="flex items-center transition-opacity duration-300 hover:opacity-80">
-        <Image
-          src={logoSrc}
-          alt="Blog Logo"
-          width={40}
-          height={40}
-          priority
-          className="w-[84px] object-contain md:w-16"
-        />
-      </Link>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-1100 min-h-[110px] overflow-visible border-b border-border md:min-h-[110px] ${getNavbarBgClassName()}`}
+    >
+      {/* 底層 (z-0)：Logo + ThemeToggle，高度與 nav 一致 */}
+      <div className="fixed top-0 left-0 right-0 z-0 flex min-h-[110px] items-center justify-between px-6 py-4 md:min-h-[110px] md:px-4">
+        <Link href="/" className="flex items-center transition-opacity duration-300 hover:opacity-80">
+          <Image
+            src={logoSrc}
+            alt="Blog Logo"
+            width={40}
+            height={40}
+            priority
+            className="w-[84px] object-contain md:w-16"
+          />
+        </Link>
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
+        </div>
+      </div>
 
-      {/* 類別導航標籤 */}
-      <div className="flex items-center gap-2 md:gap-1">
-        {categories.map((cat) => {
-          const isActive = activeCategory === cat;
-          return (
-            <Link
-              key={cat}
-              href={categoryRoutes[cat]}
-              className={`group px-4 py-2 cursor-pointer transition-all duration-300 text-text-secondary font-bold text-sm md:text-xs md:px-2 md:py-1 hover:text-text ${isActive ? 'text-text' : ''
-                }`}
-              onClick={() => setCategory(cat)}
-            >
-              {cat === 'dev' ? (
-                <span className="absolute bottom-[-35px] left-[120px] z-999 navbar-float">
+      {/* 上層 (z-10)：類別導航標籤，z 方向疊在 logo/toggle 之上，pointer-events-none 讓空白處可穿透點擊 */}
+      <div className="pointer-events-none fixed top-0 left-0 right-0 z-10 flex min-h-[110px] items-center justify-end px-6 py-4 md:min-h-[110px] md:px-4">
+        <div className="pointer-events-auto mr-14 flex min-w-0 shrink items-center justify-end gap-2 md:mr-12 md:gap-1">
+          {categories.map((cat) => {
+            const isActive = activeCategory === cat;
+            return (
+              <Link
+                key={cat}
+                href={categoryRoutes[cat]}
+                className={`group flex min-w-0 shrink flex-col items-center cursor-pointer transition-all duration-300 text-text-secondary font-bold text-xs px-2 py-1 sm:text-sm sm:px-3 sm:py-1.5 md:px-4 md:py-2 hover:text-text ${isActive ? 'text-text' : ''
+                  }`}
+                onClick={() => setCategory(cat)}
+              >
+                <span>{categoryNames[cat]}</span>
+                <span className="navbar-float mt-1 hidden sm:block">
                   <Image
-                    src="/logging.png"
-                    alt={categoryNames[cat]}
-                    width={160}
-                    height={160}
-                    className="block"
-                  />
-                </span>
-              ) : cat === 'game' ? (
-                <span className="absolute bottom-[-35px] left-[320px] z-999 navbar-float">
-                  <Image
-                    src="/game.png"
-                    alt={categoryNames[cat]}
-                    width={140}
-                    height={130}
-                    className="block"
-                  />
-                </span>
-              ) : cat === 'film' ? (
-                <span className="absolute bottom-[-40px] left-[480px] z-999 navbar-float">
-                  <Image
-                    src="/pinkman.png"
-                    alt={categoryNames[cat]}
-                    width={150}
-                    height={150}
-                    className="block"
-                  />
-                </span>
-              ) : cat === 'book' ? (
-                <span className="absolute bottom-[-32px] left-[640px] z-999 navbar-float">
-                  <Image
-                    src="/book.png"
+                    src={categoryImages[cat]}
                     alt={categoryNames[cat]}
                     width={120}
                     height={120}
-                    className="block"
+                    className="aspect-square w-20 shrink-0 object-contain md:w-30"
                   />
                 </span>
-              ) : null}
-            </Link>
-          );
-        })}
-      </div>
-
-      <div className="flex items-center gap-4">
-        <ThemeToggle />
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </nav>
   );
