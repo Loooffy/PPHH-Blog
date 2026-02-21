@@ -114,7 +114,7 @@ components:
           type: string
           nullable: true
 
-    PostListItem:
+    PostBase:
       type: object
       properties:
         id:
@@ -135,6 +135,9 @@ components:
         rating:
           type: number
           nullable: true
+        image_url:
+          type: string
+          nullable: true
         published_at:
           type: string
           format: date-time
@@ -142,18 +145,24 @@ components:
         created_at:
           type: string
           format: date-time
-        author:
-          type: string
-          nullable: true
-          description: "Author name (BookPost only)"
-        director:
-          type: string
-          nullable: true
-          description: "Director name (FilmPost only)"
         tags:
           type: array
           items:
             $ref: "#/components/schemas/Tag"
+
+    PostListItem:
+      allOf:
+        - $ref: "#/components/schemas/PostBase"
+        - type: object
+          properties:
+            author:
+              type: string
+              nullable: true
+              description: "Author name (BookPost only)"
+            director:
+              type: string
+              nullable: true
+              description: "Director name (FilmPost only)"
 
     PostDetail:
       allOf:
@@ -166,10 +175,6 @@ components:
             updated_at:
               type: string
               format: date-time
-            author:
-              $ref: "#/components/schemas/Person"
-            director:
-              $ref: "#/components/schemas/Person"
 
     PaginationMeta:
       type: object

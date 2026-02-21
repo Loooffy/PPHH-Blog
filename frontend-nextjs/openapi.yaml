@@ -93,16 +93,6 @@ components:
           type: string
           example: "Ruby"
 
-    Person:
-      type: object
-      properties:
-        id:
-          type: integer
-          nullable: true
-        name:
-          type: string
-          nullable: true
-
     PostListItem:
       type: object
       properties:
@@ -155,10 +145,6 @@ components:
             updated_at:
               type: string
               format: date-time
-            author:
-              $ref: "#/components/schemas/Person"
-            director:
-              $ref: "#/components/schemas/Person"
 
     PaginationMeta:
       type: object

@@ -6,12 +6,6 @@ export interface Tag {
   name: string;
 }
 
-/** Person schema for author/director in PostDetail */
-export interface Person {
-  id: number | null;
-  name: string | null;
-}
-
 /** Post type enum from API */
 export type PostType = 'DevPost' | 'GamePost' | 'BookPost' | 'FilmPost';
 
@@ -33,11 +27,9 @@ export interface PostListItem {
 }
 
 /** Post detail - single post API response, extends PostListItem */
-export interface PostDetail extends Omit<PostListItem, 'author' | 'director'> {
+export interface PostDetail extends PostListItem {
   content: string | null;
   updated_at: string;
-  author: Person | null;
-  director: Person | null;
 }
 
 /** Pagination metadata */

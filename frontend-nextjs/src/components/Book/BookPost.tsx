@@ -3,8 +3,6 @@
 import { TrixContent } from '@/components/TrixContent';
 import Image from 'next/image';
 import { useState } from 'react';
-import type { Person } from '@/types/api';
-
 interface BookPostProps {
     post: {
         id: number;
@@ -12,7 +10,7 @@ interface BookPostProps {
         content: string | null;
         created_at: string;
         updated_at?: string;
-        author?: Person | null;
+        author?: string | null;
         year?: number | null;
     };
 }
