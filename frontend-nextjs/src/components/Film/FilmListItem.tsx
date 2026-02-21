@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import type { PostListItem } from '@/types/api';
+import Link from 'next/link';
 
 interface FilmCardProps {
   post: PostListItem;
@@ -9,17 +9,17 @@ interface FilmCardProps {
   theme: { colors: { text: string; accent: string } };
 }
 
-// PostListItem 無 content，封面使用預設圖；director、year 直接來自 API
 export function WideFilmCard({ post, category, theme }: FilmCardProps) {
   const defaultImage = '/film-poster-1.png';
   const director = post.director ?? '';
   const year = post.year ?? new Date(post.created_at).getFullYear();
 
   return (
-    <article className="flex-[1.8] transition-transform duration-300 hover:-translate-y-1">
-      <Link href={`/${category}/${post.slug || post.id}`} className="no-underline text-inherit block h-full w-1/2">
-        <div className="flex w-full h-[240px] gap-3 items-stretch flex-nowrap">
-          <div className="w-3/5 min-w-2/5 flex flex-col">
+    <article className="transition-transform duration-300 hover:-translate-y-1">
+      <Link href={`/${category}/${post.slug || post.id}`} className="no-underline text-inherit block h-full">
+        <div className="flex w-full h-[280px] gap-8 items-stretch flex-nowrap">
+          {/* <div className="w-1/2 min-w-2/5 flex flex-col"> */}
+          <div className="flex flex-col">
             <div className="flex items-center gap-4">
               <span
                 className="font-['Inter',sans-serif] text-sm font-normal uppercase tracking-wider"
@@ -35,7 +35,7 @@ export function WideFilmCard({ post, category, theme }: FilmCardProps) {
 
             <div className="flex-1">
               <h2
-                className="font-['Inter',sans-serif] text-[56px] font-medium mb-2 leading-[1.1] md:text-[40px]"
+                className="font-['Inter',sans-serif] text-[56px] font-medium mt-4 mb-2 leading-[1.1] md:text-[40px]"
                 style={{ color: theme.colors.accent }}
               >
                 {post.title}
@@ -48,7 +48,7 @@ export function WideFilmCard({ post, category, theme }: FilmCardProps) {
               </p>
             </div>
 
-            <div className="mt-auto">
+            <div className="mt-auto text-right">
               <span
                 className="font-['Glegoo',serif] text-[56px] leading-none opacity-90 md:text-[40px]"
                 style={{ color: theme.colors.text }}
@@ -64,6 +64,56 @@ export function WideFilmCard({ post, category, theme }: FilmCardProps) {
               alt={post.title}
               className="w-auto h-full object-cover"
             />
+          </div>
+        </div>
+      </Link>
+    </article>
+  );
+}
+
+export function NarrowFilmCard({ post, category, theme }: FilmCardProps) {
+  const defaultImage = '/film-poster-1.png';
+  const director = post.director ?? '';
+  const year = post.year ?? new Date(post.created_at).getFullYear();
+
+  return (
+    <article className="w-1/4 min-w-0 shrink-0 transition-transform duration-300 hover:-translate-y-1">
+      <Link href={`/${category}/${post.slug || post.id}`} className="no-underline text-inherit block h-full">
+        <div className="h-[280px] flex flex-col gap-4">
+          <div className="overflow-hidden rounded-sm">
+            <img
+              src={defaultImage}
+              alt={post.title}
+              // className="w-full h-full object-cover"
+              className="w-auto h-auto object-cover"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <h2
+              className="font-['Inter',sans-serif] text-xl text-right text-l font-medium leading-tight"
+              style={{ color: theme.colors.accent }}
+            >
+              {post.title}
+            </h2>
+            <p
+              className="font-['Inter',sans-serif] text-m text-right font-light"
+              style={{ color: theme.colors.text }}
+            >
+              {director}
+            </p>
+            <span
+              className="font-['Glegoo',serif] text-lg leading-none"
+              style={{ color: theme.colors.text }}
+            >
+              {year}
+            </span>
+            <span
+              className="font-['Inter',sans-serif] text-[10px] leading-normal tracking-wider uppercase"
+              style={{ color: theme.colors.text }}
+            >
+              TAIWAN / 80 MIN / DRAMA
+            </span>
           </div>
         </div>
       </Link>
