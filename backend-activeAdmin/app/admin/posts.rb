@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register Post do
-  permit_params :user_id, :author_id, :director_id, :type, :title, :description, :content,
-                :year, :rating, :status, :published_at, tag_ids: []
+  permit_params :user_id, :author_id, :director_id, :post_type_id, :title, :description, :content,
+                :year, :rating, :status, :published_at, tag_ids: [],
+                series_posts_attributes: [:id, :series_id, :position, :_destroy]
 
   scope :all, default: true
   scope :dev_posts
@@ -13,7 +14,7 @@ ActiveAdmin.register Post do
   index do
     selectable_column
     id_column
-    column :type
+    column :post_type
     column :title
     column :user
     column :status
@@ -22,7 +23,7 @@ ActiveAdmin.register Post do
     actions
   end
 
-  filter :type, as: :select, collection: [["DevPost", "DevPost"], ["GamePost", "GamePost"], ["BookPost", "BookPost"], ["FilmPost", "FilmPost"]]
+  filter :post_type_id, as: :select, collection: proc { PostType.pluck(:name, :id) }, label: "Type"
   filter :title
   filter :user
   filter :author
@@ -30,21 +31,26 @@ ActiveAdmin.register Post do
   filter :status
   filter :published_at
   filter :created_at
-  filter :tags_id_eq, as: :select, collection: proc { Tag.pluck(:name, :id) }, label: "Tag"
+  filter :tags_id_eq, as: :select, collection: proc { Tag.includes(:post_type).map { |t| ["#{t.name} (#{t.post_type.name})", t.id] } }, label: "Tag"
+  filter :series_id, as: :select, collection: proc { Series.pluck(:series_name, :id) }, label: "Series"
 
   form do |f|
     f.inputs "Post" do
-      f.input :type, as: :select, collection: [["DevPost", "DevPost"], ["GamePost", "GamePost"], ["BookPost", "BookPost"], ["FilmPost", "FilmPost"]], include_blank: false
-      f.input :user
-      f.input :author, collection: Author.all, label: "Author (for BookPost)"
-      f.input :director, collection: Director.all, label: "Director (for FilmPost)"
+      f.input :post_type, as: :select, collection: PostType.pluck(:name, :id), include_blank: false
       f.input :title
       f.input :description
       f.input :content, as: :markdown_editor
+      f.input :user
+      f.input :author, collection: Person.authors, label: "Author (for BookPost)"
+      f.input :director, collection: Person.directors, label: "Director (for FilmPost)"
       f.input :year
       f.input :rating
       f.input :status, as: :select, collection: [["Draft", "draft"], ["Published", "published"]], include_blank: false
-      f.input :tags, as: :check_boxes, collection: Tag.pluck(:name, :id)
+      f.input :tags, as: :check_boxes, collection: Tag.includes(:post_type).map { |t| ["#{t.name} (#{t.post_type.name})", t.id] }
+      f.has_many :series_posts, allow_destroy: true, new_record: "新增系列" do |sp|
+        sp.input :series, as: :select, collection: Series.pluck(:series_name, :id), label: "系列"
+        sp.input :position, label: "順序"
+      end
     end
     f.actions do
       f.action :submit, label: "Save"
@@ -116,7 +122,7 @@ ActiveAdmin.register Post do
 
   show do
     attributes_table do
-      row :type
+      row :post_type
       row :title
       row :description
       row :slug
@@ -136,6 +142,11 @@ ActiveAdmin.register Post do
       row :updated_at
       row :tags do |post|
         post.tags.map(&:name).join(", ")
+      end
+      row :series do |post|
+        post.series_posts.order(:position).map do |sp|
+          "#{sp.series.series_name} (#{sp.position})"
+        end.join(", ")
       end
     end
   end

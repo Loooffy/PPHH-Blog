@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_20_054252) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_21_030000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,10 +42,18 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_20_054252) do
 
   create_table "people", force: :cascade do |t|
     t.string "name", null: false
-    t.string "type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "person_type_id", null: false
     t.index ["name"], name: "index_people_on_name", unique: true
+    t.index ["person_type_id"], name: "index_people_on_person_type_id"
+  end
+
+  create_table "person_types", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_person_types_on_name", unique: true
   end
 
   create_table "post_tags", force: :cascade do |t|
@@ -58,11 +66,17 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_20_054252) do
     t.index ["tag_id"], name: "index_post_tags_on_tag_id"
   end
 
+  create_table "post_types", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_post_types_on_name", unique: true
+  end
+
   create_table "posts", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "author_id"
     t.bigint "director_id"
-    t.string "type", null: false
     t.string "title"
     t.string "description"
     t.string "slug"
@@ -73,16 +87,41 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_20_054252) do
     t.datetime "published_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "post_type_id", null: false
     t.index ["author_id"], name: "index_posts_on_author_id"
     t.index ["director_id"], name: "index_posts_on_director_id"
+    t.index ["post_type_id"], name: "index_posts_on_post_type_id"
     t.index ["slug"], name: "index_posts_on_slug", unique: true
     t.index ["user_id"], name: "index_posts_on_user_id"
+  end
+
+  create_table "series", force: :cascade do |t|
+    t.string "series_name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "post_type_id", null: false
+    t.index ["post_type_id"], name: "index_series_on_post_type_id"
+    t.index ["series_name"], name: "index_series_on_series_name"
+  end
+
+  create_table "series_posts", force: :cascade do |t|
+    t.bigint "series_id", null: false
+    t.bigint "post_id", null: false
+    t.integer "position", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_series_posts_on_post_id"
+    t.index ["series_id", "position"], name: "index_series_posts_on_series_id_and_position"
+    t.index ["series_id", "post_id"], name: "index_series_posts_on_series_id_and_post_id", unique: true
+    t.index ["series_id"], name: "index_series_posts_on_series_id"
   end
 
   create_table "tags", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "post_type_id", null: false
+    t.index ["post_type_id"], name: "index_tags_on_post_type_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -93,9 +132,15 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_20_054252) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "people", "person_types"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
   add_foreign_key "posts", "people", column: "author_id"
   add_foreign_key "posts", "people", column: "director_id"
+  add_foreign_key "posts", "post_types"
   add_foreign_key "posts", "users"
+  add_foreign_key "series", "post_types"
+  add_foreign_key "series_posts", "posts"
+  add_foreign_key "series_posts", "series"
+  add_foreign_key "tags", "post_types"
 end

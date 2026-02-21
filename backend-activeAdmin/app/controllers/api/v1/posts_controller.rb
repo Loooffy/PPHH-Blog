@@ -10,10 +10,10 @@ module Api
                     .where("published_at <= ?", Time.current)
                     .order(published_at: :desc)
 
-        @posts = @posts.where(type: params[:type]) if params[:type].present?
+        @posts = @posts.joins(:post_type).where(post_types: { name: params[:type] }) if params[:type].present?
         @posts = @posts.joins(:tags).where(tags: { id: params[:tag_id] }).distinct if params[:tag_id].present?
 
-        @posts = @posts.page(params[:page]).per(params[:per_page] || 20)
+        @posts = @posts.includes(:tags, :series_posts => :series).page(params[:page]).per(params[:per_page] || 20)
       end
 
       def show
@@ -26,7 +26,7 @@ module Api
       private
 
       def set_post
-        @post = Post.find_by(slug: params[:slug])
+        @post = Post.includes(:tags, :series_posts => :series).find_by(slug: params[:slug])
       end
     end
   end

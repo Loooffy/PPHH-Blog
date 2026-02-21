@@ -2,7 +2,7 @@
 
 json.posts @posts do |post|
   json.id post.id
-  json.type post.type
+  json.type post.post_type&.name
   json.title post.title
   json.description post.description
   json.slug post.slug
@@ -10,11 +10,15 @@ json.posts @posts do |post|
   json.rating post.rating
   json.published_at post.published_at
   json.created_at post.created_at
-  json.author post.author&.name if post.is_a?(BookPost)
-  json.director post.director&.name if post.is_a?(FilmPost)
+  json.author post.author&.name if post.book_post?
+  json.director post.director&.name if post.film_post?
   json.tags post.tags do |tag|
     json.id tag.id
     json.name tag.name
+  end
+  if (info = post.primary_series_info)
+    json.series info[:name]
+    json.series_number info[:position]
   end
 end
 

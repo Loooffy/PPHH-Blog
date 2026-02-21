@@ -1,2 +1,0 @@
-class GamePost < Post
-end

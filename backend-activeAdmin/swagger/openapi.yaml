@@ -73,6 +73,14 @@ paths:
     get:
       summary: List all tags
       operationId: listTags
+      parameters:
+        - name: type
+          in: query
+          description: Filter by post type (DevPost, GamePost, BookPost, FilmPost)
+          required: false
+          schema:
+            type: string
+            enum: [DevPost, GamePost, BookPost, FilmPost]
       responses:
         "200":
           description: List of tags
@@ -92,6 +100,9 @@ components:
         name:
           type: string
           example: "Ruby"
+        type:
+          type: string
+          description: Post type (DevPost, GamePost, BookPost, FilmPost)
 
     Person:
       type: object

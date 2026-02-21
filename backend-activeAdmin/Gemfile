@@ -75,3 +75,6 @@ gem "cancancan"
 gem "draper"
 gem "pundit"
 gem "cssbundling-rails", "~> 1.4"
+
+gem "aws-sdk-s3", require: false
+
