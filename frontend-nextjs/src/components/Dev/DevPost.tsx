@@ -1,387 +1,352 @@
 'use client';
 
-import { MarkdownContent } from '@/components/layout/MarkdownContent';
-import type { PostDetail } from '@/types/api';
-import { useEffect, useRef, useState } from 'react';
+import { PostDetail } from '@/types/api';
+import {
+    Check,
+    ChevronRight,
+    Code,
+    Copy,
+    File,
+    List,
+    Terminal as TerminalIcon,
+    X
+} from 'lucide-react';
+import { useMemo, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+
+type ViewMode = 'balanced' | 'code';
 
 interface DevPostProps {
-    post: PostDetail & { series?: string; series_number?: number };
+    post: PostDetail;
 }
 
-// 從 Markdown 或 HTML content 中提取第一張圖片 URL
-function extractFirstImageUrl(content: string): string | null {
-    if (!content) return null;
-    const mdImgMatch = content.match(/!\[[^\]]*\]\(([^)]+)\)/);
-    if (mdImgMatch?.[1]) return mdImgMatch[1].trim();
-    const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/i);
-    if (imgMatch?.[1]) return imgMatch[1];
-    const imgTagMatch = content.match(/<img[^>]+>/i);
-    if (imgTagMatch) {
-        const srcMatch = imgTagMatch[0].match(/src=["']([^"']+)["']/i);
-        if (srcMatch?.[1]) return srcMatch[1];
-    }
-    return null;
-}
-
-// 從內容中移除第一張圖片（若與特色圖重複則不重複顯示）
-function removeFirstImageFromContent(content: string): string {
-    if (!content) return '';
-    const mdReplaced = content.replace(/!\[[^\]]*\]\([^)]+\)\n?/, '');
-    if (mdReplaced !== content) return mdReplaced.trim();
-    return content.replace(/<img[^>]*>/i, '');
-}
-
-interface TocItem {
+interface FileContent {
     id: string;
-    text: string;
-    level: number;
-    element: HTMLElement;
+    name: string;
+    language: string;
+    content: string;
+}
+
+interface TourStep {
+    id: string;
+    title: string;
+    targetType: 'file' | 'terminal';
+    targetId: string; // file id or terminal script
+    focusLines?: [number, number]; // [start, end]
+    content: string;
 }
 
 export function DevPost({ post }: DevPostProps) {
-    const contentRef = useRef<HTMLDivElement>(null);
-    const [tocItems, setTocItems] = useState<TocItem[]>([]);
-    const [activeId, setActiveId] = useState<string>('');
-    const [highlightedCategory, setHighlightedCategory] = useState<string>('');
-    const [imageError, setImageError] = useState(false);
+    const [viewMode, setViewMode] = useState<ViewMode>('balanced');
+    const [activeStepIndex, setActiveStepIndex] = useState(0);
+    const [activeFile, setActiveFile] = useState<FileContent | null>(null);
+    const [activeTab, setActiveTab] = useState<'files' | 'terminal'>('files');
+    const [copied, setCopied] = useState(false);
+    const [isTocOpen, setIsTocOpen] = useState(false);
 
-    const coverImageUrl = post.image_url ?? extractFirstImageUrl(post.content ?? '') ?? null;
-    const displayImage = imageError ? null : coverImageUrl;
-    const contentToRender =
-        post.image_url && coverImageUrl === post.image_url
-            ? post.content ?? ''
-            : removeFirstImageFromContent(post.content ?? '');
+    // Parse files from markdown content
+    const files = useMemo(() => {
+        const parsedFiles: FileContent[] = [];
+        const markdown = post.content ?? '';
+        const regex = /<<<\s*([\w\.-]+)\s*>>>([\s\S]*?)<<<\/>>>/g;
 
-    const author = post.author ?? '';
-    const director = post.director ?? '';
-    const year =
-        post.year != null ? String(post.year) : new Date(post.created_at).getFullYear();
+        let match;
+        while ((match = regex.exec(markdown)) !== null) {
+            const [, name, rawContent] = match;
+            if (name === 'setup.sh') continue; // Skip terminal script
 
-    // 格式化日期
-    const formatDate = (dateString: string): string => {
-        const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        return `${year}年${month}月${day}日`;
-    };
+            // Extract content from code block if present
+            const codeBlockMatch = rawContent.match(/```(?:\w+)?\s([\s\S]*?)```/);
+            const content = codeBlockMatch ? codeBlockMatch[1].trim() : rawContent.trim();
 
-    // 從內容中提取標題並生成目錄
-    useEffect(() => {
-        if (!contentRef.current) return;
+            const id = name.replace('.', '-');
+            const language = name.split('.').pop() || 'text';
 
-        // 使用 setTimeout 確保 DOM 完全渲染後再執行
-        const timer = setTimeout(() => {
-            if (!contentRef.current) return;
-
-            const headings = contentRef.current.querySelectorAll('h1, h2, h3, h4, h5, h6');
-            const items: TocItem[] = [];
-
-            headings.forEach((heading) => {
-                const level = parseInt(heading.tagName.charAt(1));
-                const text = heading.textContent || '';
-
-                // 生成 ID（如果沒有）
-                let id = heading.id?.trim();
-                if (!id || id === '') {
-                    // 使用文字內容生成 slug
-                    const baseSlug = text
-                        .toLowerCase()
-                        .replace(/[^\w\s-]/g, '')
-                        .replace(/\s+/g, '-')
-                        .trim();
-
-                    // 確保 ID 唯一性
-                    let uniqueId = baseSlug || `heading-${items.length}`;
-                    let counter = 0;
-                    while (items.some(item => item.id === uniqueId) || document.getElementById(uniqueId)) {
-                        counter++;
-                        uniqueId = `${baseSlug}-${counter}`;
-                    }
-
-                    id = uniqueId;
-                    heading.id = id;
-                    heading.setAttribute('id', id);
-                } else {
-                    // 確保元素有 id 屬性
-                    if (!heading.hasAttribute('id')) {
-                        heading.setAttribute('id', id);
-                    }
-                }
-
-                items.push({
-                    id,
-                    text,
-                    level,
-                    element: heading as HTMLElement,
-                });
+            parsedFiles.push({
+                id,
+                name,
+                language,
+                content,
             });
+        }
+        return parsedFiles;
+    }, [post.content]);
 
-            setTocItems(items);
+    // Parse markdown content into steps
+    const steps = useMemo(() => {
+        const parsedSteps: TourStep[] = [];
+        const markdown = post.content ?? '';
+        const regex = /\[\[\[\s*([\w\.-]+),\s*(\d+)-(\d+)\s*\]\]\]([\s\S]*?)\[\[\[\/\]\]\]/g;
 
-            // 設置第一個類別（如果有）
-            if (items.length > 0) {
-                // 嘗試從第一個 h2 或 h3 的父級或上下文推斷類別
-                // 這裡簡化處理，可以根據實際需求調整
-                setHighlightedCategory('基礎概念');
+        let match;
+        while ((match = regex.exec(markdown)) !== null) {
+            const [, filename, startLine, endLine, content] = match;
+
+            const targetType = filename === 'setup.sh' ? 'terminal' : 'file';
+            const targetId = filename === 'setup.sh' ? 'terminal-script' : filename.replace('.', '-');
+            const focusLines: [number, number] = [parseInt(startLine), parseInt(endLine)];
+            const id = `step-${parsedSteps.length + 1}`; // Generate ID
+
+            // Extract title from first header
+            const titleMatch = content.match(/^###\s+(.*)$/m);
+            const title = titleMatch ? titleMatch[1] : id;
+
+            parsedSteps.push({
+                id,
+                title,
+                targetType: targetType as 'file' | 'terminal',
+                targetId,
+                focusLines,
+                content: content.trim()
+            });
+        }
+
+        return parsedSteps;
+    }, [post.content]);
+
+    // 同步右側面板（程式碼/終端機）到目前的步驟
+    const syncRightPanel = (index: number) => {
+        const step = steps[index];
+        if (!step) return;
+
+        if (step.targetType === 'file') {
+            const file = files.find(f => f.id === step.targetId);
+            if (file) {
+                setActiveFile(file);
+                setActiveTab('files');
             }
-        }, 100); // 給 DOM 一些時間來完全渲染
-
-        return () => clearTimeout(timer);
-    }, [contentToRender]);
-
-    // 使用 Intersection Observer 追蹤當前閱讀的章節
-    useEffect(() => {
-        if (tocItems.length === 0) return;
-        if (!contentRef.current) return;
-
-        // 找到滾動容器（main 元素）
-        const scrollContainer = contentRef.current.closest('main');
-
-        const observerOptions = {
-            root: scrollContainer,
-            rootMargin: '-20% 0px -60% 0px',
-            threshold: 0,
-        };
-
-        const observerCallback = (entries: IntersectionObserverEntry[]) => {
-            // 找到最接近頂部的可見標題
-            const visibleEntries = entries.filter((entry) => entry.isIntersecting);
-            if (visibleEntries.length > 0) {
-                // 選擇最接近頂部的
-                const sorted = visibleEntries.sort(
-                    (a, b) => a.boundingClientRect.top - b.boundingClientRect.top
-                );
-                setActiveId(sorted[0].target.id);
-            }
-        };
-
-        const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-        tocItems.forEach((item) => {
-            if (item.element) {
-                observer.observe(item.element);
-            }
-        });
-
-        return () => {
-            observer.disconnect();
-        };
-    }, [tocItems]);
-
-    // 處理目錄點擊
-    const handleTocClick = (id: string, e: React.MouseEvent) => {
-        e.preventDefault();
-        const element = document.getElementById(id);
-        if (element) {
-            // 更新 URL hash
-            window.history.pushState(null, '', `#${id}`);
-
-            // 找到滾動容器（main 元素）
-            const scrollContainer = contentRef.current?.closest('main');
-
-            if (scrollContainer) {
-                // 計算目標位置，考慮固定導航欄的高度（160px）
-                const containerRect = scrollContainer.getBoundingClientRect();
-                const elementRect = element.getBoundingClientRect();
-                const offsetPosition = elementRect.top - containerRect.top + scrollContainer.scrollTop - 20; // 20px 額外間距
-
-                // 平滑滾動到目標位置
-                scrollContainer.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth',
-                });
-            } else {
-                // 如果找不到滾動容器，使用 window 作為後備
-                const elementPosition = element.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - 160;
-
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth',
-                });
-            }
-
-            setActiveId(id);
+        } else {
+            setActiveTab('terminal');
         }
     };
 
-    // 處理 URL hash 變化，支援直接透過 URL 跳轉
-    useEffect(() => {
-        const handleHashChange = () => {
-            const hash = window.location.hash.slice(1); // 移除 # 符號
-            if (hash) {
-                // 等待 DOM 完全渲染後再滾動
-                setTimeout(() => {
-                    const element = document.getElementById(hash);
-                    if (element && contentRef.current) {
-                        // 找到滾動容器（main 元素）
-                        const scrollContainer = contentRef.current.closest('main');
+    // 跳轉至內文特定區段，並同步右側（僅在 client 點擊時執行，可安全使用 document）
+    const jumpToArticleSection = (index: number) => {
+        const container = document.getElementById('article-container');
+        const targetSection = document.getElementById(`section-${index}`);
 
-                        if (scrollContainer) {
-                            // 計算目標位置，考慮固定導航欄的高度（160px）
-                            const containerRect = scrollContainer.getBoundingClientRect();
-                            const elementRect = element.getBoundingClientRect();
-                            const offsetPosition = elementRect.top - containerRect.top + scrollContainer.scrollTop - 20; // 20px 額外間距
+        if (container && targetSection) {
+            setActiveStepIndex(index);
+            syncRightPanel(index);
 
-                            scrollContainer.scrollTo({
-                                top: offsetPosition,
-                                behavior: 'smooth',
-                            });
-                        } else {
-                            // 如果找不到滾動容器，使用 window 作為後備
-                            const elementPosition = element.getBoundingClientRect().top;
-                            const offsetPosition = elementPosition + window.pageYOffset - 160;
+            // 計算目標區段相對於滾動容器頂部的距離
+            const targetOffset = targetSection.offsetTop - 80;
 
-                            window.scrollTo({
-                                top: offsetPosition,
-                                behavior: 'smooth',
-                            });
-                        }
-                        setActiveId(hash);
-                    }
-                }, 200); // 增加延遲時間確保 DOM 完全渲染
+            container.scrollTo({
+                top: targetOffset,
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    // 當點擊右側程式碼標籤時，同步跳轉到第一個引用該檔案的內文步驟
+    const onCodeTabClick = (fileId: string | 'terminal') => {
+        if (fileId === 'terminal') {
+            setActiveTab('terminal');
+            const firstTerminalStepIdx = steps.findIndex(s => s.targetType === 'terminal');
+            if (firstTerminalStepIdx !== -1) jumpToArticleSection(firstTerminalStepIdx);
+        } else {
+            const file = files.find(f => f.id === fileId);
+            if (file) {
+                setActiveFile(file);
+                setActiveTab('files');
+                const firstFileStepIdx = steps.findIndex(s => s.targetId === fileId);
+                if (firstFileStepIdx !== -1) jumpToArticleSection(firstFileStepIdx);
             }
-        };
+        }
+    };
 
-        // 初始載入時檢查 hash
-        handleHashChange();
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
 
-        // 監聽 hash 變化
-        window.addEventListener('hashchange', handleHashChange);
-
-        return () => {
-            window.removeEventListener('hashchange', handleHashChange);
-        };
-    }, [tocItems]);
+    const widths = viewMode === 'code' ? { left: 'w-[35%]', right: 'w-[65%]' } : { left: 'w-[50%]', right: 'w-[50%]' };
 
     return (
-        <div className="flex flex-col md:flex-row gap-16 w-full px-10 md:px-40">
-            {/* 左側內容區域 */}
-            <div className="flex-1 min-w-0">
-                {/* 封面圖 */}
-                {displayImage && (
-                    <div className="w-full overflow-hidden rounded-lg mb-8">
-                        <img
-                            src={displayImage}
-                            alt={post.title}
-                            className="w-full object-cover"
-                            onError={() => setImageError(true)}
-                        />
+        <div className="flex flex-col h-screen w-full bg-[#ffffff] text-[#333333] overflow-hidden">
+            {/* Navbar */}
+            <nav className="h-16 border-b border-[#eeeeee] flex items-center justify-between px-8 bg-white/80 backdrop-blur-md z-[100] shrink-0">
+                <div className="flex items-center gap-3">
+                    <div className="bg-blue-600 p-1.5 rounded-lg">
+                        <Code className="text-white" size={18} />
                     </div>
-                )}
+                    <span className="font-bold text-lg tracking-tight text-[#222]">DEV FLOW</span>
+                </div>
 
-                {/* 系列信息 */}
-                {post.series && post.series_number && (
-                    <div className="mb-4">
-                        <span className="text-sm text-text">
-                            本文為「
-                            <span className="underline">{post.series}</span>
-                            」系列{' '}
-                            <span
-                                className="inline-block px-2 py-0.5 rounded-full text-xs"
-                                style={{ backgroundColor: 'var(--color-border)' }}
+                <div className="flex items-center bg-[#f5f5f5] rounded-full p-1 border border-[#e0e0e0]">
+                    {(['balanced', 'code'] as ViewMode[]).map((m) => (
+                        <button key={m} onClick={() => setViewMode(m)} className={`px-4 py-1.5 rounded-full text-[11px] font-bold transition-all ${viewMode === m ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+                            <span className="capitalize">{m === 'balanced' ? 'Balanced' : 'Code-First'}</span>
+                        </button>
+                    ))}
+                </div>
+            </nav>
+
+            <div className="flex flex-1 overflow-hidden relative">
+                {/* Article Section */}
+                <section
+                    id="article-container"
+                    className={`${widths.left} h-full overflow-y-auto bg-white flex flex-col scroll-smooth transition-all duration-500 border-r border-[#f0f0f0]`}
+                >
+                    <div className="max-w-3xl mx-auto w-full px-12 py-16">
+                        <div className="mb-14">
+                            {post.series && (
+                                <span className="inline-block px-3 py-1 rounded-[16px] text-[11px] font-medium tracking-tight mb-5 bg-[#9ea2a5] text-white">
+                                    {post.series}
+                                </span>
+                            )}
+                            <h1 className="text-[34px] font-bold text-[#1a1a1a] mb-8 tracking-tight leading-[1.3]">
+                                0{activeStepIndex + 1} {post.title}
+                            </h1>
+
+                            <div className="flex items-center justify-between text-[12px] text-[#aaaaaa] pb-4 border-b border-[#eeeeee]">
+                                <div className="flex gap-4 items-center">
+                                    <span>最後更新：{new Date(post.updated_at).toLocaleDateString('zh-TW')}</span>
+                                </div>
+                                <div className="flex gap-2">
+                                    {post.tags?.map((tag) => (
+                                        <span key={tag.id} className="px-3 py-0.5 rounded-full border border-[#d0d0d0] bg-white text-[#999] text-[10px]">{tag.name}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <article className="space-y-16">
+                            {steps.map((step, idx) => (
+                                <div
+                                    key={step.id}
+                                    id={`section-${idx}`}
+                                    onClick={() => jumpToArticleSection(idx)}
+                                    className={`transition-all duration-700 cursor-pointer ${activeStepIndex === idx ? 'opacity-100' : 'opacity-20 hover:opacity-40'}`}
+                                >
+                                    <div className="text-[17px] leading-[2.1] text-[#333] space-y-8 markdown-body">
+                                        <ReactMarkdown>{step.content}</ReactMarkdown>
+                                    </div>
+                                </div>
+                            ))}
+                        </article>
+
+                        <footer className="mt-40 pt-10 border-t border-[#f0f0f0] text-center text-[10px] font-bold tracking-[0.3em] uppercase text-[#ccc]">
+                            Dev Flow · Pure Technology Reading
+                        </footer>
+                    </div>
+                </section>
+
+                {/* Code Section */}
+                <section className={`${widths.right} h-full bg-[#fafafa] flex flex-col relative transition-all duration-500`}>
+                    <div className="h-10 border-b border-[#eeeeee] flex items-center px-4 bg-white shrink-0 justify-between">
+                        <div className="flex items-center h-full">
+                            {files.map(file => (
+                                <button
+                                    key={file.id}
+                                    onClick={() => onCodeTabClick(file.id)}
+                                    className={`flex items-center gap-2 px-4 h-10 text-[11px] font-medium border-b-2 transition-all whitespace-nowrap ${activeTab === 'files' && activeFile?.id === file.id ? 'text-blue-600 border-blue-600 bg-white' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
+                                >
+                                    <File size={12} /> {file.name}
+                                </button>
+                            ))}
+                            <button
+                                onClick={() => onCodeTabClick('terminal')}
+                                className={`flex items-center gap-2 px-4 h-10 text-[11px] font-medium border-b-2 transition-all ${activeTab === 'terminal' ? 'text-blue-600 border-blue-600 bg-white' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
                             >
-                                第{post.series_number}篇
-                            </span>
-                        </span>
+                                <TerminalIcon size={12} /> setup.sh
+                            </button>
+                        </div>
+
+                        <button
+                            onClick={() => copyToClipboard(activeTab === 'files' && activeFile ? activeFile.content : "")}
+                            className="text-gray-400 hover:text-blue-600 p-2 transition-colors"
+                        >
+                            {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
+                        </button>
                     </div>
-                )}
 
-                {/* 標題 */}
-                <h1 className="text-[2.5rem] font-bold leading-[1.2] text-text mb-4 mt-0">
-                    {post.title}
-                </h1>
+                    <div className="flex-1 overflow-auto bg-white p-6 font-mono text-[13px] leading-[1.8]">
+                        <pre className="select-all">
+                            {(activeTab === 'files' && activeFile ? activeFile.content : '').split('\n').map((line, i) => {
+                                const lineNum = i + 1;
 
-                {/* 元資訊：作者、導演、年份靠左，最後更新靠右 */}
-                <div className="flex justify-between items-baseline gap-4 border-b pb-4 text-sm text-text-secondary mb-8">
-                    <div className="flex flex-wrap gap-x-6 gap-y-1">
-                        {author && (
-                            <span>
-                                作者：<span className="text-text">{author}</span>
-                            </span>
-                        )}
-                        {director && (
-                            <span>
-                                導演：<span className="text-text">{director}</span>
-                            </span>
-                        )}
-                        {year && (
-                            <span>
-                                年份：<span className="text-text">{year}</span>
-                            </span>
-                        )}
+                                // 找出這行程式碼屬於哪一個步驟
+                                const associatedStepIndex = steps.findIndex(s => {
+                                    const isCorrectTab = (activeTab === 'files' && activeFile && s.targetType === 'file' && s.targetId === activeFile.id) ||
+                                        (activeTab === 'terminal' && s.targetType === 'terminal');
+                                    return isCorrectTab && s.focusLines && lineNum >= s.focusLines[0] && lineNum <= s.focusLines[1];
+                                });
+
+                                const isHighlighted = associatedStepIndex !== -1;
+                                const isActiveHighlight = associatedStepIndex === activeStepIndex;
+
+                                return (
+                                    <div
+                                        key={i}
+                                        onClick={() => isHighlighted && jumpToArticleSection(associatedStepIndex)}
+                                        className={`flex transition-all duration-300 ${isHighlighted ? 'cursor-pointer hover:bg-blue-50/40' : 'opacity-25'} ${isActiveHighlight ? 'bg-blue-50/80 text-blue-700 font-bold -mx-6 px-6' : ''}`}
+                                    >
+                                        <span className={`w-10 shrink-0 text-[10px] select-none ${isActiveHighlight ? 'text-blue-400' : 'text-gray-300'}`}>{lineNum}</span>
+                                        <span className="flex-1">{line || ' '}</span>
+                                    </div>
+                                );
+                            })}
+                        </pre>
                     </div>
-                    {post.updated_at && (
-                        <span className="shrink-0">最後更新：{formatDate(post.updated_at)}</span>
-                    )}
-                </div>
-
-                {/* 文章內容 */}
-                <div ref={contentRef} className="prose prose-lg max-w-none">
-                    <MarkdownContent content={contentToRender} />
-                </div>
+                </section>
             </div>
 
-            {/* 右側目錄 */}
-            {tocItems.length > 0 && (
-                <aside
-                    className="dev-post-toc w-full md:w-2/9 shrink-0 md:sticky md:top-0 self-start max-h-[calc(100vh-160px)] overflow-y-auto pr-2"
-                    style={{
-                        scrollbarWidth: 'thin',
-                        scrollbarColor: 'var(--color-border) transparent',
-                    }}
+            {!isTocOpen && (
+                <button
+                    onClick={() => setIsTocOpen(true)}
+                    className="fixed right-6 top-[120px] z-[90] flex items-center gap-2 px-4 py-2 rounded-full border border-[#eeeeee] bg-white shadow-lg hover:shadow-xl transition-all text-[#333]"
                 >
-
-                    {/* 高亮的類別 */}
-                    {highlightedCategory && (
-                        <div className="mb-4">
-                            <span
-                                className="inline-block px-2 py-1 rounded-full text-xs text-text"
-                                style={{ backgroundColor: 'var(--color-border)' }}
-                            >
-                                {highlightedCategory}
-                            </span>
-                        </div>
-                    )}
-
-                    {/* 目錄標題 */}
-                    <h2 className="text-lg font-semibold text-text mb-4 mt-0">目錄</h2>
-
-                    {/* 目錄列表 */}
-                    <nav className="flex flex-col gap-1">
-                        {tocItems.map((item) => {
-                            const isActive = activeId === item.id;
-                            const indentLevel = Math.max(0, item.level - 2); // h2 開始縮進
-
-                            return (
-                                <a
-                                    key={item.id}
-                                    href={`#${item.id}`}
-                                    onClick={(e) => handleTocClick(item.id, e)}
-                                    className={`text-left text-sm py-1.5 px-2 rounded transition-colors duration-200no-underline cursor-pointer block ${isActive ? 'font-semibold' : 'font-normal'}`}
-                                    style={{
-                                        paddingLeft: `${8 + indentLevel * 16}px`,
-                                        color: isActive ? 'var(--color-primary)' : 'var(--color-text-secondary)',
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        if (!isActive) {
-                                            e.currentTarget.style.color = 'var(--color-text)';
-                                        }
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        if (!isActive) {
-                                            e.currentTarget.style.color = 'var(--color-text-secondary)';
-                                        }
-                                    }}
-                                >
-                                    {item.text}
-                                </a>
-                            );
-                        })}
-                    </nav>
-                </aside>
+                    <List size={16} />
+                    <span className="text-[11px] font-bold uppercase tracking-widest">目錄</span>
+                </button>
             )}
+
+            <div className="fixed right-0 top-[120px] z-[100] flex items-start pointer-events-none">
+                {isTocOpen && (
+                    <div
+                        className="w-72 max-h-[80vh] bg-[#161b22]/95 backdrop-blur-md border border-[#30363d] rounded-l-xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300 pointer-events-auto"
+                    >
+                        <div className="p-4 border-b border-[#30363d] flex items-center justify-between bg-[#1c2128]/50">
+                            <span className="text-xs font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
+                                <List size={12} /> Table of Contents
+                            </span>
+                            <button onClick={() => setIsTocOpen(false)} className="text-gray-500 hover:text-white p-1 rounded hover:bg-[#30363d] transition-colors">
+                                <X size={16} />
+                            </button>
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-2">
+                            {steps.map((step, idx) => (
+                                <button
+                                    key={step.id}
+                                    onClick={() => jumpToArticleSection(idx)}
+                                    className={`w-full text-left p-3 rounded-lg text-xs transition-all flex items-start gap-3 group mb-1 last:mb-0 ${activeStepIndex === idx
+                                        ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
+                                        : 'text-gray-400 hover:bg-[#30363d] hover:text-gray-200 border border-transparent'
+                                        }`}
+                                >
+                                    <span className={`w-5 h-5 shrink-0 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors ${activeStepIndex === idx ? 'bg-blue-500 text-white' : 'bg-[#0d1117] text-gray-600 group-hover:text-gray-400'
+                                        }`}>
+                                        {idx + 1}
+                                    </span>
+                                    <div className="flex-1 truncate">
+                                        <div className="font-bold truncate">{step.title}</div>
+                                        <div className="text-[10px] opacity-60 mt-0.5 truncate uppercase tracking-tighter">
+                                            {step.targetType === 'file' ? step.targetId : 'setup.sh'}
+                                        </div>
+                                    </div>
+                                    {activeStepIndex === idx && <ChevronRight size={14} className="mt-1" />}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="p-3 bg-[#0d1117]/50 text-[10px] text-gray-600 text-center border-t border-[#30363d]">
+                            點選步驟快速導覽
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
-}
+};

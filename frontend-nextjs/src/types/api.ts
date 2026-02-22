@@ -30,6 +30,10 @@ export interface PostListItem {
 export interface PostDetail extends PostListItem {
   content: string | null;
   updated_at: string;
+  /** 系列名稱（後端 primary_series_info 回傳） */
+  series?: string;
+  /** 系列內第幾篇（後端 primary_series_info 回傳） */
+  series_number?: number;
 }
 
 /** Pagination metadata */

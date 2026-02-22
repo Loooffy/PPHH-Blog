@@ -30,7 +30,7 @@ export function ThemedMain({ children, category }: ThemedMainProps) {
 
   return (
     <main
-      className="fixed z-1100 top-[108px] inset-x-0 bottom-0 overflow-y-auto transition-colors"
+      className="fixed z-1100 top-[84px] inset-x-0 bottom-0 overflow-y-auto transition-colors"
       style={{ backgroundColor: theme.colors.background }}
     >
       {children}

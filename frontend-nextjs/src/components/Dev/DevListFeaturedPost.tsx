@@ -14,7 +14,7 @@ function formatDate(dateString: string): string {
   return `${months[date.getMonth()]} ${date.getDate().toString().padStart(2, '0')}, ${date.getFullYear()}`;
 }
 
-export function DevFeaturedPost({ post, category }: DevFeaturedPostProps) {
+export function DevListFeaturedPost({ post, category }: DevFeaturedPostProps) {
   return (
     <div className="mb-12">
       <Link
@@ -23,7 +23,7 @@ export function DevFeaturedPost({ post, category }: DevFeaturedPostProps) {
       >
         <div className="flex flex-col gap-1">
           <div className="flex items-baseline justify-between gap-1 w-full">
-            <div flex-row className="w-4/5">
+            <div className="flex flex-row w-4/5">
               <h2 className="text-[2rem] font-bold leading-[1.2] text-text mb-1 flex-1 min-w-0">
                 {post.title}
               </h2>

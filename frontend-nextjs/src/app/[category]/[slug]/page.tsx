@@ -30,9 +30,7 @@ export default async function PostPage({
   if (category === 'dev') {
     return (
       <>
-        <main className="main-content mt-[160px] h-[calc(100vh-160px)] overflow-y-auto">
-          <DevPost post={post} />
-        </main>
+        <DevPost post={post} />
       </>
     );
   }
@@ -52,15 +50,13 @@ export default async function PostPage({
   if (category === 'film') {
     return (
       <>
-        <main className="main-content relative pt-[160px]">
-          <Link
-            href={`/${categoryPath}`}
-            className="absolute top-10 left-12 z-10 text-primary no-underline hover:text-secondary"
-          >
-            ← 返回 {categoryName}
-          </Link>
-          <FilmPost post={post} />
-        </main>
+        <Link
+          href={`/${categoryPath}`}
+          className="absolute top-10 left-12 z-10 text-primary no-underline hover:text-secondary"
+        >
+          ← 返回 {categoryName}
+        </Link>
+        <FilmPost post={post} />
       </>
     );
   }

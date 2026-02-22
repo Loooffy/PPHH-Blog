@@ -2,7 +2,7 @@
 
 import { useTheme } from '@/contexts/ThemeContext';
 import type { PostListItem } from '@/types/api';
-import { DevFeaturedPost } from './DevFeaturedPost';
+import { DevListFeaturedPost } from './DevListFeaturedPost';
 import { DevListItem } from './DevListItem';
 
 interface DevPostListProps {
@@ -27,7 +27,7 @@ export function DevPostList({ posts }: DevPostListProps) {
     <div className="flex flex-col w-full">
       {/* 精選文章 */}
       {featuredPost && (
-        <DevFeaturedPost post={featuredPost} category={category} />
+        <DevListFeaturedPost post={featuredPost} category={category} />
       )}
 
       {/* 其他文章列表 */}
