@@ -2,15 +2,25 @@
 
 import { useTheme } from '@/contexts/ThemeContext';
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+  disabled?: boolean;
+}
+
+export function ThemeToggle({ disabled = false }: ThemeToggleProps) {
   const { mode, toggleMode } = useTheme();
 
   return (
     <button
-      onClick={toggleMode}
-      className="w-10 h-10 rounded-full border-2 border-border bg-surface text-text cursor-pointer flex items-center justify-center transition-all duration-300 shadow-[0_2px_8px_rgba(0,0,0,0.1)] hover:bg-primary hover:text-white hover:border-primary hover:scale-105 md:w-9 md:h-9"
+      type="button"
+      onClick={disabled ? undefined : toggleMode}
+      disabled={disabled}
+      className={`w-10 h-10 rounded-full bg-surface text-text flex items-center justify-center transition-all duration-300 shadow-[0_2px_8px_rgba(0,0,0,0.1)] md:w-9 md:h-9 ${
+        disabled
+          ? 'cursor-not-allowed opacity-50 pointer-events-none'
+          : 'cursor-pointer hover:bg-primary hover:text-white hover:border-primary hover:scale-105'
+      }`}
       aria-label={`切換到${mode === 'light' ? '深色' : '淺色'}模式`}
-      title={`目前為${mode === 'light' ? '淺色' : '深色'}模式`}
+      title={disabled ? '僅在 dev 頁面可切換主題' : `目前為${mode === 'light' ? '淺色' : '深色'}模式`}
     >
       {mode === 'light' ? (
         <svg

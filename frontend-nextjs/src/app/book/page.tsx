@@ -1,5 +1,5 @@
-import { ThemedMain } from '@/components/layout/ThemedMain';
 import { BookList } from '@/components/Book/BookList';
+import { ThemedMain } from '@/components/layout/ThemedMain';
 import { getPostsByCategory } from '@/lib/api';
 
 export default async function BooksPage() {

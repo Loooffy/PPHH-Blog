@@ -39,17 +39,13 @@ export default async function PostPage({
 
   if (category === 'book') {
     return (
-      <>
-        <main className="main-content relative pt-[160px]">
-          <Link
-            href={`/${categoryPath}`}
-            className="absolute top-10 left-12 z-10 text-primary no-underline hover:text-secondary"
-          >
-            ← 返回 {categoryName}
-          </Link>
-          <BookPost post={post} />
-        </main>
-      </>
+      <main className="main-content pt-[160px]">
+        <BookPost
+          post={post}
+          backLinkHref={`/${categoryPath}`}
+          backLinkLabel={categoryName}
+        />
+      </main>
     );
   }
 

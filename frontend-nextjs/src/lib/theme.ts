@@ -4,10 +4,10 @@ export type ThemeMode = 'light' | 'dark';
 
 // 類別中文名稱對應
 export const categoryNames: Record<Category, string> = {
-  dev: '軟體開發',
-  game: '遊戲開發',
-  film: '影評',
-  book: '書評',
+  dev: 'DEV',
+  game: 'GAME',
+  film: 'FILM',
+  book: 'BOOK',
 };
 
 // 類別路由對應
