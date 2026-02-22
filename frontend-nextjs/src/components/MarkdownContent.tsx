@@ -1,11 +1,12 @@
-import parse from 'html-react-parser';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
-interface TrixContentProps {
+interface MarkdownContentProps {
   content: string;
   className?: string;
 }
 
-export function TrixContent({ content, className = '' }: TrixContentProps) {
+export function MarkdownContent({ content, className = '' }: MarkdownContentProps) {
   return (
     <div
       className={`leading-relaxed break-words text-text 
@@ -24,10 +25,14 @@ export function TrixContent({ content, className = '' }: TrixContentProps) {
         [&>a]:text-primary [&>a]:underline [&>a:hover]:text-secondary 
         [&>code]:font-mono [&>code]:text-sm [&>code]:bg-background [&>code]:px-1 [&>code]:py-0.5 [&>code]:rounded [&>code]:border [&>code]:border-border 
         [&>pre]:block [&>pre]:w-full [&>pre]:font-mono [&>pre]:text-sm [&>pre]:p-4 [&>pre]:bg-background [&>pre]:border [&>pre]:border-border [&>pre]:rounded-lg [&>pre]:overflow-x-auto 
+        [&>pre_code]:p-0 [&>pre_code]:bg-transparent [&>pre_code]:border-0
         [&>img]:max-w-full [&>img]:h-auto [&>img]:rounded-lg 
+        [&_table]:border-collapse [&_table]:w-full [&_table]:my-4
+        [&_th]:border [&_th]:border-border [&_th]:px-4 [&_th]:py-2 [&_th]:bg-background
+        [&_td]:border [&_td]:border-border [&_td]:px-4 [&_td]:py-2
         ${className}`}
     >
-      {parse(content || '')}
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content || ''}</ReactMarkdown>
     </div>
   );
 }

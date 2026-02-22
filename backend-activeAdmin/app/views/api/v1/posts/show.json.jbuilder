@@ -12,8 +12,8 @@ json.image_url @post.image_url
 json.published_at @post.published_at
 json.created_at @post.created_at
 json.updated_at @post.updated_at
-json.author @post.author&.name if @post.book_post?
-json.director @post.director&.name if @post.film_post?
+json.author @post.author&.name
+json.director @post.director&.name
 json.tags @post.tags do |tag|
   json.id tag.id
   json.name tag.name

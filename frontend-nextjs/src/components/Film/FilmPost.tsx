@@ -1,6 +1,6 @@
 'use client';
 
-import { TrixContent } from '@/components/TrixContent';
+import { MarkdownContent } from '@/components/MarkdownContent';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getTheme } from '@/lib/theme';
 import type { PostDetail } from '@/types/api';
@@ -10,10 +10,15 @@ interface FilmPostProps {
   post: PostDetail;
 }
 
-// 從 HTML content 中提取第一張圖片 URL
+// 從 Markdown 或 HTML content 中提取第一張圖片 URL
 function extractFirstImageUrl(content: string): string | null {
   if (!content) return null;
 
+  // Markdown 格式: ![alt](url) 或 ![](url)
+  const mdImgMatch = content.match(/!\[[^\]]*\]\(([^)]+)\)/);
+  if (mdImgMatch?.[1]) return mdImgMatch[1].trim();
+
+  // HTML 格式
   const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/i);
   if (imgMatch?.[1]) return imgMatch[1];
 
@@ -35,9 +40,13 @@ function formatDate(dateString: string): string {
   return `${year}/${month}/${day}`;
 }
 
-// 從內容中移除第一張圖片（若與特色圖重複，可選擇保留或移除）
+// 從內容中移除第一張圖片（若與特色圖重複則不重複顯示）
 function removeFirstImageFromContent(content: string): string {
   if (!content) return '';
+  // Markdown 格式: ![alt](url)
+  const mdReplaced = content.replace(/!\[[^\]]*\]\([^)]+\)\n?/, '');
+  if (mdReplaced !== content) return mdReplaced.trim();
+  // HTML 格式
   return content.replace(/<img[^>]*>/i, '');
 }
 
@@ -63,36 +72,37 @@ export function FilmPost({ post }: FilmPostProps) {
 
   return (
     <div
-      className="flex flex-col items-center w-full font-['Inter',sans-serif] p-8 md:p-12"
+      className="flex flex-col items-center w-full font-['Inter',sans-serif]"
       style={{ backgroundColor: theme.colors.background }}
     >
-      <article className="w-full max-w-[600px] items-center flex flex-col gap-8">
-        {/* 特色圖 */}
-        {displayImage && (
-          <div className="w-full overflow-hidden rounded-sm">
-            <img
-              src={displayImage}
-              alt={post.title}
-              className="w-full object-cover"
-              onError={() => setImageError(true)}
-            />
-          </div>
-        )}
+      {/* 寬版特色圖：佔滿寬度 */}
+      {displayImage && (
+        <div className="w-full overflow-hidden">
+          <img
+            src={displayImage}
+            alt={post.title}
+            className="w-full object-cover"
+            onError={() => setImageError(true)}
+          />
+        </div>
+      )}
 
-        {/* 標題 */}
-        <div className="flex flex-col items-center w-2/3 gap-6">
-          <h1
-            className="text-4xl text-center md:text-3xl font-medium leading-tight"
-            style={{ color: theme.colors.accent }}
-          >
-            {post.title}
-          </h1>
+      {/* 文章內容區：置中、限寬 */}
+      <article className="w-full max-w-[600px] mx-auto flex flex-col gap-8 px-8 py-8 md:px-12 md:py-12">
+        {/* 標題：置中、較大字體 */}
+        <h1
+          className="text-3xl md:text-4xl text-center font-medium leading-tight"
+          style={{ color: theme.colors.accent }}
+        >
+          {post.title}
+        </h1>
 
-          {/* 元資訊：導演、年份、最後更新 */}
-          <div
-            className="flex flex-wrap items-baseline gap-x-6 gap-y-1 border-b pb-4 text-sm"
-            style={{ borderColor: theme.colors.border, color: theme.colors.textSecondary }}
-          >
+        {/* 元資訊：導演/年份靠左，最後更新靠右 */}
+        <div
+          className="flex justify-between items-baseline gap-4 border-b pb-4 text-sm"
+          style={{ borderColor: theme.colors.border, color: theme.colors.textSecondary }}
+        >
+          <div className="flex flex-wrap gap-x-6 gap-y-1">
             {director && (
               <span>
                 導演：<span style={{ color: theme.colors.text }}>{director}</span>
@@ -103,13 +113,13 @@ export function FilmPost({ post }: FilmPostProps) {
                 年份：<span style={{ color: theme.colors.text }}>{year}</span>
               </span>
             )}
-            <span className="ml-auto">最後更新：{formatDate(updatedAt)}</span>
           </div>
+          <span className="shrink-0">最後更新：{formatDate(updatedAt)}</span>
         </div>
 
-        {/* 內容 */}
-        <div style={{ color: theme.colors.text }}>
-          <TrixContent
+        {/* Markdown 內容：標準段落排版 */}
+        <div className="w-full" style={{ color: theme.colors.text }}>
+          <MarkdownContent
             content={contentToRender}
             className="[&>p]:mb-6 [&>p]:leading-[1.9] [&>p]:break-inside-avoid-column [&>u]:underline [&>u]:underline-offset-4"
           />

@@ -1,7 +1,7 @@
 import { BookPost } from '@/components/Book/BookPost';
 import { DevPost } from '@/components/Dev/DevPost';
 import { FilmPost } from '@/components/Film/FilmPost';
-import { TrixContent } from '@/components/TrixContent';
+import { MarkdownContent } from '@/components/MarkdownContent';
 import { getPost } from '@/lib/api';
 import { categoryNames } from '@/lib/theme';
 import Link from 'next/link';
@@ -84,7 +84,7 @@ export default async function PostPage({
           <div className="mb-8 text-sm text-text-secondary">
             發佈於：{new Date(post.created_at).toLocaleDateString('zh-TW')}
           </div>
-          <TrixContent content={post.content ?? ''} />
+          <MarkdownContent content={post.content ?? ''} />
         </article>
       </main>
     </>

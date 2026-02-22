@@ -1,11 +1,34 @@
 'use client';
 
-import { TrixContent } from '@/components/TrixContent';
+import { MarkdownContent } from '@/components/MarkdownContent';
 import { useEffect, useRef, useState } from 'react';
 import type { PostDetail } from '@/types/api';
 
 interface DevPostProps {
     post: PostDetail & { series?: string; series_number?: number };
+}
+
+// 從 Markdown 或 HTML content 中提取第一張圖片 URL
+function extractFirstImageUrl(content: string): string | null {
+    if (!content) return null;
+    const mdImgMatch = content.match(/!\[[^\]]*\]\(([^)]+)\)/);
+    if (mdImgMatch?.[1]) return mdImgMatch[1].trim();
+    const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (imgMatch?.[1]) return imgMatch[1];
+    const imgTagMatch = content.match(/<img[^>]+>/i);
+    if (imgTagMatch) {
+        const srcMatch = imgTagMatch[0].match(/src=["']([^"']+)["']/i);
+        if (srcMatch?.[1]) return srcMatch[1];
+    }
+    return null;
+}
+
+// 從內容中移除第一張圖片（若與特色圖重複則不重複顯示）
+function removeFirstImageFromContent(content: string): string {
+    if (!content) return '';
+    const mdReplaced = content.replace(/!\[[^\]]*\]\([^)]+\)\n?/, '');
+    if (mdReplaced !== content) return mdReplaced.trim();
+    return content.replace(/<img[^>]*>/i, '');
 }
 
 interface TocItem {
@@ -20,6 +43,19 @@ export function DevPost({ post }: DevPostProps) {
     const [tocItems, setTocItems] = useState<TocItem[]>([]);
     const [activeId, setActiveId] = useState<string>('');
     const [highlightedCategory, setHighlightedCategory] = useState<string>('');
+    const [imageError, setImageError] = useState(false);
+
+    const coverImageUrl = post.image_url ?? extractFirstImageUrl(post.content ?? '') ?? null;
+    const displayImage = imageError ? null : coverImageUrl;
+    const contentToRender =
+        post.image_url && coverImageUrl === post.image_url
+            ? post.content ?? ''
+            : removeFirstImageFromContent(post.content ?? '');
+
+    const author = post.author ?? '';
+    const director = post.director ?? '';
+    const year =
+        post.year != null ? String(post.year) : new Date(post.created_at).getFullYear();
 
     // 格式化日期
     const formatDate = (dateString: string): string => {
@@ -92,7 +128,7 @@ export function DevPost({ post }: DevPostProps) {
         }, 100); // 給 DOM 一些時間來完全渲染
 
         return () => clearTimeout(timer);
-    }, [post.content]);
+    }, [contentToRender]);
 
     // 使用 Intersection Observer 追蹤當前閱讀的章節
     useEffect(() => {
@@ -223,6 +259,18 @@ export function DevPost({ post }: DevPostProps) {
         <div className="flex flex-col md:flex-row gap-16 w-full px-10 md:px-40">
             {/* 左側內容區域 */}
             <div className="flex-1 min-w-0">
+                {/* 封面圖 */}
+                {displayImage && (
+                    <div className="w-full overflow-hidden rounded-lg mb-8">
+                        <img
+                            src={displayImage}
+                            alt={post.title}
+                            className="w-full object-cover"
+                            onError={() => setImageError(true)}
+                        />
+                    </div>
+                )}
+
                 {/* 系列信息 */}
                 {post.series && post.series_number && (
                     <div className="mb-4">
@@ -245,16 +293,33 @@ export function DevPost({ post }: DevPostProps) {
                     {post.title}
                 </h1>
 
-                {/* 更新時間 */}
-                {post.updated_at && (
-                    <div className="text-sm text-text-secondary mb-8">
-                        最後更新: {formatDate(post.updated_at)}
+                {/* 元資訊：作者、導演、年份靠左，最後更新靠右 */}
+                <div className="flex justify-between items-baseline gap-4 border-b pb-4 text-sm text-text-secondary mb-8">
+                    <div className="flex flex-wrap gap-x-6 gap-y-1">
+                        {author && (
+                            <span>
+                                作者：<span className="text-text">{author}</span>
+                            </span>
+                        )}
+                        {director && (
+                            <span>
+                                導演：<span className="text-text">{director}</span>
+                            </span>
+                        )}
+                        {year && (
+                            <span>
+                                年份：<span className="text-text">{year}</span>
+                            </span>
+                        )}
                     </div>
-                )}
+                    {post.updated_at && (
+                        <span className="shrink-0">最後更新：{formatDate(post.updated_at)}</span>
+                    )}
+                </div>
 
                 {/* 文章內容 */}
                 <div ref={contentRef} className="prose prose-lg max-w-none">
-                    <TrixContent content={post.content ?? ''} />
+                    <MarkdownContent content={contentToRender} />
                 </div>
             </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { TrixContent } from '@/components/TrixContent';
+import { MarkdownContent } from '@/components/MarkdownContent';
 import Image from 'next/image';
 import { useState } from 'react';
 interface BookPostProps {
@@ -18,21 +18,20 @@ interface BookPostProps {
 const defaultCoverImage =
     'https://www.bookrep.com.tw/sites/default/files/products/img/%EF%BC%88%E5%B7%A6%E5%B2%B8%EF%BC%890GGK0261%E4%BE%9D%E6%B5%B7%E4%B9%8B%E4%BA%BA_%E6%9B%B8%E5%B0%81_%E5%B9%B3%E9%9D%A2.jpg';
 
-// 從 HTML content 中提取第一張圖片 URL
+// 從 Markdown 或 HTML content 中提取第一張圖片 URL
 function extractFirstImageUrl(content: string): string | null {
     if (!content) return null;
 
+    const mdImgMatch = content.match(/!\[[^\]]*\]\(([^)]+)\)/);
+    if (mdImgMatch?.[1]) return mdImgMatch[1].trim();
+
     const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/i);
-    if (imgMatch && imgMatch[1]) {
-        return imgMatch[1];
-    }
+    if (imgMatch?.[1]) return imgMatch[1];
 
     const imgTagMatch = content.match(/<img[^>]+>/i);
     if (imgTagMatch) {
         const srcMatch = imgTagMatch[0].match(/src=["']([^"']+)["']/i);
-        if (srcMatch && srcMatch[1]) {
-            return srcMatch[1];
-        }
+        if (srcMatch?.[1]) return srcMatch[1];
     }
 
     return null;
@@ -47,15 +46,15 @@ function formatDate(dateString: string): string {
     return `${year}/${month}/${day}`;
 }
 
-// 從內容中移除圖片標籤（因為我們會單獨顯示書封）
+// 從內容中移除圖片（因為我們會單獨顯示書封）
 function removeImagesFromContent(content: string): string {
     if (!content) return '';
-    return content.replace(/<img[^>]*>/gi, '');
+    const mdReplaced = content.replace(/!\[[^\]]*\]\([^)]+\)\n?/g, '');
+    return mdReplaced.replace(/<img[^>]*>/gi, '').trim();
 }
 
 function getAuthorName(author: BookPostProps['post']['author']): string {
-    if (!author) return '';
-    return typeof author === 'object' ? (author.name ?? '') : String(author);
+    return author ? String(author) : '';
 }
 
 export function BookPost({ post }: BookPostProps) {
@@ -105,7 +104,7 @@ export function BookPost({ post }: BookPostProps) {
                 </div>
 
                 {/* 內容：段落儘量完整、避免被切到對面欄 */}
-                <TrixContent
+                <MarkdownContent
                     content={contentWithoutImages}
                     className="[&>p]:mb-6 [&>p]:leading-[1.9] [&>p]:text-[#333] [&>p]:break-inside-avoid-column [&>u]:underline [&>u]:underline-offset-4"
                 />

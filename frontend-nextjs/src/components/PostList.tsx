@@ -1,6 +1,6 @@
 'use client';
 
-import { TrixContent } from '@/components/TrixContent';
+import { MarkdownContent } from '@/components/MarkdownContent';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getTheme } from '@/lib/theme';
 import type { PostListItem } from '@/types/api';
@@ -49,7 +49,7 @@ export function PostList({ posts }: PostListProps) {
           >
             <h3 className="font-heading text-text text-[1.4rem] font-semibold mb-3">{post.title}</h3>
             {post.description && (
-              <TrixContent content={post.description} className="mt-4" />
+              <MarkdownContent content={post.description} className="mt-4" />
             )}
             <div className="mt-4 text-sm text-text-secondary">
               發佈於：{new Date(post.created_at).toLocaleDateString('zh-TW')}
