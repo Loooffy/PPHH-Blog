@@ -10,11 +10,11 @@ export function MarkdownContent({ content, className = '' }: MarkdownContentProp
   return (
     <div
       className={`leading-relaxed break-words text-text 
-        [&>*]:box-border [&>*]:m-0 [&>*]:p-0 
+        [&>*]:box-border [&>*:not(p)]:m-0 [&>*]:p-0 
         [&>h1]:text-2xl [&>h1]:leading-tight [&>h1]:mb-3 [&>h1]:mt-3 
         [&>h2]:text-xl [&>h2]:leading-tight [&>h2]:mb-2.5 [&>h2]:mt-2.5 
         [&>h3]:text-lg [&>h3]:leading-tight [&>h3]:mb-2 [&>h3]:mt-2 
-        [&>p]:mb-4 [&>div]:mb-4 
+        [&>p]:my-4 [&>div]:mb-4 
         [&>p:last-child]:mb-0 [&>div:last-child]:mb-0 
         [&>blockquote]:ml-3 [&>blockquote]:pl-6 [&>blockquote]:text-text-secondary [&>blockquote]:border-l-[0.3em] [&>blockquote]:border-l-border [&>blockquote]:border-solid
         [&>ul]:my-4 [&>ul]:pl-8 [&>ul]:list-disc [&>ul]:[list-style-position:outside]

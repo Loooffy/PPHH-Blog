@@ -6,14 +6,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
-import { BookNavBar } from './Book/BookNavBar';
-import { GameNavBar } from './Game/GameNavBar';
+import { GameNavBar } from '../Game/GameNavBar';
 import { ThemeToggle } from './ThemeToggle';
 
 export function TopNavbar() {
   const { mode, setCategory } = useTheme();
   const pathname = usePathname();
-  const logoSrc = mode === 'dark' ? '/blog-logo-white.png' : '/blog-logo-black.png';
+  // film 頁面固定 dark，navbar 也使用 dark theme 的 logo
+  const effectiveMode = pathname.startsWith('/film') ? 'dark' : mode;
+  const logoSrc = effectiveMode === 'dark' ? '/blog-logo-white.png' : '/blog-logo-black.png';
 
   const categories: Category[] = ['dev', 'game', 'film', 'book'];
 
@@ -31,13 +32,10 @@ export function TopNavbar() {
 
   if (pathname.startsWith('/game')) {
     return <GameNavBar />;
-  } else if (pathname.startsWith('/book')) {
-    return <BookNavBar
-      fontSize={14}
-      setFontSize={() => { }}
-      backLinkHref="/"
-      backLinkLabel="首頁"
-    />;
+  }
+  // bookpost 頁面由 BookPost 組件自帶 epub 風格 navbar，這裡不渲染
+  if (pathname.startsWith('/book/')) {
+    return null;
   }
 
   const getNavbarBgClassName = () => {
@@ -49,9 +47,9 @@ export function TopNavbar() {
 
   return (
     <nav
-      className={`flex z-1100 overflow-visible border-b px-12 justify-between items-center ${getNavbarBgClassName()}`}
+      className={`flex z-1100 overflow-visible px-12 justify-between items-center ${getNavbarBgClassName()}`}
     >
-      <Link href="/" className="flex transition-opacity duration-300 hover:opacity-80">
+      <Link href="/" className="flex transition-opacity  hover:opacity-80">
         <Image
           src={logoSrc}
           alt="Blog Logo"

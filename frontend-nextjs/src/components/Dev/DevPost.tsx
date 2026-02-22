@@ -1,8 +1,8 @@
 'use client';
 
-import { MarkdownContent } from '@/components/MarkdownContent';
-import { useEffect, useRef, useState } from 'react';
+import { MarkdownContent } from '@/components/layout/MarkdownContent';
 import type { PostDetail } from '@/types/api';
+import { useEffect, useRef, useState } from 'react';
 
 interface DevPostProps {
     post: PostDetail & { series?: string; series_number?: number };

@@ -1,7 +1,7 @@
 import { BookPost } from '@/components/Book/BookPost';
 import { DevPost } from '@/components/Dev/DevPost';
 import { FilmPost } from '@/components/Film/FilmPost';
-import { MarkdownContent } from '@/components/MarkdownContent';
+import { MarkdownContent } from '@/components/layout/MarkdownContent';
 import { getPost } from '@/lib/api';
 import { categoryNames } from '@/lib/theme';
 import Link from 'next/link';

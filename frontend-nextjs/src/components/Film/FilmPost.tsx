@@ -1,6 +1,6 @@
 'use client';
 
-import { MarkdownContent } from '@/components/MarkdownContent';
+import { MarkdownContent } from '@/components/layout/MarkdownContent';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getTheme } from '@/lib/theme';
 import type { PostDetail } from '@/types/api';
@@ -51,8 +51,8 @@ function removeFirstImageFromContent(content: string): string {
 }
 
 export function FilmPost({ post }: FilmPostProps) {
-  const { category, mode } = useTheme();
-  const theme = getTheme(category ?? 'film', mode);
+  const { category } = useTheme();
+  const theme = getTheme(category ?? 'film', 'dark');
 
   const [imageError, setImageError] = useState(false);
   const coverImageUrl =

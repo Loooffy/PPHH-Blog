@@ -1,4 +1,4 @@
-import { TopNavbar } from "@/components/TopNavbar";
+import { TopNavbar } from "@/components/layout/TopNavbar";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Potta_One } from "next/font/google";

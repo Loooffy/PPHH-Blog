@@ -213,12 +213,12 @@ export function BookPost({ post, backLinkHref, backLinkLabel }: BookPostProps) {
                     >
                         <div
                             className={`
-                contents
-                prose prose-stone max-w-none
-                prose-p:text-justify prose-p:mb-6 prose-p:break-inside-avoid
-                prose-headings:break-inside-avoid prose-headings:break-after-avoid prose-headings:mt-8 prose-headings:mb-4 prose-headings:text-stone-900
-                prose-h1:border-b prose-h1:border-stone-200 prose-h1:pb-2
-                prose-img:rounded-lg prose-img:shadow-md prose-img:mx-auto prose-img:max-h-[60vh] prose-img:object-contain prose-img:my-8 prose-img:break-inside-avoid
+                contents max-w-none
+                [&>p]:text-justify [&>p]:mb-6 [&>p]:mt-4 [&>p]:break-inside-avoid
+                [&>h1]:break-inside-avoid [&>h1]:break-after-avoid [&>h1]:mt-8 [&>h1]:mb-4 [&>h1]:text-stone-900 [&>h1]:border-b [&>h1]:border-stone-200 [&>h1]:pb-2
+                [&>h2]:break-inside-avoid [&>h2]:break-after-avoid [&>h2]:mt-8 [&>h2]:mb-4 [&>h2]:text-stone-900
+                [&>h3]:break-inside-avoid [&>h3]:break-after-avoid [&>h3]:mt-8 [&>h3]:mb-4 [&>h3]:text-stone-900
+                [&>img]:rounded-lg [&>img]:shadow-md [&>img]:mx-auto [&>img]:max-h-[60vh] [&>img]:object-contain [&>img]:my-8 [&>img]:break-inside-avoid
                 [&>*]:px-8 md:[&>*]:px-16 [&>*]:box-border [&>*]:snap-start [&>*]:max-w-full
               `}
                             style={{ fontSize: `${fontSize}px` }}

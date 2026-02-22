@@ -54,10 +54,12 @@ function initializeTheme() {
     mode = prefersDark ? 'dark' : 'light';
   }
 
-  // 立即設置 CSS 變數，避免閃爍
-  const theme = getTheme(category, mode);
+  // film 頁面固定使用 dark theme；book 頁面固定使用 light theme
+  const effectiveMode =
+    category === 'film' ? 'dark' : category === 'book' ? 'light' : mode;
+  const theme = getTheme(category, effectiveMode);
   applyTheme(theme);
-  document.documentElement.setAttribute('data-theme', `${category}-${mode}`);
+  document.documentElement.setAttribute('data-theme', `${category}-${effectiveMode}`);
 
   return { category, mode };
 }
@@ -100,12 +102,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('blog-theme-mode', mode);
   }, [mode, mounted]);
 
-  // 更新 CSS 變數
+  // 更新 CSS 變數；film 固定 dark、book 固定 light
   useEffect(() => {
     if (!mounted) return;
-    const theme = getTheme(category, mode);
+    const effectiveMode =
+      category === 'film' ? 'dark' : category === 'book' ? 'light' : mode;
+    const theme = getTheme(category, effectiveMode);
     applyTheme(theme);
-    document.documentElement.setAttribute('data-theme', `${category}-${mode}`);
+    document.documentElement.setAttribute('data-theme', `${category}-${effectiveMode}`);
   }, [category, mode, mounted]);
 
   const toggleMode = () => {
@@ -115,9 +119,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       // 使用 ref 確保訪問最新的 category 和 mounted 值
       if (mountedRef.current) {
         const currentCategory = categoryRef.current;
-        const theme = getTheme(currentCategory, newMode);
+        const effectiveMode =
+          currentCategory === 'film'
+            ? 'dark'
+            : currentCategory === 'book'
+              ? 'light'
+              : newMode;
+        const theme = getTheme(currentCategory, effectiveMode);
         applyTheme(theme);
-        document.documentElement.setAttribute('data-theme', `${currentCategory}-${newMode}`);
+        document.documentElement.setAttribute('data-theme', `${currentCategory}-${effectiveMode}`);
       }
       return newMode;
     });
