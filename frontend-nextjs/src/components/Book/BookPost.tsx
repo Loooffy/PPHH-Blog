@@ -1,13 +1,12 @@
 'use client';
 
 import { MarkdownContent } from '@/components/MarkdownContent';
-import Image from 'next/image';
-import { useState } from 'react';
 interface BookPostProps {
     post: {
         id: number;
         title: string;
         content: string | null;
+        image_url: string | null;
         created_at: string;
         updated_at?: string;
         author?: string | null;
@@ -15,29 +14,6 @@ interface BookPostProps {
     };
 }
 
-const defaultCoverImage =
-    'https://www.bookrep.com.tw/sites/default/files/products/img/%EF%BC%88%E5%B7%A6%E5%B2%B8%EF%BC%890GGK0261%E4%BE%9D%E6%B5%B7%E4%B9%8B%E4%BA%BA_%E6%9B%B8%E5%B0%81_%E5%B9%B3%E9%9D%A2.jpg';
-
-// 從 Markdown 或 HTML content 中提取第一張圖片 URL
-function extractFirstImageUrl(content: string): string | null {
-    if (!content) return null;
-
-    const mdImgMatch = content.match(/!\[[^\]]*\]\(([^)]+)\)/);
-    if (mdImgMatch?.[1]) return mdImgMatch[1].trim();
-
-    const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/i);
-    if (imgMatch?.[1]) return imgMatch[1];
-
-    const imgTagMatch = content.match(/<img[^>]+>/i);
-    if (imgTagMatch) {
-        const srcMatch = imgTagMatch[0].match(/src=["']([^"']+)["']/i);
-        if (srcMatch?.[1]) return srcMatch[1];
-    }
-
-    return null;
-}
-
-// 格式化日期
 function formatDate(dateString: string): string {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -46,25 +22,15 @@ function formatDate(dateString: string): string {
     return `${year}/${month}/${day}`;
 }
 
-// 從內容中移除圖片（因為我們會單獨顯示書封）
-function removeImagesFromContent(content: string): string {
-    if (!content) return '';
-    const mdReplaced = content.replace(/!\[[^\]]*\]\([^)]+\)\n?/g, '');
-    return mdReplaced.replace(/<img[^>]*>/gi, '').trim();
-}
-
 function getAuthorName(author: BookPostProps['post']['author']): string {
     return author ? String(author) : '';
 }
 
 export function BookPost({ post }: BookPostProps) {
-    const [imageError, setImageError] = useState(false);
     const bookTitle = post.title;
     const bookAuthor = getAuthorName(post.author);
     const bookYear = post.year != null ? String(post.year) : '';
-    const coverImageUrl = extractFirstImageUrl(post.content ?? '') || defaultCoverImage;
-    const displayImage = imageError ? defaultCoverImage : coverImageUrl;
-    const contentWithoutImages = removeImagesFromContent(post.content ?? '');
+    const coverImageUrl = post.image_url ?? null;
     const updatedAt = post.updated_at || post.created_at;
 
     return (
@@ -73,23 +39,19 @@ export function BookPost({ post }: BookPostProps) {
             <div className="max-w-[1000px] columns-1 md:columns-2 md:gap-x-[60px] text-justify [column-fill:balance]">
                 {/* 書封：適應欄寬、避免被截斷 */}
                 <div className="break-inside-avoid mb-[25px]">
-                    <div className="relative block w-full max-w-[260px] aspect-3/4">
-                        <Image
-                            src={displayImage}
+                    <div className="relative block w-full max-w-[260px]">
+                        <img
+                            src={coverImageUrl ?? ''}
                             alt={`${bookTitle} 書封`}
-                            fill
                             className="object-cover drop-shadow-[10px_10px_20px_rgba(0,0,0,0.15)]"
-                            onError={() => setImageError(true)}
                         />
                     </div>
                 </div>
 
-                {/* 標題 */}
                 <h1 className="break-inside-avoid text-[3.5rem] my-2.5 font-semibold">
                     {bookTitle}
                 </h1>
 
-                {/* 元資訊 */}
                 <div className="break-inside-avoid flex justify-between border-b border-[#ddd] pb-2.5 mb-8 text-sm text-[#777]">
                     <span>
                         作者：{bookAuthor}
@@ -103,9 +65,8 @@ export function BookPost({ post }: BookPostProps) {
                     <span className="self-end">最後更新：{formatDate(updatedAt)}</span>
                 </div>
 
-                {/* 內容：段落儘量完整、避免被切到對面欄 */}
                 <MarkdownContent
-                    content={contentWithoutImages}
+                    content={post.content ?? ''}
                     className="[&>p]:mb-6 [&>p]:leading-[1.9] [&>p]:text-[#333] [&>p]:break-inside-avoid-column [&>u]:underline [&>u]:underline-offset-4"
                 />
             </div>
