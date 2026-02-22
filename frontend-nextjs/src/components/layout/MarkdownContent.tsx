@@ -1,3 +1,4 @@
+import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -32,7 +33,7 @@ export function MarkdownContent({ content, className = '' }: MarkdownContentProp
         [&_td]:border [&_td]:border-border [&_td]:px-4 [&_td]:py-2
         ${className}`}
     >
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content || ''}</ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm, remarkStripCodeFences]}>{content || ''}</ReactMarkdown>
     </div>
   );
 }

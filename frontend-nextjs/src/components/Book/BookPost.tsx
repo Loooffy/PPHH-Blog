@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { BookBottomBar } from './BookBottomBar';
@@ -230,7 +231,7 @@ export function BookPost({ post, backLinkHref, backLinkLabel }: BookPostProps) {
                                 coverImageUrl={coverImageUrl}
                                 updatedAt={updatedAt}
                             />
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+                            <ReactMarkdown remarkPlugins={[remarkGfm, remarkStripCodeFences]}>{content}</ReactMarkdown>
                         </div>
                     </div>
                 </div>

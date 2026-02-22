@@ -1,10 +1,10 @@
 'use client';
 
+import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
 import { PostDetail } from '@/types/api';
 import {
     Check,
     ChevronRight,
-    Code,
     Copy,
     File,
     List,
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 type ViewMode = 'balanced' | 'code';
 
@@ -30,8 +31,7 @@ interface FileContent {
 interface TourStep {
     id: string;
     title: string;
-    targetType: 'file' | 'terminal';
-    targetId: string; // file id or terminal script
+    targetId: string; // file id (包含 setup.sh 等 shell script)
     focusLines?: [number, number]; // [start, end]
     content: string;
 }
@@ -40,7 +40,6 @@ export function DevPost({ post }: DevPostProps) {
     const [viewMode, setViewMode] = useState<ViewMode>('balanced');
     const [activeStepIndex, setActiveStepIndex] = useState(0);
     const [activeFile, setActiveFile] = useState<FileContent | null>(null);
-    const [activeTab, setActiveTab] = useState<'files' | 'terminal'>('files');
     const [copied, setCopied] = useState(false);
     const [isTocOpen, setIsTocOpen] = useState(false);
 
@@ -53,11 +52,20 @@ export function DevPost({ post }: DevPostProps) {
         let match;
         while ((match = regex.exec(markdown)) !== null) {
             const [, name, rawContent] = match;
-            if (name === 'setup.sh') continue; // Skip terminal script
 
             // Extract content from code block if present
+            let content: string;
             const codeBlockMatch = rawContent.match(/```(?:\w+)?\s([\s\S]*?)```/);
-            const content = codeBlockMatch ? codeBlockMatch[1].trim() : rawContent.trim();
+            if (codeBlockMatch) {
+                content = codeBlockMatch[1].trim();
+            } else {
+                content = rawContent.trim();
+                // 移除開頭/結尾的 ``` 或 \`\`\` fence（當 regex 未匹配時）
+                // 支援 ``` 或 \`\`\` 兩種 fence 格式
+                const fenceStart = /^(`{3}|(\\`){3})\w*\s*/;
+                const fenceEnd = /\s*(`{3}|(\\`){3})\s*$/;
+                content = content.replace(fenceStart, '').replace(fenceEnd, '');
+            }
 
             const id = name.replace('.', '-');
             const language = name.split('.').pop() || 'text';
@@ -82,8 +90,7 @@ export function DevPost({ post }: DevPostProps) {
         while ((match = regex.exec(markdown)) !== null) {
             const [, filename, startLine, endLine, content] = match;
 
-            const targetType = filename === 'setup.sh' ? 'terminal' : 'file';
-            const targetId = filename === 'setup.sh' ? 'terminal-script' : filename.replace('.', '-');
+            const targetId = filename.replace('.', '-');
             const focusLines: [number, number] = [parseInt(startLine), parseInt(endLine)];
             const id = `step-${parsedSteps.length + 1}`; // Generate ID
 
@@ -94,7 +101,6 @@ export function DevPost({ post }: DevPostProps) {
             parsedSteps.push({
                 id,
                 title,
-                targetType: targetType as 'file' | 'terminal',
                 targetId,
                 focusLines,
                 content: content.trim()
@@ -104,20 +110,13 @@ export function DevPost({ post }: DevPostProps) {
         return parsedSteps;
     }, [post.content]);
 
-    // 同步右側面板（程式碼/終端機）到目前的步驟
+    // 同步右側面板到目前的步驟（依 targetId 對應檔案）
     const syncRightPanel = (index: number) => {
         const step = steps[index];
         if (!step) return;
 
-        if (step.targetType === 'file') {
-            const file = files.find(f => f.id === step.targetId);
-            if (file) {
-                setActiveFile(file);
-                setActiveTab('files');
-            }
-        } else {
-            setActiveTab('terminal');
-        }
+        const file = files.find(f => f.id === step.targetId);
+        if (file) setActiveFile(file);
     };
 
     // 跳轉至內文特定區段，並同步右側（僅在 client 點擊時執行，可安全使用 document）
@@ -140,19 +139,12 @@ export function DevPost({ post }: DevPostProps) {
     };
 
     // 當點擊右側程式碼標籤時，同步跳轉到第一個引用該檔案的內文步驟
-    const onCodeTabClick = (fileId: string | 'terminal') => {
-        if (fileId === 'terminal') {
-            setActiveTab('terminal');
-            const firstTerminalStepIdx = steps.findIndex(s => s.targetType === 'terminal');
-            if (firstTerminalStepIdx !== -1) jumpToArticleSection(firstTerminalStepIdx);
-        } else {
-            const file = files.find(f => f.id === fileId);
-            if (file) {
-                setActiveFile(file);
-                setActiveTab('files');
-                const firstFileStepIdx = steps.findIndex(s => s.targetId === fileId);
-                if (firstFileStepIdx !== -1) jumpToArticleSection(firstFileStepIdx);
-            }
+    const onCodeTabClick = (fileId: string) => {
+        const file = files.find(f => f.id === fileId);
+        if (file) {
+            setActiveFile(file);
+            const firstStepIdx = steps.findIndex(s => s.targetId === fileId);
+            if (firstStepIdx !== -1) jumpToArticleSection(firstStepIdx);
         }
     };
 
@@ -168,13 +160,6 @@ export function DevPost({ post }: DevPostProps) {
         <div className="flex flex-col h-screen w-full bg-[#ffffff] text-[#333333] overflow-hidden">
             {/* Navbar */}
             <nav className="h-16 border-b border-[#eeeeee] flex items-center justify-between px-8 bg-white/80 backdrop-blur-md z-[100] shrink-0">
-                <div className="flex items-center gap-3">
-                    <div className="bg-blue-600 p-1.5 rounded-lg">
-                        <Code className="text-white" size={18} />
-                    </div>
-                    <span className="font-bold text-lg tracking-tight text-[#222]">DEV FLOW</span>
-                </div>
-
                 <div className="flex items-center bg-[#f5f5f5] rounded-full p-1 border border-[#e0e0e0]">
                     {(['balanced', 'code'] as ViewMode[]).map((m) => (
                         <button key={m} onClick={() => setViewMode(m)} className={`px-4 py-1.5 rounded-full text-[11px] font-bold transition-all ${viewMode === m ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
@@ -222,7 +207,7 @@ export function DevPost({ post }: DevPostProps) {
                                     className={`transition-all duration-700 cursor-pointer ${activeStepIndex === idx ? 'opacity-100' : 'opacity-20 hover:opacity-40'}`}
                                 >
                                     <div className="text-[17px] leading-[2.1] text-[#333] space-y-8 markdown-body">
-                                        <ReactMarkdown>{step.content}</ReactMarkdown>
+                                        <ReactMarkdown remarkPlugins={[remarkGfm, remarkStripCodeFences]}>{step.content}</ReactMarkdown>
                                     </div>
                                 </div>
                             ))}
@@ -242,21 +227,15 @@ export function DevPost({ post }: DevPostProps) {
                                 <button
                                     key={file.id}
                                     onClick={() => onCodeTabClick(file.id)}
-                                    className={`flex items-center gap-2 px-4 h-10 text-[11px] font-medium border-b-2 transition-all whitespace-nowrap ${activeTab === 'files' && activeFile?.id === file.id ? 'text-blue-600 border-blue-600 bg-white' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
+                                    className={`flex items-center gap-2 px-4 h-10 text-[11px] font-medium border-b-2 transition-all whitespace-nowrap ${activeFile?.id === file.id ? 'text-blue-600 border-blue-600 bg-white' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
                                 >
-                                    <File size={12} /> {file.name}
+                                    {file.name === 'setup.sh' ? <TerminalIcon size={12} /> : <File size={12} />} {file.name}
                                 </button>
                             ))}
-                            <button
-                                onClick={() => onCodeTabClick('terminal')}
-                                className={`flex items-center gap-2 px-4 h-10 text-[11px] font-medium border-b-2 transition-all ${activeTab === 'terminal' ? 'text-blue-600 border-blue-600 bg-white' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
-                            >
-                                <TerminalIcon size={12} /> setup.sh
-                            </button>
                         </div>
 
                         <button
-                            onClick={() => copyToClipboard(activeTab === 'files' && activeFile ? activeFile.content : "")}
+                            onClick={() => copyToClipboard(activeFile ? activeFile.content : "")}
                             className="text-gray-400 hover:text-blue-600 p-2 transition-colors"
                         >
                             {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
@@ -265,15 +244,13 @@ export function DevPost({ post }: DevPostProps) {
 
                     <div className="flex-1 overflow-auto bg-white p-6 font-mono text-[13px] leading-[1.8]">
                         <pre className="select-all">
-                            {(activeTab === 'files' && activeFile ? activeFile.content : '').split('\n').map((line, i) => {
+                            {(activeFile ? activeFile.content : '').split('\n').map((line, i) => {
                                 const lineNum = i + 1;
 
                                 // 找出這行程式碼屬於哪一個步驟
-                                const associatedStepIndex = steps.findIndex(s => {
-                                    const isCorrectTab = (activeTab === 'files' && activeFile && s.targetType === 'file' && s.targetId === activeFile.id) ||
-                                        (activeTab === 'terminal' && s.targetType === 'terminal');
-                                    return isCorrectTab && s.focusLines && lineNum >= s.focusLines[0] && lineNum <= s.focusLines[1];
-                                });
+                                const associatedStepIndex = steps.findIndex(s =>
+                                    activeFile && s.targetId === activeFile.id && s.focusLines && lineNum >= s.focusLines[0] && lineNum <= s.focusLines[1]
+                                );
 
                                 const isHighlighted = associatedStepIndex !== -1;
                                 const isActiveHighlight = associatedStepIndex === activeStepIndex;
@@ -334,7 +311,7 @@ export function DevPost({ post }: DevPostProps) {
                                     <div className="flex-1 truncate">
                                         <div className="font-bold truncate">{step.title}</div>
                                         <div className="text-[10px] opacity-60 mt-0.5 truncate uppercase tracking-tighter">
-                                            {step.targetType === 'file' ? step.targetId : 'setup.sh'}
+                                            {files.find(f => f.id === step.targetId)?.name ?? step.targetId}
                                         </div>
                                     </div>
                                     {activeStepIndex === idx && <ChevronRight size={14} className="mt-1" />}
