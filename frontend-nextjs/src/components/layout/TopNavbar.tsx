@@ -60,7 +60,7 @@ export function TopNavbar() {
         />
       </Link>
       <div className="flex items-center justify-end">
-        <div className="flex items-center justify-end px-10 py-4 md:px-12">
+        <div className="flex px-10 py-4 md:px-12">
           {categories.map((cat) => {
             return (
               <Link
