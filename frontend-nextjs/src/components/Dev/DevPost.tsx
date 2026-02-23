@@ -3,19 +3,17 @@
 import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
 import { PostDetail } from '@/types/api';
 import {
-    Check,
     ChevronRight,
-    Copy,
     File,
     List,
     Terminal as TerminalIcon,
     X
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-type ViewMode = 'balanced' | 'code';
+type ViewMode = 'balanced' | 'code' | 'article';
 
 interface DevPostProps {
     post: PostDetail;
@@ -37,7 +35,6 @@ interface TourStep {
 }
 
 export function DevPost({ post }: DevPostProps) {
-    const [viewMode, setViewMode] = useState<ViewMode>('balanced');
     const [activeStepIndex, setActiveStepIndex] = useState(0);
     const [activeFile, setActiveFile] = useState<FileContent | null>(null);
     const [copied, setCopied] = useState(false);
@@ -80,6 +77,16 @@ export function DevPost({ post }: DevPostProps) {
         return parsedFiles;
     }, [post.content]);
 
+    const [viewMode, setViewMode] = useState<ViewMode>(() =>
+        files.length === 0 ? 'article' : 'balanced'
+    );
+
+    useEffect(() => {
+        if (files.length === 0 && viewMode !== 'article') {
+            setViewMode('article');
+        }
+    }, [files.length, viewMode]);
+
     // Parse markdown content into steps
     const steps = useMemo(() => {
         const parsedSteps: TourStep[] = [];
@@ -108,6 +115,14 @@ export function DevPost({ post }: DevPostProps) {
         }
 
         return parsedSteps;
+    }, [post.content]);
+
+    // Article 模式用的內容：移除 <<<filename>>> 與 [[[steps]]] 區塊標記，只保留一般 markdown
+    const articleContent = useMemo(() => {
+        let markdown = post.content ?? '';
+        markdown = markdown.replace(/<<<\s*[\w\.-]+\s*>>>[\s\S]*?<<<\/>>>/g, '');
+        markdown = markdown.replace(/\[\[\[\s*[\w\.-]+,\s*\d+-\d+\s*\]\]\]/g, '').replace(/\[\[\[\/\]\]\]/g, '');
+        return markdown.trim();
     }, [post.content]);
 
     // 同步右側面板到目前的步驟（依 targetId 對應檔案）
@@ -154,96 +169,128 @@ export function DevPost({ post }: DevPostProps) {
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const widths = viewMode === 'code' ? { left: 'w-[35%]', right: 'w-[65%]' } : { left: 'w-[50%]', right: 'w-[50%]' };
+    const widths = viewMode === 'article'
+        ? { left: 'w-full', right: 'hidden' }
+        : viewMode === 'code'
+            ? { left: 'w-[35%]', right: 'w-[65%]' }
+            : { left: 'w-[50%]', right: 'w-[50%]' };
 
     return (
-        <div className="flex flex-col h-screen w-full bg-[#ffffff] text-[#333333] overflow-hidden">
+        <div className="flex flex-col h-screen w-full bg-background text-text overflow-hidden">
             {/* Navbar */}
-            <nav className="h-16 border-b border-[#eeeeee] flex items-center justify-between px-8 bg-white/80 backdrop-blur-md z-[100] shrink-0">
-                <div className="flex items-center bg-[#f5f5f5] rounded-full p-1 border border-[#e0e0e0]">
-                    {(['balanced', 'code'] as ViewMode[]).map((m) => (
-                        <button key={m} onClick={() => setViewMode(m)} className={`px-4 py-1.5 rounded-full text-[11px] font-bold transition-all ${viewMode === m ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-                            <span className="capitalize">{m === 'balanced' ? 'Balanced' : 'Code-First'}</span>
-                        </button>
-                    ))}
+            <nav className="h-16 border-b border-border flex items-center justify-between px-8 bg-surface/80 backdrop-blur-md z-[100] shrink-0">
+                <div className="flex items-center bg-background rounded-full p-1 border border-border">
+                    {(['article', 'balanced', 'code'] as ViewMode[]).map((m) => {
+                        const isDisabled = files.length === 0 && m !== 'article';
+                        return (
+                            <button
+                                key={m}
+                                onClick={() => !isDisabled && setViewMode(m)}
+                                disabled={isDisabled}
+                                className={`px-4 py-1.5 cursor-pointer rounded-full text-[11px] font-bold transition-all ${isDisabled
+                                    ? 'text-text-secondary/50 opacity-10'
+                                    : viewMode === m
+                                        ? 'bg-primary/15 text-primary ring-1 ring-primary/20'
+                                        : 'text-text-secondary hover:text-text hover:bg-surface/50'
+                                    }`}
+                            >
+                                <span className="capitalize">{m === 'balanced' ? 'Balanced' : m === 'code' ? 'Code-First' : 'Article'}</span>
+                            </button>
+                        );
+                    })}
                 </div>
+                {!isTocOpen && viewMode !== 'article' && steps.length > 0 && (
+                    <button
+                        onClick={() => setIsTocOpen(true)}
+                        className={`flex cursor-pointer items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface transition-all text-text'}`}
+                    >
+                        <List size={16} />
+                        <span className="text-[11px] font-bold uppercase tracking-widest">目錄</span>
+                    </button>
+                )}
             </nav>
 
             <div className="flex flex-1 overflow-hidden relative">
                 {/* Article Section */}
                 <section
                     id="article-container"
-                    className={`${widths.left} h-full overflow-y-auto bg-white flex flex-col scroll-smooth transition-all duration-500 border-r border-[#f0f0f0]`}
+                    className={`${widths.left} h-full overflow-y-auto bg-surface flex flex-col scroll-smooth transition-all duration-500 border-r border-border`}
                 >
                     <div className="max-w-3xl mx-auto w-full px-12 py-16">
                         <div className="mb-14">
                             {post.series && (
-                                <span className="inline-block px-3 py-1 rounded-[16px] text-[11px] font-medium tracking-tight mb-5 bg-[#9ea2a5] text-white">
-                                    {post.series}
-                                </span>
+                                <div className="flex items-center gap-3 mb-5">
+                                    <span className="text-text text-[14px] font-medium underline underline-offset-2 decoration-text">
+                                        「{post.series}」系列
+                                    </span>
+                                    {post.series_number != null && (
+                                        <span className="inline-block px-3 py-1 rounded-[16px] text-[11px] font-medium tracking-tight bg-border/30 text-text-secondary">
+                                            第 {post.series_number} 篇
+                                        </span>
+                                    )}
+                                </div>
                             )}
-                            <h1 className="text-[34px] font-bold text-[#1a1a1a] mb-8 tracking-tight leading-[1.3]">
-                                0{activeStepIndex + 1} {post.title}
+                            <h1 className="text-[34px] font-bold text-text mb-8 tracking-tight leading-[1.3]">
+                                {viewMode === 'article' ? post.title : `0${activeStepIndex + 1} ${post.title}`}
                             </h1>
 
-                            <div className="flex items-center justify-between text-[12px] text-[#aaaaaa] pb-4 border-b border-[#eeeeee]">
+                            <div className="flex items-center justify-between text-[12px] text-text-secondary pb-4 border-b border-border">
                                 <div className="flex gap-4 items-center">
                                     <span>最後更新：{new Date(post.updated_at).toLocaleDateString('zh-TW')}</span>
                                 </div>
                                 <div className="flex gap-2">
                                     {post.tags?.map((tag) => (
-                                        <span key={tag.id} className="px-3 py-0.5 rounded-full border border-[#d0d0d0] bg-white text-[#999] text-[10px]">{tag.name}</span>
+                                        <span key={tag.id} className="px-3 py-0.5 rounded-full border border-border bg-surface text-text-secondary text-[10px]">{tag.name}</span>
                                     ))}
                                 </div>
                             </div>
                         </div>
 
                         <article className="space-y-16">
-                            {steps.map((step, idx) => (
-                                <div
-                                    key={step.id}
-                                    id={`section-${idx}`}
-                                    onClick={() => jumpToArticleSection(idx)}
-                                    className={`transition-all duration-700 cursor-pointer ${activeStepIndex === idx ? 'opacity-100' : 'opacity-20 hover:opacity-40'}`}
-                                >
-                                    <div className="text-[17px] leading-[2.1] text-[#333] space-y-8 markdown-body">
-                                        <ReactMarkdown remarkPlugins={[remarkGfm, remarkStripCodeFences]}>{step.content}</ReactMarkdown>
-                                    </div>
+                            {viewMode === 'article' ? (
+                                <div className="text-[17px] leading-[2.1] text-text space-y-8 markdown-body">
+                                    <ReactMarkdown remarkPlugins={[remarkGfm, remarkStripCodeFences]}>{articleContent}</ReactMarkdown>
                                 </div>
-                            ))}
+                            ) : (
+                                steps.map((step, idx) => (
+                                    <div
+                                        key={step.id}
+                                        id={`section-${idx}`}
+                                        onClick={() => jumpToArticleSection(idx)}
+                                        className={`transition-all duration-700 cursor-pointer ${activeStepIndex === idx ? 'opacity-100' : 'opacity-20 hover:opacity-40'}`}
+                                    >
+                                        <div className="text-[17px] leading-[2.1] text-text space-y-8 markdown-body">
+                                            <ReactMarkdown remarkPlugins={[remarkGfm, remarkStripCodeFences]}>{step.content}</ReactMarkdown>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
                         </article>
 
-                        <footer className="mt-40 pt-10 border-t border-[#f0f0f0] text-center text-[10px] font-bold tracking-[0.3em] uppercase text-[#ccc]">
+                        <footer className="mt-40 pt-10 border-t border-border text-center text-[10px] font-bold tracking-[0.3em] uppercase text-text-secondary">
                             Dev Flow · Pure Technology Reading
                         </footer>
                     </div>
                 </section>
 
                 {/* Code Section */}
-                <section className={`${widths.right} h-full bg-[#fafafa] flex flex-col relative transition-all duration-500`}>
-                    <div className="h-10 border-b border-[#eeeeee] flex items-center px-4 bg-white shrink-0 justify-between">
+                <section className={`${widths.right} h-full bg-background flex flex-col relative transition-all duration-500`}>
+                    <div className="h-10 border-b border-border flex items-center px-4 bg-surface shrink-0 justify-between">
                         <div className="flex items-center h-full">
                             {files.map(file => (
                                 <button
                                     key={file.id}
                                     onClick={() => onCodeTabClick(file.id)}
-                                    className={`flex items-center gap-2 px-4 h-10 text-[11px] font-medium border-b-2 transition-all whitespace-nowrap ${activeFile?.id === file.id ? 'text-blue-600 border-blue-600 bg-white' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
+                                    className={`flex items-center gap-2 px-4 h-10 text-[11px] font-medium border-b-2 transition-all whitespace-nowrap ${activeFile?.id === file.id ? 'text-primary border-primary bg-primary/10' : 'text-text-secondary border-transparent hover:text-text hover:bg-surface/80 hover:text-primary/80'}`}
                                 >
                                     {file.name === 'setup.sh' ? <TerminalIcon size={12} /> : <File size={12} />} {file.name}
                                 </button>
                             ))}
                         </div>
-
-                        <button
-                            onClick={() => copyToClipboard(activeFile ? activeFile.content : "")}
-                            className="text-gray-400 hover:text-blue-600 p-2 transition-colors"
-                        >
-                            {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
-                        </button>
                     </div>
 
-                    <div className="flex-1 overflow-auto bg-white p-6 font-mono text-[13px] leading-[1.8]">
-                        <pre className="select-all">
+                    <div className="flex-1 overflow-auto bg-surface p-6 font-mono text-[13px] leading-[1.8]">
+                        <pre className="select-text">
                             {(activeFile ? activeFile.content : '').split('\n').map((line, i) => {
                                 const lineNum = i + 1;
 
@@ -259,9 +306,9 @@ export function DevPost({ post }: DevPostProps) {
                                     <div
                                         key={i}
                                         onClick={() => isHighlighted && jumpToArticleSection(associatedStepIndex)}
-                                        className={`flex transition-all duration-300 ${isHighlighted ? 'cursor-pointer hover:bg-blue-50/40' : 'opacity-25'} ${isActiveHighlight ? 'bg-blue-50/80 text-blue-700 font-bold -mx-6 px-6' : ''}`}
+                                        className={`flex transition-all duration-300 ${isHighlighted ? 'cursor-pointer hover:bg-primary/10' : 'opacity-25'} ${isActiveHighlight ? 'bg-primary/15 text-primary font-bold -mx-6 px-6' : ''}`}
                                     >
-                                        <span className={`w-10 shrink-0 text-[10px] select-none ${isActiveHighlight ? 'text-blue-400' : 'text-gray-300'}`}>{lineNum}</span>
+                                        <span className={`w-10 shrink-0 text-[10px] select-none ${isActiveHighlight ? 'text-primary' : 'text-text-secondary'}`}>{lineNum}</span>
                                         <span className="flex-1">{line || ' '}</span>
                                     </div>
                                 );
@@ -271,40 +318,30 @@ export function DevPost({ post }: DevPostProps) {
                 </section>
             </div>
 
-            {!isTocOpen && (
-                <button
-                    onClick={() => setIsTocOpen(true)}
-                    className="fixed right-6 top-[120px] z-[90] flex items-center gap-2 px-4 py-2 rounded-full border border-[#eeeeee] bg-white shadow-lg hover:shadow-xl transition-all text-[#333]"
-                >
-                    <List size={16} />
-                    <span className="text-[11px] font-bold uppercase tracking-widest">目錄</span>
-                </button>
-            )}
-
-            <div className="fixed right-0 top-[120px] z-[100] flex items-start pointer-events-none">
-                {isTocOpen && (
+            <div className="fixed right-0 top-[120px] z-[100] flex items-start">
+                {isTocOpen && viewMode !== 'article' && (
                     <div
-                        className="w-72 max-h-[80vh] bg-[#161b22]/95 backdrop-blur-md border border-[#30363d] rounded-l-xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300 pointer-events-auto"
+                        className="w-72 max-h-[80vh] bg-surface/95 backdrop-blur-md border border-border rounded-l-xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300 pointer-events-auto"
                     >
-                        <div className="p-4 border-b border-[#30363d] flex items-center justify-between bg-[#1c2128]/50">
-                            <span className="text-xs font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
+                        <div className="p-4 border-b border-border flex items-center justify-between bg-background/50">
+                            <span className="text-xs font-bold uppercase tracking-widest text-text-secondary flex items-center gap-2">
                                 <List size={12} /> Table of Contents
                             </span>
-                            <button onClick={() => setIsTocOpen(false)} className="text-gray-500 hover:text-white p-1 rounded hover:bg-[#30363d] transition-colors">
+                            <button onClick={() => setIsTocOpen(false)} className="text-text-secondary hover:text-text p-1 rounded hover:bg-border transition-colors">
                                 <X size={16} />
                             </button>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-2">
+                        <div className="flex-1 overflow-y-auto p-2 dev-post-toc">
                             {steps.map((step, idx) => (
                                 <button
                                     key={step.id}
                                     onClick={() => jumpToArticleSection(idx)}
                                     className={`w-full text-left p-3 rounded-lg text-xs transition-all flex items-start gap-3 group mb-1 last:mb-0 ${activeStepIndex === idx
-                                        ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
-                                        : 'text-gray-400 hover:bg-[#30363d] hover:text-gray-200 border border-transparent'
+                                        ? 'bg-primary/20 text-primary border border-primary/30'
+                                        : 'text-text-secondary hover:bg-border/50 hover:text-text border border-transparent'
                                         }`}
                                 >
-                                    <span className={`w-5 h-5 shrink-0 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors ${activeStepIndex === idx ? 'bg-blue-500 text-white' : 'bg-[#0d1117] text-gray-600 group-hover:text-gray-400'
+                                    <span className={`w-5 h-5 shrink-0 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors ${activeStepIndex === idx ? 'bg-primary text-surface' : 'bg-background text-text-secondary group-hover:text-text'
                                         }`}>
                                         {idx + 1}
                                     </span>
@@ -318,7 +355,7 @@ export function DevPost({ post }: DevPostProps) {
                                 </button>
                             ))}
                         </div>
-                        <div className="p-3 bg-[#0d1117]/50 text-[10px] text-gray-600 text-center border-t border-[#30363d]">
+                        <div className="p-3 bg-background/50 text-[10px] text-text-secondary text-center border-t border-border">
                             點選步驟快速導覽
                         </div>
                     </div>

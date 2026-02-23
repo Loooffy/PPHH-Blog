@@ -47,7 +47,7 @@ export function TopNavbar() {
 
   return (
     <nav
-      className={`flex z-1100 overflow-visible px-12 justify-between items-center ${getNavbarBgClassName()}`}
+      className={`flex z-1100 overflow-visible border-b border-gray-300 px-12 justify-between items-center ${getNavbarBgClassName()}`}
     >
       <Link href="/" className="flex transition-opacity  hover:opacity-80">
         <Image
@@ -69,7 +69,7 @@ export function TopNavbar() {
                 className={`group flex min-w-0 shrink flex-col items-center cursor-pointer text-text-secondary text-xs mx-2 py-1 sm:text-sm sm:px-3 sm:py-1.5 md:px-1 md:py-2 hover:border-b-2 hover:border-primary}`}
                 onClick={() => setCategory(cat)}
               >
-                <span className="text-xl">{categoryNames[cat]}</span>
+                <span className="text-l">{categoryNames[cat]}</span>
               </Link>
             );
           })}
