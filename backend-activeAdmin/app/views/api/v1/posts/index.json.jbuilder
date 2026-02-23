@@ -18,8 +18,8 @@ json.posts @posts do |post|
     json.name tag.name
   end
   if (info = post.primary_series_info)
-    json.series info[:name]
-    json.series_number info[:position]
+    json.series_id info[:position]
+    json.series_name info[:name]
   end
 end
 

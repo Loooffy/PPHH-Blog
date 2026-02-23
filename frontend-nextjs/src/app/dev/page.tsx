@@ -1,46 +1,38 @@
 import { DevPostList } from '@/components/Dev/DevPostList';
+import { DevTagSeries } from '@/components/Dev/DevTagSeries';
 import { ThemedMain } from '@/components/layout/ThemedMain';
-import { getPostsByCategory } from '@/lib/api';
-import Link from 'next/link';
+import { getPostsByCategory, listSeries, listTags } from '@/lib/api';
 
-export default async function DevPage() {
-  const posts = await getPostsByCategory('dev');
+interface DevPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function DevPage({ searchParams }: DevPageProps) {
+  const params = await searchParams;
+  const tagId = params.tag_id
+    ? parseInt(String(params.tag_id), 10)
+    : undefined;
+  const seriesId = params.series_id
+    ? parseInt(String(params.series_id), 10)
+    : undefined;
+
+  const [posts, { tags }, { series }] = await Promise.all([
+    getPostsByCategory('dev', { tag_id: tagId, series_id: seriesId }),
+    listTags({ type: 'DevPost' }),
+    listSeries({ type: 'DevPost' }),
+  ]);
 
   return (
     <>
       <ThemedMain category="dev">
         <div className="px-6 md:px-8 py-6 flex flex-col md:flex-row gap-6 items-start">
           <div className="w-full md:w-[20%] md:shrink-0 md:max-w-[20%] mr-6 mt-3">
-            <div className="w-full sticky top-30">
-              <div className="flex flex-row gap-1">
-                <div className="flex-1"></div>
-                <div className="flex-2 text-l text-black text-center font-bold py-1 mb-3 border-b-2 border-gray-400">系列文章</div>
-                <div className="flex-1"></div>
-              </div>
-              <div className="flex flex-col gap-1">
-                <Link href="#" className="flex-1 text-xs text-center hover:font-bold py-1">我是長標籤很長的標籤</Link>
-                <Link href="#" className="flex-1 text-xs text-center hover:font-bold py-1">如何在速度與理解之間取得平衡</Link>
-                <Link href="#" className="flex-1 text-xs text-center hover:font-bold py-1">這是中標籤不短不長</Link>
-                <Link href="#" className="flex-1 text-xs text-center hover:font-bold py-1">這個標籤比較短</Link>
-                <Link href="#" className="flex-1 text-xs text-center hover:font-bold py-1">有點長又不會太長的標籤</Link>
-              </div>
-              <div className="flex flex-row gap-1">
-                <div className="flex-1"></div>
-                <div className="flex-2 text-l text-center font-bold my-6 border-b-2 border-gray-400">標籤</div>
-                <div className="flex-1"></div>
-              </div>
-              <div className="grid grid-col gap-2 justify-items-center">
-                <div className="flex flex-row gap-2">
-                  <Link href="#" className="text-xs text-center hover:bg-black hover:text-white px-1 py-1 border border-gray-400 rounded w-fit">web</Link>
-                  <Link href="#" className="text-xs text-center hover:bg-black hover:text-white px-1 py-1 border border-gray-400 rounded w-fit">react</Link>
-                  <Link href="#" className="text-xs text-center hover:bg-black hover:text-white px-1 py-1 border border-gray-400 rounded w-fit">typescript</Link>
-                </div>
-                <div className="flex flex-row gap-2">
-                  <Link href="#" className="text-xs text-center hover:bg-black hover:text-white px-1 py-1 border border-gray-400 rounded w-fit">前端開發</Link>
-                  <Link href="#" className="text-xs text-center hover:bg-black hover:text-white px-1 py-1 border border-gray-400 rounded w-fit">nextjs</Link>
-                </div>
-              </div>
-            </div>
+            <DevTagSeries
+              series={series}
+              tags={tags}
+              activeSeriesId={seriesId}
+              activeTagId={tagId}
+            />
           </div>
 
           {/* 右側：文章列表 */}

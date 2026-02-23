@@ -4,6 +4,7 @@ import {
   type PaginationMeta,
   type PostDetail,
   type PostsListResponse,
+  type SeriesListResponse,
   type TagsListResponse,
 } from '@/types/api';
 
@@ -28,11 +29,13 @@ export const API_ENDPOINTS = {
   posts: () => `${getApiBaseUrl()}/api/v1/posts`,
   post: (slug: string) => `${getApiBaseUrl()}/api/v1/posts/${slug}`,
   tags: () => `${getApiBaseUrl()}/api/v1/tags`,
+  series: () => `${getApiBaseUrl()}/api/v1/series`,
 };
 
 export interface ListPostsParams {
   type?: 'DevPost' | 'GamePost' | 'BookPost' | 'FilmPost';
   tag_id?: number;
+  series_id?: number;
   page?: number;
   per_page?: number;
 }
@@ -44,6 +47,7 @@ export async function listPosts(
     const searchParams = new URLSearchParams();
     if (params?.type) searchParams.set('type', params.type);
     if (params?.tag_id != null) searchParams.set('tag_id', String(params.tag_id));
+    if (params?.series_id != null) searchParams.set('series_id', String(params.series_id));
     if (params?.page != null) searchParams.set('page', String(params.page));
     if (params?.per_page != null)
       searchParams.set('per_page', String(params.per_page));
@@ -84,9 +88,15 @@ export async function getPost(slug: string): Promise<PostDetail | null> {
   }
 }
 
-export async function listTags(): Promise<TagsListResponse> {
+export async function listTags(
+  params?: { type?: 'DevPost' | 'GamePost' | 'BookPost' | 'FilmPost' }
+): Promise<TagsListResponse> {
   try {
-    const res = await fetch(API_ENDPOINTS.tags(), { cache: 'no-store' });
+    const searchParams = new URLSearchParams();
+    if (params?.type) searchParams.set('type', params.type);
+    const query = searchParams.toString();
+    const url = query ? `${API_ENDPOINTS.tags()}?${query}` : API_ENDPOINTS.tags();
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) return { tags: [] };
     return res.json();
   } catch (error) {
@@ -95,10 +105,34 @@ export async function listTags(): Promise<TagsListResponse> {
   }
 }
 
+export async function listSeries(
+  params?: { type?: 'DevPost' | 'GamePost' | 'BookPost' | 'FilmPost' }
+): Promise<SeriesListResponse> {
+  try {
+    const searchParams = new URLSearchParams();
+    if (params?.type) searchParams.set('type', params.type);
+    const query = searchParams.toString();
+    const url = query
+      ? `${API_ENDPOINTS.series()}?${query}`
+      : API_ENDPOINTS.series();
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) return { series: [] };
+    return res.json();
+  } catch (error) {
+    console.error('Failed to fetch series:', error);
+    return { series: [] };
+  }
+}
+
 /** 依 category 取得文章列表，對既有呼叫端保持相容 */
-export async function getPostsByCategory(category: Category) {
+export async function getPostsByCategory(
+  category: Category,
+  options?: { tag_id?: number; series_id?: number }
+) {
   const { posts } = await listPosts({
     type: categoryToPostType[category],
+    tag_id: options?.tag_id,
+    series_id: options?.series_id,
   });
   return posts;
 }

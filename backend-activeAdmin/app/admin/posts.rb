@@ -15,11 +15,17 @@ ActiveAdmin.register Post do
     selectable_column
     id_column
     column :title
-    column :user
     column :status
-    column :published_at
     column :post_type
     column :slug
+    column :series do |post|
+    if (info = post.primary_series_info)
+      display_text = "#{info[:name]} (ID: #{info[:series_id]})"
+      link_to info[:name], admin_series_path(info[:series_id])
+    else
+      status_tag "無系列", class: "warn" 
+    end
+end
     actions
   end
 

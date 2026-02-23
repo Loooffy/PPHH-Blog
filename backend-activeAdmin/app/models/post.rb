@@ -69,7 +69,7 @@ class Post < ApplicationRecord
     sp = series_posts.includes(:series).order("series_posts.position").first
     return nil unless sp
 
-    { name: sp.series.series_name, position: sp.position }
+    { name: sp.series.series_name, position: sp.position, series_id: sp.series.id }
   end
 
   def self.ransackable_associations(auth_object = nil)

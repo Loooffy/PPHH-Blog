@@ -55,6 +55,18 @@ export interface TagsListResponse {
   tags: Tag[];
 }
 
+/** Series schema from API */
+export interface Series {
+  id: number;
+  series_name: string;
+  type?: PostType;
+}
+
+/** Series list API response */
+export interface SeriesListResponse {
+  series: Series[];
+}
+
 /** Map frontend category to API post type */
 export const categoryToPostType: Record<Category, PostType> = {
   dev: 'DevPost',

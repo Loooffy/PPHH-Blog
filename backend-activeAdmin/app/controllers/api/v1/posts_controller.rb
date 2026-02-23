@@ -12,6 +12,7 @@ module Api
 
         @posts = @posts.joins(:post_type).where(post_types: { name: params[:type] }) if params[:type].present?
         @posts = @posts.joins(:tags).where(tags: { id: params[:tag_id] }).distinct if params[:tag_id].present?
+        @posts = @posts.joins(:series).where(series: { id: params[:series_id] }).distinct if params[:series_id].present?
 
         @posts = @posts.includes(:tags, :series_posts => :series).page(params[:page]).per(params[:per_page] || 20)
       end
