@@ -2,7 +2,7 @@
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { Category, categoryNames, categoryRoutes } from '@/lib/theme';
-import { ChevronLeft, Minus, Plus } from 'lucide-react';
+import { Minus, Plus } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
@@ -23,18 +23,6 @@ export const BookNavBar = ({
 
     return (
         <div className="h-14 border-b border-stone-200/50 flex items-center justify-between px-6 bg-white/80 backdrop-blur-md z-10 sticky top-0">
-            <div className="flex items-center gap-4">
-                {backLinkHref && backLinkLabel ? (
-                    <Link
-                        href={backLinkHref}
-                        className="text-primary no-underline hover:text-secondary text-sm font-medium flex items-center gap-1"
-                    >
-                        <ChevronLeft size={18} />
-                        返回 {backLinkLabel}
-                    </Link>
-                ) : null}
-            </div>
-
             <div className="flex items-center justify-end">
                 <div className="flex px-10 py-4 md:px-12">
                     {categories.map((cat) => (

@@ -12,10 +12,10 @@ export function MarkdownContent({ content, className = '' }: MarkdownContentProp
     <div
       className={`leading-relaxed break-words text-text 
         [&>*]:box-border [&>*:not(p)]:m-0 [&>*]:p-0 
-        [&>h1]:text-2xl [&>h1]:leading-tight [&>h1]:mb-3 [&>h1]:mt-3 
-        [&>h2]:text-xl [&>h2]:leading-tight [&>h2]:mb-2.5 [&>h2]:mt-2.5 
-        [&>h3]:text-lg [&>h3]:leading-tight [&>h3]:mb-2 [&>h3]:mt-2 
-        [&>p]:my-4 [&>div]:mb-4 
+        [&>h1]:text-2xl [&_h1]:font-bold [&>h1]:leading-relaxed [&>h1]:my-8
+        [&>h2]:text-xl [&_h2]:font-bold [&>h2]:leading-relaxed [&>h2]:my-5
+        [&>h3]:text-lg [&_h3]:font-bold [&>h3]:leading-relaxed [&>h3]:my-4
+        [&>p]:my-4 text-medium [&>div]:mb-4 
         [&>p:last-child]:mb-0 [&>div:last-child]:mb-0 
         [&>blockquote]:ml-3 [&>blockquote]:pl-6 [&>blockquote]:text-text-secondary [&>blockquote]:border-l-[0.3em] [&>blockquote]:border-l-border [&>blockquote]:border-solid
         [&>ul]:my-4 [&>ul]:pl-8 [&>ul]:list-disc [&>ul]:[list-style-position:outside]
@@ -24,8 +24,8 @@ export function MarkdownContent({ content, className = '' }: MarkdownContentProp
         [&>strong]:font-bold [&>b]:font-bold 
         [&>em]:italic [&>i]:italic 
         [&>a]:text-primary [&>a]:underline [&>a:hover]:text-secondary 
-        [&>code]:font-mono [&>code]:text-sm [&>code]:bg-background [&>code]:px-1 [&>code]:py-0.5 [&>code]:rounded [&>code]:border [&>code]:border-border 
-        [&>pre]:block [&>pre]:w-full [&>pre]:font-mono [&>pre]:text-sm [&>pre]:p-4 [&>pre]:bg-background [&>pre]:border [&>pre]:border-border [&>pre]:rounded-lg [&>pre]:overflow-x-auto 
+        [&>code]:font-mono [&>code]:text-sm [&>code]:bg-background [&>code]:my-4 [&>code]:px-1 [&>code]:py-0.5 [&>code]:rounded [&>code]:border [&>code]:border-border 
+        [&>pre]:block [&>pre]:w-full [&>pre]:font-mono [&>pre]:text-sm [&>pre]:p-4 [&>pre]:my-6 [&>pre]:bg-background [&>pre]:border [&>pre]:border-border [&>pre]:rounded-lg [&>pre]:overflow-x-auto 
         [&>pre_code]:p-0 [&>pre_code]:bg-transparent [&>pre_code]:border-0
         [&>img]:max-w-full [&>img]:h-auto [&>img]:rounded-lg 
         [&_table]:border-collapse [&_table]:w-full [&_table]:my-4

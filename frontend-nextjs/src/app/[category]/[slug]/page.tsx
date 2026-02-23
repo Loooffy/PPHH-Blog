@@ -1,6 +1,7 @@
 import { BookPost } from '@/components/Book/BookPost';
 import { DevPost } from '@/components/Dev/DevPost';
 import { FilmPost } from '@/components/Film/FilmPost';
+import { GamePost } from '@/components/Game/GamePost';
 import { MarkdownContent } from '@/components/layout/MarkdownContent';
 import { getPost } from '@/lib/api';
 import { categoryNames } from '@/lib/theme';
@@ -50,18 +51,19 @@ export default async function PostPage({
   if (category === 'film') {
     return (
       <>
-        <Link
-          href={`/${categoryPath}`}
-          className="absolute top-10 left-12 z-10 text-primary no-underline hover:text-secondary"
-        >
-          ← 返回 {categoryName}
-        </Link>
         <FilmPost post={post} />
       </>
     );
   }
 
-  // 其他類別使用原本的布局
+  if (category === 'game') {
+    return (
+      <>
+        <GamePost post={post} />
+      </>
+    );
+  }
+
   return (
     <>
       <main className="main-content pt-[160px]" style={{ maxWidth: '800px', margin: '0 auto' }}>

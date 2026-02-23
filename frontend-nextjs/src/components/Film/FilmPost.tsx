@@ -89,7 +89,6 @@ export function FilmPost({ post }: FilmPostProps) {
 
       {/* 文章內容區：置中、限寬 */}
       <article className="w-full max-w-[600px] mx-auto flex flex-col gap-8 px-8 py-8 md:px-12 md:py-12">
-        {/* 標題：置中、較大字體 */}
         <h1
           className="text-3xl md:text-4xl text-center font-medium leading-tight"
           style={{ color: theme.colors.accent }}
@@ -97,7 +96,6 @@ export function FilmPost({ post }: FilmPostProps) {
           {post.title}
         </h1>
 
-        {/* 元資訊：導演/年份靠左，最後更新靠右 */}
         <div
           className="flex justify-between items-baseline gap-4 border-b pb-4 text-sm"
           style={{ borderColor: theme.colors.border, color: theme.colors.textSecondary }}
