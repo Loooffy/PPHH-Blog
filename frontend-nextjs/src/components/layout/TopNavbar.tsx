@@ -33,7 +33,7 @@ export function TopNavbar() {
   if (pathname.startsWith('/game')) {
     return <GameNavBar />;
   }
-  // bookpost 頁面由 BookPost 組件自帶 epub 風格 navbar，這裡不渲染
+
   if (pathname.startsWith('/book/')) {
     return null;
   }

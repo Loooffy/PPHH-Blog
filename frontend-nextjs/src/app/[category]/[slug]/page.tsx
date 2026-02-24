@@ -3,6 +3,7 @@ import { DevPost } from '@/components/Dev/DevPost';
 import { FilmPost } from '@/components/Film/FilmPost';
 import { GamePost } from '@/components/Game/GamePost';
 import { MarkdownContent } from '@/components/layout/MarkdownContent';
+import { ThemedMain } from '@/components/layout/ThemedMain';
 import { getPost } from '@/lib/api';
 import { categoryNames } from '@/lib/theme';
 import Link from 'next/link';
@@ -50,29 +51,23 @@ export default async function PostPage({
 
   if (category === 'film') {
     return (
-      <>
+      <ThemedMain category="film">
         <FilmPost post={post} />
-      </>
+      </ThemedMain>
     );
   }
 
   if (category === 'game') {
     return (
-      <>
+      <ThemedMain category="game">
         <GamePost post={post} />
-      </>
+      </ThemedMain>
     );
   }
 
   return (
     <>
       <main className="main-content pt-[160px]" style={{ maxWidth: '800px', margin: '0 auto' }}>
-        <Link
-          href={`/${categoryPath}`}
-          className="inline-block mb-8 text-primary no-underline"
-        >
-          ← 返回 {categoryName}
-        </Link>
         <article>
           <h1>{post.title}</h1>
           <div className="mb-8 text-sm text-text-secondary">
