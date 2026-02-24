@@ -23,8 +23,8 @@ export const BookNavBar = ({
 
     return (
         <div className="h-14 border-b border-stone-200/50 flex items-center justify-between px-6 bg-white/80 backdrop-blur-md z-10 sticky top-0">
-            <div className="flex items-center justify-end">
-                <div className="flex px-10 py-4 md:px-12">
+            <div className="flex w-full px-8 items-center justify-end">
+                <div className="flex px-14 py-4 md:px-14">
                     {categories.map((cat) => (
                         <Link
                             key={cat}

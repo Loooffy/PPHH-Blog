@@ -1,8 +1,8 @@
 'use client';
 
+import type { PostListItem } from '@/types/api';
 import Link from 'next/link';
 import { useState } from 'react';
-import type { PostListItem } from '@/types/api';
 
 interface BookListItemProps {
   post: PostListItem;
@@ -25,15 +25,13 @@ export function BookListItem({ post, category }: BookListItemProps) {
   return (
     <Link
       href={`/${category}/${post.slug || post.id}`}
-      className="no-underline ml-4 px-0 w-full text-inherit block group relative"
+      className="no-underline mx-8 px-0 w-full text-inherit block group relative"
     >
       {/* 左側垂直線 - 深灰色 */}
-      <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-400" />
+      <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-300" />
 
       {/* 內容區域 */}
-      <div className="flex flex-col w-full pt-4 pb-10 pl-4 pr-4 bg-gray-100 ml-6" style={{
-        boxShadow: 'inset 3px 4px 4px rgba(0, 0, 0, 0.3)',
-      }}>
+      <div className="flex flex-col w-full pt-4 pb-10 pl-6 pr-4 bg-gray-100 ml-4">
         {/* 書籍封面 - 僅在有 image_url 時顯示，載入失敗則隱藏 */}
         {post.image_url && !imageError && (
           <div className="relative mb-6">
