@@ -15,8 +15,25 @@ export function DevTagSeries({
   activeSeriesId = null,
   activeTagId = null,
 }: DevTagSeriesProps) {
+  const isAllActive = !activeSeriesId && !activeTagId;
+
   return (
     <div className="w-full sticky top-30">
+      <div className="flex flex-row gap-1">
+        <div className="flex-1"></div>
+        <div className="flex-2 text-l text-black text-center font-bold py-1 mb-3 border-b-2 border-gray-400">
+          所有文章
+        </div>
+        <div className="flex-1"></div>
+      </div>
+      <div className="flex flex-col gap-1 mb-3">
+        <Link
+          href="/dev"
+          className={`flex-1 text-xs text-center hover:font-bold py-1 ${isAllActive ? 'font-bold' : ''}`}
+        >
+          全部
+        </Link>
+      </div>
       <div className="flex flex-row gap-1">
         <div className="flex-1"></div>
         <div className="flex-2 text-l text-black text-center font-bold py-1 mb-3 border-b-2 border-gray-400">
@@ -33,7 +50,7 @@ export function DevTagSeries({
           series.map((s) => (
             <Link
               key={s.id}
-              href={`/dev?type=DevPost`}
+              href={`/dev?type=DevPost&series_id=${s.id}`}
               className={`flex-1 text-xs text-center hover:font-bold py-1 ${activeSeriesId === s.id ? 'font-bold' : ''
                 }`}
             >

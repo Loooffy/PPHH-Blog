@@ -46,8 +46,8 @@ export async function listPosts(
   try {
     const searchParams = new URLSearchParams();
     if (params?.type) searchParams.set('type', params.type);
-    if (params?.tag_id != null) searchParams.set('tag_id', String(params.tag_id));
-    if (params?.series_id != null) searchParams.set('series_id', String(params.series_id));
+    if (params?.tag_id != null) searchParams.set('tag_id[]', String(params.tag_id));
+    if (params?.series_id != null) searchParams.set('series_id[]', String(params.series_id));
     if (params?.page != null) searchParams.set('page', String(params.page));
     if (params?.per_page != null)
       searchParams.set('per_page', String(params.per_page));
