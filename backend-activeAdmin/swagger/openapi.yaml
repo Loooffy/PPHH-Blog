@@ -29,6 +29,12 @@ paths:
             type: array
             items:
               type: integer
+        - name: series_id
+          in: query
+          description: Filter by series ID
+          required: false
+          schema:
+            type: integer
         - name: page
           in: query
           description: Page number for pagination
