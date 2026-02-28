@@ -12,7 +12,9 @@ interface FilmCardProps {
 export function WideFilmCard({ post, category, theme }: FilmCardProps) {
   const director = post.director ?? '';
   const year = post.year ?? new Date(post.created_at).getFullYear();
-
+  const film_category = post.film_category ?? '';
+  const film_country = post.film_country ?? '';
+  const film_length = post.film_length ?? 0;
   return (
     <article className="transition-transform duration-300 hover:-translate-y-1">
       <Link href={`/${category}/${post.slug || post.id}`} className="no-underline text-inherit block h-full">
@@ -24,7 +26,7 @@ export function WideFilmCard({ post, category, theme }: FilmCardProps) {
                 className="font-['Inter',sans-serif] text-sm font-normal uppercase tracking-wider"
                 style={{ color: theme.colors.text }}
               >
-                TAIWAN / 80 MIN / DRAMA
+                {film_country} / {film_length} MIN / {film_category}
               </span>
               <div
                 className="h-px w-[40px] shrink"
@@ -75,7 +77,9 @@ export function WideFilmCard({ post, category, theme }: FilmCardProps) {
 export function NarrowFilmCard({ post, category, theme }: FilmCardProps) {
   const director = post.director ?? '';
   const year = post.year ?? new Date(post.created_at).getFullYear();
-
+  const film_category = post.film_category ?? '';
+  const film_country = post.film_country ?? '';
+  const film_length = post.film_length ?? '';
   return (
     <article className="w-1/4 min-w-0 shrink-0 transition-transform duration-300 hover:-translate-y-1">
       <Link href={`/${category}/${post.slug || post.id}`} className="no-underline text-inherit block h-full">
@@ -113,7 +117,7 @@ export function NarrowFilmCard({ post, category, theme }: FilmCardProps) {
               className="font-['Inter',sans-serif] text-[10px] leading-normal tracking-wider uppercase"
               style={{ color: theme.colors.text }}
             >
-              TAIWAN / 80 MIN / DRAMA
+              {film_country} / {film_length} MIN / {film_category}
             </span>
           </div>
         </div>
@@ -125,7 +129,9 @@ export function NarrowFilmCard({ post, category, theme }: FilmCardProps) {
 export function FullWidthFilmCard({ post, category, theme }: FilmCardProps) {
   const director = post.director ?? '';
   const year = post.year ?? new Date(post.created_at).getFullYear();
-
+  const film_category = post.film_category ?? '';
+  const film_country = post.film_country ?? '';
+  const film_length = post.film_length ?? 0;
   return (
     <article className="flex-1 transition-transform duration-300 hover:-translate-y-1">
       <Link href={`/${category}/${post.slug || post.id}`} className="no-underline text-inherit block h-full">
@@ -152,7 +158,7 @@ export function FullWidthFilmCard({ post, category, theme }: FilmCardProps) {
                 className="font-['Inter',sans-serif] text-xs leading-normal tracking-wider uppercase"
                 style={{ color: theme.colors.text }}
               >
-                TAIWAN / 80 MIN / DRAMA
+                {film_country} / {film_length} MIN / {film_category}
               </span>
             </div>
 

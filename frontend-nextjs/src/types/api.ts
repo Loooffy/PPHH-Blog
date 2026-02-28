@@ -18,6 +18,9 @@ export interface PostListItem {
   slug: string;
   image_url: string | null;
   year: number | null;
+  film_category: string | null;
+  film_country: string | null;
+  film_length: number | null;
   rating: number | null;
   published_at: string | null;
   created_at: string;
