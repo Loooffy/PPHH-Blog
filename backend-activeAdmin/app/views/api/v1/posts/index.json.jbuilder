@@ -21,6 +21,11 @@ json.posts @posts do |post|
     json.series_id info[:position]
     json.series_name info[:name]
   end
+  if (pfi = post.post_film_info)
+    json.film_category pfi.film_category&.film_category
+    json.film_country pfi.film_country&.film_conuntry
+    json.film_length pfi.film_length
+  end
 end
 
 json.meta do

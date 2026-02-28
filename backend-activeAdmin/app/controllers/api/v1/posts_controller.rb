@@ -14,7 +14,7 @@ module Api
         @posts = @posts.joins(:post_tags).where(post_tags: { tag_id: params[:tag_id] }).distinct if params[:tag_id].present?
         @posts = @posts.joins(:series).where(series: { id: params[:series_id] }).distinct if params[:series_id].present?
 
-        @posts = @posts.includes(:tags, :series_posts => :series).page(params[:page]).per(params[:per_page] || 20)
+        @posts = @posts.includes(:tags, :series_posts => :series, :post_film_info => [:film_category, :film_country]).page(params[:page]).per(params[:per_page] || 20)
       end
 
       def show
@@ -49,7 +49,7 @@ module Api
       private
 
       def set_post
-        @post = Post.includes(:tags, :series_posts => :series).find_by(slug: params[:slug])
+        @post = Post.includes(:tags, :series_posts => :series, :post_film_info => [:film_category, :film_country]).find_by(slug: params[:slug])
       end
 
       def post_params

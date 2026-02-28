@@ -22,3 +22,8 @@ if (info = @post.primary_series_info)
   json.series info[:name]
   json.series_number info[:position]
 end
+if (pfi = @post.post_film_info)
+  json.film_category pfi.film_category&.film_category
+  json.film_country pfi.film_country&.film_conuntry
+  json.film_length pfi.film_length
+end
