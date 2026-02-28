@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_21_072542) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_28_135011) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,18 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_21_072542) do
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
+  create_table "film_categories", force: :cascade do |t|
+    t.string "film_category"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "film_countries", force: :cascade do |t|
+    t.string "film_conuntry"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "people", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -54,6 +66,18 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_21_072542) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_person_types_on_name", unique: true
+  end
+
+  create_table "post_film_infos", force: :cascade do |t|
+    t.integer "film_length"
+    t.bigint "film_country_id"
+    t.bigint "film_category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "post_id"
+    t.index ["film_category_id"], name: "index_post_film_infos_on_film_category_id"
+    t.index ["film_country_id"], name: "index_post_film_infos_on_film_country_id"
+    t.index ["post_id"], name: "index_post_film_infos_on_post_id", unique: true
   end
 
   create_table "post_tags", force: :cascade do |t|
@@ -134,6 +158,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_21_072542) do
   end
 
   add_foreign_key "people", "person_types"
+  add_foreign_key "post_film_infos", "film_categories"
+  add_foreign_key "post_film_infos", "film_countries"
+  add_foreign_key "post_film_infos", "posts"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
   add_foreign_key "posts", "people", column: "author_id"

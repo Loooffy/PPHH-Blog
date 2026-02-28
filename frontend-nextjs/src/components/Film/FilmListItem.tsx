@@ -104,7 +104,7 @@ export function NarrowFilmCard({ post, category, theme }: FilmCardProps) {
               {director}
             </p>
             <span
-              className="font-['Glegoo',serif] text-lg leading-none"
+              className="font-['Glegoo',serif] text-m leading-none"
               style={{ color: theme.colors.text }}
             >
               {year}
@@ -140,10 +140,10 @@ export function FullWidthFilmCard({ post, category, theme }: FilmCardProps) {
             </div>
           )}
 
-          <div className="flex gap-8 items-start pl-2">
-            <div className="flex flex-col gap-4 min-w-[120px]">
+          <div className="flex gap-8 items-end pl-2">
+            <div className="flex flex-col gap-3 min-w-[120px]">
               <span
-                className="font-['Glegoo',serif] text-[48px] leading-none"
+                className="font-['Glegoo',serif] text-3xl leading-none"
                 style={{ color: theme.colors.text }}
               >
                 {year}
@@ -157,7 +157,7 @@ export function FullWidthFilmCard({ post, category, theme }: FilmCardProps) {
             </div>
 
             <div
-              className="w-px h-[120px] opacity-60"
+              className="w-px self-stretch opacity-60"
               style={{ backgroundColor: theme.colors.text }}
             />
 

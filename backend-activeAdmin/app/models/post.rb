@@ -14,8 +14,10 @@ class Post < ApplicationRecord
   has_many :tags, through: :post_tags
   has_many :series_posts, dependent: :destroy
   has_many :series, through: :series_posts
+  has_one :post_film_info, dependent: :destroy
 
   accepts_nested_attributes_for :series_posts, allow_destroy: true, reject_if: ->(attrs) { attrs["series_id"].blank? }
+  accepts_nested_attributes_for :post_film_info, allow_destroy: true, reject_if: :all_blank
 
   validates :slug, uniqueness: true, allow_blank: true
   validates :title, presence: true
@@ -73,6 +75,6 @@ class Post < ApplicationRecord
   end
 
   def self.ransackable_associations(auth_object = nil)
-    %w[user author director post_type tags series]
+    %w[user author director post_type tags series post_film_info]
   end
 end

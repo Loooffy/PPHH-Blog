@@ -3,7 +3,8 @@
 ActiveAdmin.register Post do
   permit_params :user_id, :author_id, :director_id, :post_type_id, :title, :description, :content,
                 :year, :rating, :status, :published_at, :image_key, tag_ids: [],
-                series_posts_attributes: [:id, :series_id, :position, :_destroy]
+                series_posts_attributes: [:id, :series_id, :position, :_destroy],
+                post_film_info_attributes: [:id, :film_category_id, :film_country_id, :film_length, :_destroy]
 
   scope :all, default: true
   scope :dev_posts
@@ -51,6 +52,11 @@ end
       f.input :author, collection: Person.authors, label: "Author (for BookPost)"
       f.input :director, collection: Person.directors, label: "Director (for FilmPost)"
       f.input :year
+      f.semantic_fields_for :post_film_info, (f.object.post_film_info || f.object.build_post_film_info) do |pfi|
+        pfi.input :film_category_id, as: :select, collection: FilmCategory.pluck(:film_category, :id), label: "Film Category", include_blank: true, required: false
+        pfi.input :film_country_id, as: :select, collection: FilmCountry.pluck(:film_conuntry, :id), label: "Film Country", include_blank: true, required: false
+        pfi.input :film_length, label: "Film Length (minutes)", required: false
+      end
       f.input :rating
       f.input :status, as: :select, collection: [["Draft", "draft"], ["Published", "published"]], include_blank: false
       f.input :tags, as: :check_boxes, collection: Tag.includes(:post_type).map { |t| ["#{t.name} (#{t.post_type.name})", t.id] }
@@ -70,6 +76,7 @@ end
       resource = super
       if resource.new_record?
         resource.user ||= User.find_by(email: current_admin_user&.email)
+        resource.build_post_film_info if resource.post_film_info.nil?
       end
       resource
     end
@@ -154,6 +161,18 @@ end
       row :author
       row :director
       row :year
+      row :film_info do |post|
+        if post.post_film_info
+          info = post.post_film_info
+          parts = []
+          parts << info.film_category&.film_category if info.film_category
+          parts << info.film_country&.film_conuntry if info.film_country
+          parts << "#{info.film_length} min" if info.film_length.present?
+          parts.join(" · ")
+        else
+          "無"
+        end
+      end
       row :rating
       row :image_url do |post|
         post.image_url.present? ? image_tag(post.image_url, height: 150) : "無"
