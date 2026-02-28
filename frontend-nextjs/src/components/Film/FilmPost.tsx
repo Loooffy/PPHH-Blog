@@ -75,9 +75,8 @@ export function FilmPost({ post }: FilmPostProps) {
       className="flex flex-col items-center w-full font-['Inter',sans-serif]"
       style={{ backgroundColor: theme.colors.background }}
     >
-      {/* 寬版特色圖：佔滿寬度 */}
       {displayImage && (
-        <div className="w-full overflow-hidden">
+        <div className="w-3/5 overflow-hidden">
           <img
             src={displayImage}
             alt={post.title}
@@ -87,12 +86,8 @@ export function FilmPost({ post }: FilmPostProps) {
         </div>
       )}
 
-      {/* 文章內容區：置中、限寬 */}
-      <article className="w-full max-w-[600px] mx-auto flex flex-col gap-8 px-8 py-8 md:px-12 md:py-12">
-        <h1
-          className="text-3xl md:text-4xl text-center font-medium leading-tight"
-          style={{ color: theme.colors.accent }}
-        >
+      <article className="w-full max-w-3/5 mx-auto flex flex-col gap-8 px-8 py-8 md:px-12 md:py-12">
+        <h1 className="text-3xl md:text-4xl text-left font-medium leading-tight">
           {post.title}
         </h1>
 

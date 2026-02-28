@@ -1,3 +1,4 @@
+import { Tag as TagComponent } from '@/components/atomic/tag';
 import type { Series, Tag } from '@/types/api';
 import Link from 'next/link';
 
@@ -15,13 +16,11 @@ export function DevTagSeries({
   activeSeriesId = null,
   activeTagId = null,
 }: DevTagSeriesProps) {
-  const isAllActive = !activeSeriesId && !activeTagId;
-
   return (
     <div className="w-full sticky top-30">
       <div className="flex flex-row gap-1">
         <div className="flex-1"></div>
-        <div className="flex-2 text-l text-black text-center font-bold py-1 mb-3 border-b-2 border-gray-400">
+        <div className="flex-2 text-l text-center font-bold py-1 mb-3 border-b-2 border-gray-400">
           所有文章
         </div>
         <div className="flex-1"></div>
@@ -29,14 +28,14 @@ export function DevTagSeries({
       <div className="flex flex-col gap-1 mb-3">
         <Link
           href="/dev"
-          className={`flex-1 text-xs text-center hover:font-bold py-1 ${isAllActive ? 'font-bold' : ''}`}
+          className="flex-1 text-xs text-center hover:font-bold py-1"
         >
           全部
         </Link>
       </div>
       <div className="flex flex-row gap-1">
         <div className="flex-1"></div>
-        <div className="flex-2 text-l text-black text-center font-bold py-1 mb-3 border-b-2 border-gray-400">
+        <div className="flex-2 text-l text-center font-bold py-1 mb-3 border-b-2 border-gray-400">
           系列文章
         </div>
         <div className="flex-1"></div>
@@ -51,8 +50,7 @@ export function DevTagSeries({
             <Link
               key={s.id}
               href={`/dev?type=DevPost&series_id=${s.id}`}
-              className={`flex-1 text-xs text-center hover:font-bold py-1 ${activeSeriesId === s.id ? 'font-bold' : ''
-                }`}
+              className="flex-1 text-xs text-center hover:font-bold py-1"
             >
               {s.series_name}
             </Link>
@@ -74,14 +72,13 @@ export function DevTagSeries({
         ) : (
           <div className="flex flex-wrap gap-2 justify-center">
             {tags.map((t) => (
-              <Link
+              <TagComponent
                 key={t.id}
                 href={`/dev?type=DevPost&tag_id=${t.id}`}
-                className={`text-xs text-center px-1 py-1 border border-gray-400 rounded w-fit hover:bg-black hover:text-white ${activeTagId === t.id ? 'bg-black text-white' : ''
-                  }`}
+                active={activeTagId === t.id}
               >
                 {t.name}
-              </Link>
+              </TagComponent>
             ))}
           </div>
         )}

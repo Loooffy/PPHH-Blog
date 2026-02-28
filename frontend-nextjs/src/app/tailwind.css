@@ -13,6 +13,8 @@
   --color-text-secondary: #757575;
   --color-border: #e0e0e0;
   --color-accent: #00acc1;
+  --color-tag-hover-bg: #000000;
+  --color-tag-hover-text: #ffffff;
   --font-heading: monospace;
   --font-body: system-ui, sans-serif;
 

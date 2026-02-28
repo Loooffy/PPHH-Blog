@@ -1,5 +1,6 @@
 'use client';
 
+import { Tag as TagComponent } from '@/components/atomic/tag';
 import type { PostDetail } from '@/types/api';
 import { MarkdownContent } from '../layout/MarkdownContent';
 
@@ -39,21 +40,29 @@ export function GamePost({ post }: GamaPostProps) {
 
                         {/* Tags */}
                         <div
-                            className="flex items-start text-yellow-500 md:items-end gap-2"
+                            className="flex items-start md:items-end gap-2"
                         >
                             {post.tags?.map((tag) => (
-                                <span key={tag.id} className="px-3 py-0.5 border rounded-sm bg-surface text-yellow-500 text-sm transition-all duration-200 hover:bg-yellow-500/20 hover:scale-105 hover:border-yellow-500/50 cursor-pointer">{tag.name}</span>
+                                <TagComponent
+                                    key={tag.id}
+                                    href={`/game?type=GamePost&tag_id=${tag.id}`}
+                                >
+                                    {tag.name}
+                                </TagComponent>
                             ))}
                         </div>
                     </div>
                 </div>
 
-                <article className="prose prose-invert prose-lg md:prose-xl max-w-none space-y-8 text-gray-100/90 leading-loose">
-                    <MarkdownContent
-                        content={post.content ?? ''}
-                        className="[&>p]:mb-3 [&>p]:leading-[1.5] [&>p]:break-inside-avoid-column [&>u]:underline [&>u]:underline-offset-4"
-                    />
-                </article>
+                <div className="relative">
+                    <div className="absolute -inset-x-8 -inset-y-12 md:-inset-x-16 md:-inset-y-16 -z-10 rounded-xl bg-black" />
+                    <article className="prose prose-invert prose-lg md:prose-xl max-w-none space-y-8 text-gray-100/90 leading-loose relative">
+                        <MarkdownContent
+                            content={post.content ?? ''}
+                            className="[&>p]:mb-3 [&>p]:leading-[1.5] [&>p]:break-inside-avoid-column [&>u]:underline [&>u]:underline-offset-4"
+                        />
+                    </article>
+                </div>
             </main>
         </div>
     );

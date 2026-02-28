@@ -21,20 +21,20 @@ export function DevListFeaturedPost({ post, category }: DevFeaturedPostProps) {
         href={`/${category}/${post.slug || post.id}`}
         className="block no-underline text-inherit"
       >
-        <div className="flex flex-col gap-2">
-          <div className="flex items-baseline justify-between gap-4 w-full">
-            <h2 className="text-[2rem] font-bold leading-[1.2] text-text flex-1 min-w-0 pr-4">
+        <div className="flex items-start justify-between gap-4 w-full">
+          <div className="flex flex-col gap-2 flex-1 min-w-0">
+            <h2 className="text-[2rem] font-bold leading-[1.2] text-text">
               {post.title}
             </h2>
-            <span className="text-sm font-normal text-text-secondary whitespace-nowrap shrink-0">
-              {formatDate(post.created_at)}
-            </span>
+            {post.description && (
+              <p className="text-[1.1rem] font-normal text-text-secondary line-clamp-2">
+                {post.description}
+              </p>
+            )}
           </div>
-          {post.description && (
-            <p className="text-[1.1rem] font-normal text-text-secondary line-clamp-2">
-              {post.description}
-            </p>
-          )}
+          <span className="text-sm font-normal text-text-secondary whitespace-nowrap shrink-0 pt-1">
+            {formatDate(post.created_at)}
+          </span>
         </div>
       </Link >
     </div >

@@ -28,6 +28,8 @@ function applyTheme(theme: ReturnType<typeof getTheme>) {
   root.style.setProperty('--color-text-secondary', theme.colors.textSecondary);
   root.style.setProperty('--color-border', theme.colors.border);
   root.style.setProperty('--color-accent', theme.colors.accent);
+  root.style.setProperty('--color-tag-hover-bg', theme.colors.tagHoverBg);
+  root.style.setProperty('--color-tag-hover-text', theme.colors.tagHoverText);
   root.style.setProperty('--font-heading', theme.fonts.heading);
   root.style.setProperty('--font-body', theme.fonts.body);
 }

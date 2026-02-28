@@ -2,6 +2,7 @@
 
 import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
 import { PostDetail } from '@/types/api';
+import { Tag as TagComponent } from '@/components/atomic/tag';
 import {
     ChevronRight,
     File,
@@ -240,7 +241,9 @@ export function DevPost({ post }: DevPostProps) {
                                 </div>
                                 <div className="flex gap-2">
                                     {post.tags?.map((tag) => (
-                                        <span key={tag.id} className="px-3 py-0.5 rounded-full border border-border bg-surface text-text-secondary text-[10px]">{tag.name}</span>
+                                        <TagComponent key={tag.id} href={`/dev?type=DevPost&tag_id=${tag.id}`}>
+                                            {tag.name}
+                                        </TagComponent>
                                     ))}
                                 </div>
                             </div>
