@@ -8,7 +8,7 @@ interface TagProps extends Omit<ComponentPropsWithoutRef<typeof Link>, 'children
 }
 
 const baseStyles =
-    'text-xs text-center px-2 py-1 border rounded w-fit transition-all duration-200 ' +
+    'text-xs text-center px-2 py-1 border rounded w-fit' +
     'border-border bg-surface text-text-secondary hover:bg-[var(--color-tag-hover-bg)] hover:text-[var(--color-tag-hover-text)] hover:border-[var(--color-tag-hover-bg)]';
 const activeStyles = 'bg-primary text-surface border-primary';
 

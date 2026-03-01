@@ -12,7 +12,7 @@ export const BookBottomBar = ({
             </span>
             <div className="w-32 h-1 bg-stone-200 rounded-full overflow-hidden flex-shrink-0">
                 <div
-                    className="h-full bg-stone-400 transition-all duration-300 ease-out"
+                    className="h-full bg-stone-400"
                     style={{ width: `${((currentPage + 1) / totalPages) * 100}%` }}
                 />
             </div>

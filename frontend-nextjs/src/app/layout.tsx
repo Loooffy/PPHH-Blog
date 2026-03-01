@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="zh-TW" className="bg-background" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${pottaOne.variable} antialiased bg-background text-text font-body transition-colors duration-300`}
+        className={`${geistSans.variable} ${geistMono.variable} ${pottaOne.variable} antialiased bg-background text-text font-body`}
         suppressHydrationWarning
       >
         <ThemeProvider>

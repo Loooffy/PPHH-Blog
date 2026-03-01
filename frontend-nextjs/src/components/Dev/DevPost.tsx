@@ -2,7 +2,6 @@
 
 import { Tag as TagComponent } from '@/components/atomic/Tag';
 import { PostNav, type PostNavItem } from '@/components/layout/PostNav';
-import Link from 'next/link';
 import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
 import type { PostDetail } from '@/types/api';
 import {
@@ -12,6 +11,7 @@ import {
     Terminal as TerminalIcon,
     X
 } from 'lucide-react';
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -220,7 +220,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                 {/* Article Section */}
                 <section
                     id="article-container"
-                    className={`${widths.left} h-full overflow-y-auto bg-surface flex flex-col scroll-smooth transition-all duration-500 border-r border-border dev-post-scrollbar`}
+                    className={`${widths.left} h-full overflow-y-auto bg-surface flex flex-col scroll-smooth border-r border-border dev-post-scrollbar`}
                 >
                     <div className="max-w-3xl mx-auto w-full px-12 py-16">
                         <div className="mb-14">
@@ -274,7 +274,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                                         key={step.id}
                                         id={`section-${idx}`}
                                         onClick={() => jumpToArticleSection(idx)}
-                                        className={`transition-all duration-700 cursor-pointer ${activeStepIndex === idx ? 'opacity-100' : 'opacity-20 hover:opacity-40'}`}
+                                        className={`cursor-pointer ${activeStepIndex === idx ? 'opacity-100' : 'opacity-20 hover:opacity-40'}`}
                                     >
                                         <div className="text-[17px] leading-[2.1] text-text space-y-8 markdown-body">
                                             <ReactMarkdown remarkPlugins={[remarkGfm, remarkStripCodeFences]}>{step.content}</ReactMarkdown>
@@ -293,7 +293,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                 </section>
 
                 {/* Code Section */}
-                <section className={`${widths.right} h-full bg-background flex flex-col relative transition-all duration-500`}>
+                <section className={`${widths.right} h-full bg-background flex flex-col relative`}>
                     <div className="h-10 border-b border-border flex items-center px-4 bg-surface shrink-0 justify-between">
                         <div className="flex items-center h-full">
                             {files.map(file => (
@@ -325,7 +325,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                                     <div
                                         key={i}
                                         onClick={() => isHighlighted && jumpToArticleSection(associatedStepIndex)}
-                                        className={`flex transition-all duration-300 ${isHighlighted ? 'cursor-pointer hover:bg-primary/10' : 'opacity-25'} ${isActiveHighlight ? 'bg-primary/15 text-primary font-bold -mx-6 px-6' : ''}`}
+                                        className={`flex ${isHighlighted ? 'cursor-pointer hover:bg-primary/10' : 'opacity-25'} ${isActiveHighlight ? 'bg-primary/15 text-primary font-bold -mx-6 px-6' : ''}`}
                                     >
                                         <span className={`w-10 shrink-0 text-[10px] select-none ${isActiveHighlight ? 'text-primary' : 'text-text-secondary'}`}>{lineNum}</span>
                                         <span className="flex-1">{line || ' '}</span>
@@ -340,7 +340,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
             <div className="fixed right-0 top-[120px] z-[100] flex items-start">
                 {isTocOpen && viewMode !== 'article' && (
                     <div
-                        className="w-72 max-h-[80vh] bg-surface/95 backdrop-blur-md border border-border rounded-l-xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300 pointer-events-auto"
+                        className="w-72 max-h-[80vh] bg-surface/95 backdrop-blur-md border border-border rounded-l-xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right pointer-events-auto"
                     >
                         <div className="p-4 border-b border-border flex items-center justify-between bg-background/50">
                             <span className="text-xs font-bold uppercase tracking-widest text-text-secondary flex items-center gap-2">
