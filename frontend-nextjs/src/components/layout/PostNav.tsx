@@ -23,11 +23,11 @@ export function PostNav({ prev, next, basePath }: PostNavProps) {
     };
 
     return (
-        <nav className="flex justify-between items-stretch gap-6 pt-4">
+        <nav className="flex justify-between items-stretch gap-6 mt-16 mb-8 border-t border-gray-200/50 pt-4 px-2">
             {prev ? (
                 <Link
                     href={href(prev)}
-                    className="flex-1 flex flex-col items-start gap-1 text-left no-underline group"
+                    className="flex-1 flex flex-col items-start text-left no-underline group"
                 >
                     <span className="text-m text-gray-400 group-hover:text-white transition-colors">
                         &lt; 上一篇
@@ -42,7 +42,7 @@ export function PostNav({ prev, next, basePath }: PostNavProps) {
             {next ? (
                 <Link
                     href={href(next)}
-                    className="flex-1 flex flex-col items-end gap-1 text-right no-underline group"
+                    className="flex-1 flex flex-col items-end text-right no-underline group"
                 >
                     <span className="text-m text-gray-400 group-hover:text-white transition-colors">
                         下一篇 &gt;
