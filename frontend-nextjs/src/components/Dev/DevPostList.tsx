@@ -2,7 +2,6 @@
 
 import { useTheme } from '@/contexts/ThemeContext';
 import type { PostListItem } from '@/types/api';
-import { DevListFeaturedPost } from './DevListFeaturedPost';
 import { DevListItem } from './DevListItem';
 
 interface DevPostListProps {
@@ -19,28 +18,11 @@ export function DevPostList({ posts }: DevPostListProps) {
     );
   }
 
-  // 第一篇文章作為精選文章
-  const featuredPost = posts[0];
-  const otherPosts = posts.slice(1);
-
   return (
     <div className="flex flex-col w-full">
-      {/* 精選文章 */}
-      {featuredPost && (
-        <DevListFeaturedPost post={featuredPost} category={category} />
-      )}
-
-      {/* 其他文章列表 */}
-      <div className="flex flex-col">
-        {otherPosts.map((post, index) => (
-          <DevListItem
-            key={post.id}
-            post={post}
-            category={category}
-            isLast={index === otherPosts.length - 1}
-          />
-        ))}
-      </div>
+      {posts.map((post, index) => (
+        <DevListItem key={post.id} post={post} category={category} isLast={index === posts.length - 1} />
+      ))}
     </div>
   );
 }
