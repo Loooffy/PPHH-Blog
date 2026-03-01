@@ -1,9 +1,9 @@
 'use client';
 
 import { Tag as TagComponent } from '@/components/atomic/Tag';
-import { PostNav } from '@/components/layout/PostNav';
+import { PostNav, type PostNavItem } from '@/components/layout/PostNav';
 import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
-import type { PostDetail, PostListItem } from '@/types/api';
+import type { PostDetail } from '@/types/api';
 import {
     ChevronRight,
     File,
@@ -19,8 +19,8 @@ type ViewMode = 'balanced' | 'code' | 'article';
 
 interface DevPostProps {
     post: PostDetail;
-    prevPost?: PostListItem | null;
-    nextPost?: PostListItem | null;
+    prevPost?: PostNavItem | null;
+    nextPost?: PostNavItem | null;
 }
 
 interface FileContent {

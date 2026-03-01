@@ -3,10 +3,43 @@ import { DevPost } from '@/components/Dev/DevPost';
 import { FilmPost } from '@/components/Film/FilmPost';
 import { GamePost } from '@/components/Game/GamePost';
 import { MarkdownContent } from '@/components/layout/MarkdownContent';
+import type { PostNavItem } from '@/components/layout/PostNav';
 import { ThemedMain } from '@/components/layout/ThemedMain';
 import { getPost, getPostsByCategory, getSeriesPosts } from '@/lib/api';
 import { categoryNames } from '@/lib/theme';
+import type { PostDetail, PostListItem, SeriesPostItem } from '@/types/api';
 import Link from 'next/link';
+
+/** 根據系列或分類列表計算上一篇／下一篇（回傳 PostNav 所需的最小欄位） */
+function getPrevNextPosts(
+  post: PostDetail,
+  seriesPosts: SeriesPostItem[],
+  categoryPosts: PostListItem[]
+): { prevPost: PostNavItem | null; nextPost: PostNavItem | null } {
+  const findIndex = (list: { slug?: string; id?: number }[]) =>
+    list.findIndex((p) => p.slug === post.slug || p.id === post.id);
+
+  // 有系列文章且當前文章在系列中：依系列順序決定 prev/next，不 fallback
+  if (seriesPosts.length > 0) {
+    const currentIndex = findIndex(seriesPosts);
+    if (currentIndex >= 0) {
+      return {
+        prevPost: currentIndex > 0 ? seriesPosts[currentIndex - 1] : null,
+        nextPost: currentIndex < seriesPosts.length - 1 ? seriesPosts[currentIndex + 1] : null,
+      };
+    }
+  }
+
+  // Fallback：依分類列表決定 prev/next
+  const currentIndex = findIndex(categoryPosts);
+  return {
+    prevPost:
+      currentIndex >= 0 && currentIndex < categoryPosts.length - 1
+        ? categoryPosts[currentIndex + 1]
+        : null,
+    nextPost: currentIndex > 0 ? categoryPosts[currentIndex - 1] : null,
+  };
+}
 
 export default async function PostPage({
   params,
@@ -32,25 +65,7 @@ export default async function PostPage({
   if (category === 'dev') {
     const { posts: seriesPosts } = await getSeriesPosts(slug);
     const devPosts = await getPostsByCategory('dev');
-
-    let prevPost = null;
-    let nextPost = null;
-
-    if (seriesPosts.length > 0) {
-      const currentIndex = seriesPosts.findIndex((p) => p.slug === post.slug || p.id === post.id);
-      if (currentIndex >= 0) {
-        prevPost = currentIndex > 0 ? seriesPosts[currentIndex - 1] : null;
-        nextPost = currentIndex < seriesPosts.length - 1 ? seriesPosts[currentIndex + 1] : null;
-      }
-    }
-
-    if (prevPost === null && nextPost === null) {
-      const currentIndex = devPosts.findIndex((p) => p.slug === post.slug || p.id === post.id);
-      prevPost = currentIndex >= 0 && currentIndex < devPosts.length - 1
-        ? devPosts[currentIndex + 1]
-        : null;
-      nextPost = currentIndex > 0 ? devPosts[currentIndex - 1] : null;
-    }
+    const { prevPost, nextPost } = getPrevNextPosts(post, seriesPosts, devPosts);
 
     return (
       <>
@@ -82,25 +97,7 @@ export default async function PostPage({
   if (category === 'game') {
     const { posts: seriesPosts } = await getSeriesPosts(slug);
     const gamePosts = await getPostsByCategory('game');
-
-    let prevPost = null;
-    let nextPost = null;
-
-    if (seriesPosts.length > 0) {
-      const currentIndex = seriesPosts.findIndex((p) => p.slug === post.slug || p.id === post.id);
-      if (currentIndex >= 0) {
-        prevPost = currentIndex > 0 ? seriesPosts[currentIndex - 1] : null;
-        nextPost = currentIndex < seriesPosts.length - 1 ? seriesPosts[currentIndex + 1] : null;
-      }
-    }
-
-    if (prevPost === null && nextPost === null) {
-      const currentIndex = gamePosts.findIndex((p) => p.slug === post.slug || p.id === post.id);
-      prevPost = currentIndex >= 0 && currentIndex < gamePosts.length - 1
-        ? gamePosts[currentIndex + 1]
-        : null;
-      nextPost = currentIndex > 0 ? gamePosts[currentIndex - 1] : null;
-    }
+    const { prevPost, nextPost } = getPrevNextPosts(post, seriesPosts, gamePosts);
 
     return (
       <ThemedMain category="game">
