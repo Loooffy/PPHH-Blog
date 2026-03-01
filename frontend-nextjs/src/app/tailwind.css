@@ -58,11 +58,24 @@ body {
   background-color: var(--color-text-secondary);
 }
 
+.game-post-list-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #faf785 transparent;
+}
+
+.game-post-list-scrollbar::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+  -webkit-appearance: none;
+}
+
 /* Hide scrollbar for epub-style reader */
 .hide-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }

@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import type { PostListItem } from '@/types/api';
+import Link from 'next/link';
 
 interface GameListItemProps {
   post?: PostListItem;
@@ -22,7 +22,7 @@ export function GameListItem({ post, isHighlighted = false, isEmpty = false, onM
   return (
     <Link
       href={`/game/${post.slug || post.id}`}
-      className={`block text-center text-m no-underline transition-colors hover:opacity-90 ${isHighlighted ? 'text-yellow-200' : 'text-white'}`}
+      className={`block text-center text-xl no-underline transition-colors hover:opacity-90 ${isHighlighted ? 'text-yellow-200' : 'text-white'}`}
       onMouseEnter={onMouseEnter}
     >
       {post.title}

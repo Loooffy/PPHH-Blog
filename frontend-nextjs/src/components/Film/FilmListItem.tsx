@@ -14,7 +14,7 @@ export function WideFilmCard({ post, category, theme }: FilmCardProps) {
   const year = post.year ?? new Date(post.created_at).getFullYear();
   const film_category = post.film_category ?? '';
   const film_country = post.film_country ?? '';
-  const film_length = post.film_length ?? 0;
+  const film_length = post.film_length ?? '';
   return (
     <article className="transition-transform duration-300 hover:-translate-y-1">
       <Link href={`/${category}/${post.slug || post.id}`} className="no-underline text-inherit block h-full">
@@ -131,7 +131,7 @@ export function FullWidthFilmCard({ post, category, theme }: FilmCardProps) {
   const year = post.year ?? new Date(post.created_at).getFullYear();
   const film_category = post.film_category ?? '';
   const film_country = post.film_country ?? '';
-  const film_length = post.film_length ?? 0;
+  const film_length = post.film_length ?? '';
   return (
     <article className="flex-1 transition-transform duration-300 hover:-translate-y-1">
       <Link href={`/${category}/${post.slug || post.id}`} className="no-underline text-inherit block h-full">
