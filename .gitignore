@@ -38,6 +38,7 @@ next-env.d.ts
 vendor/bundle/
 *.gem
 *.gemspec
+seeds.rb
 
 # Ruby version managers
 .ruby-version
