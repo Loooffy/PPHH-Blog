@@ -2,6 +2,7 @@
 
 import { Tag as TagComponent } from '@/components/atomic/Tag';
 import { PostNav, type PostNavItem } from '@/components/layout/PostNav';
+import Link from 'next/link';
 import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
 import type { PostDetail } from '@/types/api';
 import {
@@ -21,6 +22,7 @@ interface DevPostProps {
     post: PostDetail;
     prevPost?: PostNavItem | null;
     nextPost?: PostNavItem | null;
+    seriesId?: number | null;
 }
 
 interface FileContent {
@@ -38,7 +40,7 @@ interface TourStep {
     content: string;
 }
 
-export function DevPost({ post, prevPost, nextPost }: DevPostProps) {
+export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
     const [activeStepIndex, setActiveStepIndex] = useState(0);
     const [activeFile, setActiveFile] = useState<FileContent | null>(null);
     const [copied, setCopied] = useState(false);
@@ -224,9 +226,18 @@ export function DevPost({ post, prevPost, nextPost }: DevPostProps) {
                         <div className="mb-14">
                             {post.series && (
                                 <div className="flex items-center gap-3 mb-5">
-                                    <span className="text-text text-[14px] font-medium underline underline-offset-2 decoration-text">
-                                        「{post.series}」系列
-                                    </span>
+                                    {seriesId != null ? (
+                                        <Link
+                                            href={`/dev?type=DevPost&series_id=${seriesId}`}
+                                            className="text-text text-[14px] font-medium underline underline-offset-2 decoration-text hover:text-primary transition-colors"
+                                        >
+                                            「{post.series}」系列
+                                        </Link>
+                                    ) : (
+                                        <span className="text-text text-[14px] font-medium underline underline-offset-2 decoration-text">
+                                            「{post.series}」系列
+                                        </span>
+                                    )}
                                     {post.series_number != null && (
                                         <span className="inline-block px-3 py-1 rounded-[16px] text-[11px] font-medium tracking-tight bg-border/30 text-text-secondary">
                                             第 {post.series_number} 篇

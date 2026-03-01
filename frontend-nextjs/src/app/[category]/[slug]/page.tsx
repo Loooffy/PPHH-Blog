@@ -63,13 +63,13 @@ export default async function PostPage({
   }
 
   if (category === 'dev') {
-    const { posts: seriesPosts } = await getSeriesPosts(slug);
+    const { posts: seriesPosts, series_id } = await getSeriesPosts(slug);
     const devPosts = await getPostsByCategory('dev');
     const { prevPost, nextPost } = getPrevNextPosts(post, seriesPosts, devPosts);
 
     return (
       <>
-        <DevPost post={post} prevPost={prevPost} nextPost={nextPost} />
+        <DevPost post={post} prevPost={prevPost} nextPost={nextPost} seriesId={series_id} />
       </>
     );
   }
