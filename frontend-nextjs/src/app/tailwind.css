@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Glegoo:wght@400&family=Inter:wght@300;500;600&display=swap');
 @import "tailwindcss";
 
-@custom-variant hover (&:hover);
-
 /* CSS 變數預設值 - 使用 dev-light 主題作為預設 */
 :root {
   --color-primary: #00bcd4;
@@ -58,16 +56,14 @@ body {
   background-color: var(--color-text-secondary);
 }
 
+html main {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
 .game-post-list-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #faf785 transparent;
-}
-
-.game-post-list-scrollbar::-webkit-scrollbar-button {
-  display: none;
-  height: 0;
-  width: 0;
-  -webkit-appearance: none;
 }
 
 /* Hide scrollbar for epub-style reader */

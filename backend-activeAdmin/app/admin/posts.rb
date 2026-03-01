@@ -20,13 +20,19 @@ ActiveAdmin.register Post do
     column :post_type
     column :slug
     column :series do |post|
-    if (info = post.primary_series_info)
-      display_text = "#{info[:name]} (ID: #{info[:series_id]})"
-      link_to info[:name], admin_series_path(info[:series_id])
-    else
-      status_tag "無系列", class: "warn" 
+      if (info = post.primary_series_info)
+        link_to info[:name], admin_series_path(info[:series_id])
+      else
+        status_tag "無系列", class: "warn"
+      end
     end
-end
+    column "No." do |post|
+      if (info = post.primary_series_info)
+        info[:position]
+      else
+        "—"
+      end
+    end
     actions
   end
 
@@ -61,7 +67,13 @@ end
       f.input :status, as: :select, collection: [["Draft", "draft"], ["Published", "published"]], include_blank: false
       f.input :tags, as: :check_boxes, collection: Tag.includes(:post_type).map { |t| ["#{t.name} (#{t.post_type.name})", t.id] }
       f.has_many :series_posts, allow_destroy: true, new_record: "新增系列" do |sp|
-        sp.input :series, as: :select, collection: Series.pluck(:series_name, :id), label: "系列"
+        post_type_id = f.object.post_type_id || params.dig(:post, :post_type_id)
+        series_collection = if post_type_id.present?
+          Series.where(post_type_id: post_type_id).pluck(:series_name, :id)
+        else
+          Series.includes(:post_type).map { |s| ["#{s.series_name} (#{s.post_type.name})", s.id] }
+        end
+        sp.input :series, as: :select, collection: series_collection, label: "系列", hint: post_type_id.present? ? "僅顯示與此文章 Post Type 相符的系列" : "請選擇與文章 Post Type 相符的系列（建立時會驗證）"
         sp.input :position, label: "順序"
       end
     end

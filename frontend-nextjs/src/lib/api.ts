@@ -5,6 +5,7 @@ import {
   type PostDetail,
   type PostsListResponse,
   type SeriesListResponse,
+  type SeriesPostsResponse,
   type TagsListResponse,
 } from '@/types/api';
 
@@ -85,6 +86,24 @@ export async function getPost(slug: string): Promise<PostDetail | null> {
   } catch (error) {
     console.error('Failed to fetch post:', error);
     return null;
+  }
+}
+
+export async function getSeriesPosts(
+  slug: string
+): Promise<SeriesPostsResponse> {
+  try {
+    const res = await fetch(
+      `${getApiBaseUrl()}/api/v1/posts/${encodeURIComponent(slug)}/series_posts`,
+      { cache: 'no-store' }
+    );
+    if (!res.ok) {
+      return { series_id: null, posts: [] };
+    }
+    return res.json();
+  } catch (error) {
+    console.error('Failed to fetch series posts:', error);
+    return { series_id: null, posts: [] };
   }
 }
 

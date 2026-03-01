@@ -1,8 +1,8 @@
 'use client';
 
+import { Tag as TagComponent } from '@/components/atomic/Tag';
 import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
 import { PostDetail } from '@/types/api';
-import { Tag as TagComponent } from '@/components/atomic/tag';
 import {
     ChevronRight,
     File,

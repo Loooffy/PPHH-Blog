@@ -18,8 +18,9 @@ json.posts @posts do |post|
     json.name tag.name
   end
   if (info = post.primary_series_info)
-    json.series_id info[:position]
+    json.series_id info[:series_id]
     json.series_name info[:name]
+    json.series_number info[:position]
   end
   if (pfi = post.post_film_info)
     json.film_category pfi.film_category&.film_category

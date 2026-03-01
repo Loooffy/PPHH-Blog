@@ -4,7 +4,7 @@ import { FilmPost } from '@/components/Film/FilmPost';
 import { GamePost } from '@/components/Game/GamePost';
 import { MarkdownContent } from '@/components/layout/MarkdownContent';
 import { ThemedMain } from '@/components/layout/ThemedMain';
-import { getPost } from '@/lib/api';
+import { getPost, getPostsByCategory, getSeriesPosts } from '@/lib/api';
 import { categoryNames } from '@/lib/theme';
 import Link from 'next/link';
 
@@ -58,9 +58,31 @@ export default async function PostPage({
   }
 
   if (category === 'game') {
+    const { posts: seriesPosts } = await getSeriesPosts(slug);
+    const gamePosts = await getPostsByCategory('game');
+
+    let prevPost = null;
+    let nextPost = null;
+
+    if (seriesPosts.length > 0) {
+      const currentIndex = seriesPosts.findIndex((p) => p.slug === post.slug || p.id === post.id);
+      if (currentIndex >= 0) {
+        prevPost = currentIndex > 0 ? seriesPosts[currentIndex - 1] : null;
+        nextPost = currentIndex < seriesPosts.length - 1 ? seriesPosts[currentIndex + 1] : null;
+      }
+    }
+
+    if (prevPost === null && nextPost === null) {
+      const currentIndex = gamePosts.findIndex((p) => p.slug === post.slug || p.id === post.id);
+      prevPost = currentIndex >= 0 && currentIndex < gamePosts.length - 1
+        ? gamePosts[currentIndex + 1]
+        : null;
+      nextPost = currentIndex > 0 ? gamePosts[currentIndex - 1] : null;
+    }
+
     return (
       <ThemedMain category="game">
-        <GamePost post={post} />
+        <GamePost post={post} prevPost={prevPost} nextPost={nextPost} />
       </ThemedMain>
     );
   }

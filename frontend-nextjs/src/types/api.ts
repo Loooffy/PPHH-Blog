@@ -70,6 +70,22 @@ export interface SeriesListResponse {
   series: Series[];
 }
 
+/** Series post item from GET /posts/:slug/series_posts */
+export interface SeriesPostItem {
+  id: number;
+  slug: string;
+  title: string;
+  type: PostType;
+  series_id: number;
+  series_number: number;
+}
+
+/** Series posts API response */
+export interface SeriesPostsResponse {
+  series_id: number | null;
+  posts: SeriesPostItem[];
+}
+
 /** Map frontend category to API post type */
 export const categoryToPostType: Record<Category, PostType> = {
   dev: 'DevPost',

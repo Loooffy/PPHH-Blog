@@ -16,7 +16,11 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1, defaults: { format: :json } do
-      resources :posts, only: [:index, :show, :create, :update], param: :slug
+      resources :posts, only: [:index, :show, :create, :update], param: :slug do
+        member do
+          get :series_posts
+        end
+      end
       resources :tags, only: [:index]
       resources :series, only: [:index]
     end

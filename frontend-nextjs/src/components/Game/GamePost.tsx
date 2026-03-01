@@ -1,14 +1,17 @@
 'use client';
 
-import { Tag as TagComponent } from '@/components/atomic/tag';
-import type { PostDetail } from '@/types/api';
+import { PostNav } from '@/components/atomic/PostNav';
+import { Tag as TagComponent } from '@/components/atomic/Tag';
+import type { PostDetail, PostListItem } from '@/types/api';
 import { MarkdownContent } from '../layout/MarkdownContent';
 
-interface GamaPostProps {
+interface GamePostProps {
     post: PostDetail;
+    prevPost?: PostListItem | null;
+    nextPost?: PostListItem | null;
 }
 
-export function GamePost({ post }: GamaPostProps) {
+export function GamePost({ post, prevPost, nextPost }: GamePostProps) {
     return (
         <div className="min-h-screen w-full relative bg-slate-1000 text-white font-sans overflow-x-hidden selection:bg-yellow-500 selection:text-black">
             <div
@@ -22,7 +25,7 @@ export function GamePost({ post }: GamaPostProps) {
                 <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
             </div>
 
-            <main className="relative z-10 max-w-4xl mx-auto px-6 py-12 md:py-24 flex flex-col gap-10">
+            <main className="relative z-10 max-w-4xl mx-auto px-6 py-4 md:py-4 flex flex-col gap-10">
                 <div className="flex flex-col">
                     <div className="flex flex-col gap-10 md:flex-row md:items-end">
                         <div className="space-y-2">
@@ -54,15 +57,18 @@ export function GamePost({ post }: GamaPostProps) {
                     </div>
                 </div>
 
-                <div className="relative">
-                    <div className="absolute -inset-x-8 -inset-y-12 md:-inset-x-16 md:-inset-y-16 -z-10 rounded-xl bg-black" />
-                    <article className="prose prose-invert prose-lg md:prose-xl max-w-none space-y-8 text-gray-100/90 leading-loose relative">
-                        <MarkdownContent
-                            content={post.content ?? ''}
-                            className="[&>p]:mb-3 [&>p]:leading-[1.5] [&>p]:break-inside-avoid-column [&>u]:underline [&>u]:underline-offset-4"
-                        />
-                    </article>
-                </div>
+                <article className="prose prose-invert prose-lg md:prose-xl max-w-none space-y-8 text-gray-100/90 leading-loose rounded-xl bg-black/50 px-8 pb-8 md:px-16 md:pb-8">
+                    <MarkdownContent
+                        content={post.content ?? ''}
+                        className="[&>p]:mb-3 [&>p]:leading-[1.9] [&>p]:break-inside-avoid-column [&>u]:underline [&>u]:underline-offset-4"
+                    />
+                </article>
+
+                <PostNav
+                    prev={prevPost ?? undefined}
+                    next={nextPost ?? undefined}
+                    basePath="/game"
+                />
             </main>
         </div>
     );

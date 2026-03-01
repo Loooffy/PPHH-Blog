@@ -1,4 +1,7 @@
-ActiveAdmin.register AdminUser do
+# 使用 as: 避免與 Devise 的 AdminUsersController 產生 superclass mismatch
+ActiveAdmin.register AdminUser, as: "Staff" do
+  menu label: "Admin Users"
+
   permit_params :email, :password, :password_confirmation
 
   index do

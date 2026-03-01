@@ -1,4 +1,4 @@
-import { Tag as TagComponent } from '@/components/atomic/tag';
+import { Tag as TagComponent } from '@/components/atomic/Tag';
 import type { Series, Tag } from '@/types/api';
 import Link from 'next/link';
 

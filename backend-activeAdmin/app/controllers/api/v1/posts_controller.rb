@@ -3,7 +3,7 @@
 module Api
   module V1
     class PostsController < BaseController
-      before_action :set_post, only: [:show, :update]
+      before_action :set_post, only: [:show, :update, :series_posts]
 
       def index
         @posts = Post.where(status: "published")
@@ -12,7 +12,13 @@ module Api
 
         @posts = @posts.joins(:post_type).where(post_types: { name: params[:type] }) if params[:type].present?
         @posts = @posts.joins(:post_tags).where(post_tags: { tag_id: params[:tag_id] }).distinct if params[:tag_id].present?
-        @posts = @posts.joins(:series).where(series: { id: params[:series_id] }).distinct if params[:series_id].present?
+
+        if params[:series_id].present? || params[:series_number].present?
+          conditions = {}
+          conditions[:series_id] = params[:series_id] if params[:series_id].present?
+          conditions[:position] = params[:series_number] if params[:series_number].present?
+          @posts = @posts.joins(:series_posts).where(series_posts: conditions).distinct
+        end
 
         @posts = @posts.includes(:tags, :series_posts => :series, :post_film_info => [:film_category, :film_country]).page(params[:page]).per(params[:per_page] || 20)
       end
@@ -22,6 +28,27 @@ module Api
            @post.published_at.blank? || @post.published_at > Time.current
           return render json: { error: "Not found" }, status: :not_found
         end
+      end
+
+      def series_posts
+        if @post.blank? || @post.status != "published" ||
+           @post.published_at.blank? || @post.published_at > Time.current
+          return render json: { error: "Not found" }, status: :not_found
+        end
+
+        info = @post.primary_series_info
+        if info.blank?
+          return render :series_posts, locals: { series_id: nil, items: [] }
+        end
+
+        items = SeriesPost.joins(:post)
+                         .where(series_id: info[:series_id])
+                         .where(posts: { status: "published" })
+                         .where("posts.published_at <= ?", Time.current)
+                         .order(:position)
+                         .includes(:post)
+
+        render :series_posts, locals: { series_id: info[:series_id], items: items }
       end
 
       def create
