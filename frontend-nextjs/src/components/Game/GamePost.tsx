@@ -1,7 +1,7 @@
 'use client';
 
-import { PostNav } from '@/components/atomic/PostNav';
 import { Tag as TagComponent } from '@/components/atomic/Tag';
+import { PostNav } from '@/components/layout/PostNav';
 import type { PostDetail, PostListItem } from '@/types/api';
 import { MarkdownContent } from '../layout/MarkdownContent';
 
@@ -62,13 +62,14 @@ export function GamePost({ post, prevPost, nextPost }: GamePostProps) {
                         content={post.content ?? ''}
                         className="[&>p]:mb-3 [&>p]:leading-[1.9] [&>p]:break-inside-avoid-column [&>u]:underline [&>u]:underline-offset-4"
                     />
+                    <PostNav
+                        prev={prevPost ?? undefined}
+                        next={nextPost ?? undefined}
+                        basePath="/game"
+                    />
                 </article>
 
-                <PostNav
-                    prev={prevPost ?? undefined}
-                    next={nextPost ?? undefined}
-                    basePath="/game"
-                />
+
             </main>
         </div>
     );

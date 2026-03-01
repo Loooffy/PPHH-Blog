@@ -30,9 +30,31 @@ export default async function PostPage({
   }
 
   if (category === 'dev') {
+    const { posts: seriesPosts } = await getSeriesPosts(slug);
+    const devPosts = await getPostsByCategory('dev');
+
+    let prevPost = null;
+    let nextPost = null;
+
+    if (seriesPosts.length > 0) {
+      const currentIndex = seriesPosts.findIndex((p) => p.slug === post.slug || p.id === post.id);
+      if (currentIndex >= 0) {
+        prevPost = currentIndex > 0 ? seriesPosts[currentIndex - 1] : null;
+        nextPost = currentIndex < seriesPosts.length - 1 ? seriesPosts[currentIndex + 1] : null;
+      }
+    }
+
+    if (prevPost === null && nextPost === null) {
+      const currentIndex = devPosts.findIndex((p) => p.slug === post.slug || p.id === post.id);
+      prevPost = currentIndex >= 0 && currentIndex < devPosts.length - 1
+        ? devPosts[currentIndex + 1]
+        : null;
+      nextPost = currentIndex > 0 ? devPosts[currentIndex - 1] : null;
+    }
+
     return (
       <>
-        <DevPost post={post} />
+        <DevPost post={post} prevPost={prevPost} nextPost={nextPost} />
       </>
     );
   }

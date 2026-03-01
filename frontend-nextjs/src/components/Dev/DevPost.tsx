@@ -1,8 +1,9 @@
 'use client';
 
 import { Tag as TagComponent } from '@/components/atomic/Tag';
+import { PostNav } from '@/components/layout/PostNav';
 import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
-import { PostDetail } from '@/types/api';
+import type { PostDetail, PostListItem } from '@/types/api';
 import {
     ChevronRight,
     File,
@@ -18,6 +19,8 @@ type ViewMode = 'balanced' | 'code' | 'article';
 
 interface DevPostProps {
     post: PostDetail;
+    prevPost?: PostListItem | null;
+    nextPost?: PostListItem | null;
 }
 
 interface FileContent {
@@ -35,7 +38,7 @@ interface TourStep {
     content: string;
 }
 
-export function DevPost({ post }: DevPostProps) {
+export function DevPost({ post, prevPost, nextPost }: DevPostProps) {
     const [activeStepIndex, setActiveStepIndex] = useState(0);
     const [activeFile, setActiveFile] = useState<FileContent | null>(null);
     const [copied, setCopied] = useState(false);
@@ -179,8 +182,8 @@ export function DevPost({ post }: DevPostProps) {
     return (
         <div className="flex flex-col h-screen w-full bg-background text-text overflow-hidden">
             {/* Navbar */}
-            <nav className="h-16 border-b border-border flex items-center justify-between px-8 bg-surface/80 backdrop-blur-md z-[100] shrink-0">
-                <div className="flex items-center bg-background rounded-full p-1 border border-border">
+            <nav className="h-16 flex items-center justify-between px-8 bg-surface/80 backdrop-blur-md z-[100] shrink-0">
+                <div className="flex items-center bg-background  p-1">
                     {(['article', 'balanced', 'code'] as ViewMode[]).map((m) => {
                         const isDisabled = files.length === 0 && m !== 'article';
                         return (
@@ -215,7 +218,7 @@ export function DevPost({ post }: DevPostProps) {
                 {/* Article Section */}
                 <section
                     id="article-container"
-                    className={`${widths.left} h-full overflow-y-auto bg-surface flex flex-col scroll-smooth transition-all duration-500 border-r border-border`}
+                    className={`${widths.left} h-full overflow-y-auto bg-surface flex flex-col scroll-smooth transition-all duration-500 border-r border-border dev-post-scrollbar`}
                 >
                     <div className="max-w-3xl mx-auto w-full px-12 py-16">
                         <div className="mb-14">
@@ -270,9 +273,11 @@ export function DevPost({ post }: DevPostProps) {
                             )}
                         </article>
 
-                        <footer className="mt-40 pt-10 border-t border-border text-center text-[10px] font-bold tracking-[0.3em] uppercase text-text-secondary">
-                            Dev Flow · Pure Technology Reading
-                        </footer>
+                        <PostNav
+                            prev={prevPost ?? undefined}
+                            next={nextPost ?? undefined}
+                            basePath="/dev"
+                        />
                     </div>
                 </section>
 
@@ -292,7 +297,7 @@ export function DevPost({ post }: DevPostProps) {
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-auto bg-surface p-6 font-mono text-[13px] leading-[1.8]">
+                    <div className="flex-1 overflow-auto bg-surface p-6 font-mono text-[13px] leading-[1.8] dev-post-scrollbar">
                         <pre className="select-text">
                             {(activeFile ? activeFile.content : '').split('\n').map((line, i) => {
                                 const lineNum = i + 1;
@@ -334,7 +339,7 @@ export function DevPost({ post }: DevPostProps) {
                                 <X size={16} />
                             </button>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-2 dev-post-toc">
+                        <div className="flex-1 overflow-y-auto p-2 dev-post-toc dev-post-scrollbar">
                             {steps.map((step, idx) => (
                                 <button
                                     key={step.id}
@@ -357,9 +362,6 @@ export function DevPost({ post }: DevPostProps) {
                                     {activeStepIndex === idx && <ChevronRight size={14} className="mt-1" />}
                                 </button>
                             ))}
-                        </div>
-                        <div className="p-3 bg-background/50 text-[10px] text-text-secondary text-center border-t border-border">
-                            點選步驟快速導覽
                         </div>
                     </div>
                 )}
