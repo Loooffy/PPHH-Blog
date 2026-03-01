@@ -48,7 +48,7 @@ export async function listPosts(
     const searchParams = new URLSearchParams();
     if (params?.type) searchParams.set('type', params.type);
     if (params?.tag_id != null) searchParams.set('tag_id[]', String(params.tag_id));
-    if (params?.series_id != null) searchParams.set('series_id[]', String(params.series_id));
+    if (params?.series_id != null) searchParams.set('series_id', String(params.series_id));
     if (params?.page != null) searchParams.set('page', String(params.page));
     if (params?.per_page != null)
       searchParams.set('per_page', String(params.per_page));
@@ -62,7 +62,16 @@ export async function listPosts(
     if (!res.ok) {
       return { posts: [], meta: defaultPaginationMeta() };
     }
-    return res.json();
+    const data: PostsListResponse = await res.json();
+    // 若以 series 查詢，依 series_number 由小到大排序
+    if (params?.series_id != null && data.posts.length > 0) {
+      data.posts.sort((a, b) => {
+        const na = (a as { series_number?: number }).series_number ?? Infinity;
+        const nb = (b as { series_number?: number }).series_number ?? Infinity;
+        return na - nb;
+      });
+    }
+    return data;
   } catch (error) {
     console.error('Failed to fetch posts:', error);
     return { posts: [], meta: defaultPaginationMeta() };
@@ -100,7 +109,12 @@ export async function getSeriesPosts(
     if (!res.ok) {
       return { series_id: null, posts: [] };
     }
-    return res.json();
+    const data = await res.json();
+    // 依 series_number 升序排序，數字越小排越前面
+    data.posts.sort((a: { series_number: number }, b: { series_number: number }) =>
+      a.series_number - b.series_number
+    );
+    return data;
   } catch (error) {
     console.error('Failed to fetch series posts:', error);
     return { series_id: null, posts: [] };

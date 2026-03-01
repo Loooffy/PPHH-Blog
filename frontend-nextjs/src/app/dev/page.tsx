@@ -9,6 +9,7 @@ interface DevPageProps {
 
 export default async function DevPage({ searchParams }: DevPageProps) {
   const params = await searchParams;
+  // console.log(params);
   const tagId = params.tag_id
     ? parseInt(String(params.tag_id), 10)
     : undefined;
