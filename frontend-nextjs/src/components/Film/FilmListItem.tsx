@@ -36,13 +36,13 @@ export function WideFilmCard({ post, category, theme }: FilmCardProps) {
 
             <div className="flex-1">
               <h2
-                className="font-['Inter',sans-serif] text-[56px] font-medium mt-4 mb-2 leading-[1.1] md:text-[40px]"
+                className="font-['Inter',sans-serif] text-2xl font-medium mt-4 mb-2 leading-[1.1] md:text-2xl"
                 style={{ color: theme.colors.accent }}
               >
                 {post.title}
               </h2>
               <p
-                className="font-['Inter',sans-serif] text-2xl font-light"
+                className="font-['Inter',sans-serif] text-xl font-light"
                 style={{ color: theme.colors.text }}
               >
                 {director}
@@ -51,7 +51,7 @@ export function WideFilmCard({ post, category, theme }: FilmCardProps) {
 
             <div className="mt-auto text-right">
               <span
-                className="font-['Glegoo',serif] text-[56px] leading-none opacity-90 md:text-[40px]"
+                className="font-['Glegoo',serif] text-2xl leading-none opacity-90 md:text-2xl"
                 style={{ color: theme.colors.text }}
               >
                 {year}
@@ -169,7 +169,7 @@ export function FullWidthFilmCard({ post, category, theme }: FilmCardProps) {
 
             <div className="flex-1 flex flex-col gap-2">
               <h2
-                className="font-['Inter',sans-serif] text-[40px] font-medium -mt-1 leading-[1.1]"
+                className="font-['Inter',sans-serif] text-3xl font-medium -mt-1 leading-[1.1]"
                 style={{ color: theme.colors.accent }}
               >
                 {post.title}

@@ -17,7 +17,7 @@ export function DevTagSeries({
   activeTagId = null,
 }: DevTagSeriesProps) {
   return (
-    <div className="w-full sticky top-30">
+    <div>
       <div className="flex flex-row gap-1">
         <div className="flex-1"></div>
         <div className="flex-2 text-l text-center font-bold py-1 mb-3 border-b-2 border-gray-400">

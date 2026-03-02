@@ -9,7 +9,6 @@ interface DevPageProps {
 
 export default async function DevPage({ searchParams }: DevPageProps) {
   const params = await searchParams;
-  // console.log(params);
   const tagId = params.tag_id
     ? parseInt(String(params.tag_id), 10)
     : undefined;
@@ -27,7 +26,7 @@ export default async function DevPage({ searchParams }: DevPageProps) {
     <>
       <ThemedMain category="dev">
         <div className="px-6 md:px-8 py-6 flex flex-col md:flex-row gap-6 items-start">
-          <div className="w-full md:w-[20%] md:shrink-0 md:max-w-[20%] mr-6 mt-3">
+          <div className="w-full md:w-[20%] md:shrink-0 md:max-w-[20%] mr-6 mt-4">
             <DevTagSeries
               series={series}
               tags={tags}

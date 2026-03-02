@@ -95,13 +95,13 @@ export default async function PostPage({
   }
 
   if (category === 'game') {
-    const { posts: seriesPosts } = await getSeriesPosts(slug);
+    const { posts: seriesPosts, series_id } = await getSeriesPosts(slug);
     const gamePosts = await getPostsByCategory('game');
     const { prevPost, nextPost } = getPrevNextPosts(post, seriesPosts, gamePosts);
 
     return (
       <ThemedMain category="game">
-        <GamePost post={post} prevPost={prevPost} nextPost={nextPost} />
+        <GamePost post={post} prevPost={prevPost} nextPost={nextPost} seriesId={series_id} />
       </ThemedMain>
     );
   }
