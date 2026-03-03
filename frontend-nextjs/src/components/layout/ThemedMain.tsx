@@ -17,9 +17,11 @@ export function ThemedMain({ children, category }: ThemedMainProps) {
     if (category) setCategory(category);
   }, [category, setCategory]);
 
+  const scrollbarClass = category === 'film' ? 'film-scrollbar' : '';
+
   return (
     <main
-      className="fixed z-1100 top-[84px] inset-x-0 bottom-0 overflow-y-auto bg-background"
+      className={`fixed z-1100 top-[84px] inset-x-0 bottom-0 overflow-y-auto bg-background ${scrollbarClass}`}
     >
       {children}
     </main>

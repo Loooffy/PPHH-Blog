@@ -90,6 +90,29 @@ body::-webkit-scrollbar-thumb:hover {
   scrollbar-color: var(--color-border) transparent;
 }
 
+/* Film list / Film post 全頁 scrollbar - 使用 film 主題色 */
+.film-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.film-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.film-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-film-accent);
+  border-radius: 3px;
+}
+
+.film-scrollbar::-webkit-scrollbar-thumb:hover {
+  filter: brightness(1.15);
+}
+
+.film-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-film-accent) transparent;
+}
+
 /* Hide scrollbar for epub-style reader */
 .hide-scrollbar {
   scrollbar-width: none;

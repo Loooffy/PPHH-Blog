@@ -96,25 +96,25 @@ export function NarrowFilmCard({ post, category, theme }: FilmCardProps) {
 
           <div className="flex flex-col gap-1">
             <h2
-              className="font-['Inter',sans-serif] text-xl text-right text-l font-medium leading-tight"
+              className="font-['Inter',sans-serif] text-xl text-left text-l font-medium leading-tight"
               style={{ color: theme.colors.accent }}
             >
               {post.title}
             </h2>
             <p
-              className="font-['Inter',sans-serif] text-m text-right font-light"
+              className="font-['Inter',sans-serif] text-m text-left font-light"
               style={{ color: theme.colors.text }}
             >
               {director}
             </p>
             <span
-              className="font-['Glegoo',serif] text-m leading-none"
+              className="font-['Glegoo',serif] text-m text-right leading-none"
               style={{ color: theme.colors.text }}
             >
               {year}
             </span>
             <span
-              className="font-['Inter',sans-serif] text-[10px] leading-normal tracking-wider uppercase"
+              className="font-['Inter',sans-serif] text-xs text-right leading-normal tracking-wider uppercase"
               style={{ color: theme.colors.text }}
             >
               {film_country} / {film_length} MIN / {film_category}
