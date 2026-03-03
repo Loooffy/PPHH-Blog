@@ -123,6 +123,15 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
         return parsedSteps;
     }, [post.content]);
 
+    // 頁面載入時，code section 預設顯示第一個段落對應的檔案
+    useEffect(() => {
+        if (steps.length > 0 && files.length > 0 && activeFile === null) {
+            const firstStep = steps[0];
+            const file = files.find(f => f.id === firstStep.targetId);
+            if (file) setActiveFile(file);
+        }
+    }, [steps, files, activeFile]);
+
     // Article 模式用的內容：移除 <<<filename>>> 與 [[[steps]]] 區塊標記，只保留一般 markdown
     const articleContent = useMemo(() => {
         let markdown = post.content ?? '';
