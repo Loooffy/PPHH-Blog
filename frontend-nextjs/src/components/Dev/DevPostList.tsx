@@ -19,7 +19,7 @@ export function DevPostList({ posts }: DevPostListProps) {
   }
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-4/5">
       {posts.map((post, index) => (
         <DevListItem key={post.id} post={post} category={category} isLast={index === posts.length - 1} />
       ))}
