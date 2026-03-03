@@ -185,26 +185,22 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
         <div className="flex flex-col h-screen w-full bg-background text-text overflow-hidden">
             {/* Navbar */}
             <nav className="h-16 flex items-center justify-between px-8 bg-surface/80 backdrop-blur-md z-[100] shrink-0">
-                <div className="flex items-center bg-background  p-1">
-                    {(['article', 'balanced', 'code'] as ViewMode[]).map((m) => {
-                        const isDisabled = files.length === 0 && m !== 'article';
-                        return (
+                {files.length > 0 && (
+                    <div className="flex items-center bg-background p-1">
+                        {(['article', 'balanced', 'code'] as ViewMode[]).map((m) => (
                             <button
                                 key={m}
-                                onClick={() => !isDisabled && setViewMode(m)}
-                                disabled={isDisabled}
-                                className={`px-4 py-1.5 cursor-pointer rounded-full text-[11px] font-bold transition-all ${isDisabled
-                                    ? 'text-text-secondary/50 opacity-10'
-                                    : viewMode === m
-                                        ? 'bg-primary/15 text-primary ring-1 ring-primary/20'
-                                        : 'text-text-secondary hover:text-text hover:bg-surface/50'
-                                    }`}
+                                onClick={() => setViewMode(m)}
+                                className={`px-4 py-1.5 cursor-pointer rounded-full text-[11px] font-bold transition-all ${viewMode === m
+                                    ? 'bg-primary/15 text-primary ring-1 ring-primary/20'
+                                    : 'text-text-secondary hover:text-text hover:bg-surface/50'
+                                }`}
                             >
                                 <span className="capitalize">{m === 'balanced' ? 'Balanced' : m === 'code' ? 'Code-First' : 'Article'}</span>
                             </button>
-                        );
-                    })}
-                </div>
+                        ))}
+                    </div>
+                )}
                 {!isTocOpen && viewMode !== 'article' && steps.length > 0 && (
                     <button
                         onClick={() => setIsTocOpen(true)}
