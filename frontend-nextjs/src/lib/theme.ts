@@ -47,14 +47,14 @@ export const themes: Record<Category, { light: Theme; dark: Theme }> = {
   dev: {
     light: {
       colors: {
-        primary: '#00bcd4',
-        secondary: '#0097a7',
+        primary: '#111111',
+        secondary: '#212121',
         background: '#f5f5f5',
         surface: '#ffffff',
         text: '#212121',
-        textSecondary: '#757575',
+        textSecondary: '#e5e5e5',
         border: '#e0e0e0',
-        accent: '#00acc1',
+        accent: '#212121',
         tagHoverBg: '#000000',
         tagHoverText: '#ffffff',
       },
@@ -66,12 +66,12 @@ export const themes: Record<Category, { light: Theme; dark: Theme }> = {
     },
     dark: {
       colors: {
-        primary: '#00bcd4',
-        secondary: '#00acc1',
+        primary: '#ffffff',
+        secondary: '#212121',
         background: '#121212',
         surface: '#1e1e1e',
         text: '#e0e0e0',
-        textSecondary: '#b0b0b0',
+        textSecondary: '#212121',
         border: '#333333',
         accent: '#00e5ff',
         tagHoverBg: '#ffffff',

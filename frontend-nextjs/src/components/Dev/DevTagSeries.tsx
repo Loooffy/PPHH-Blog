@@ -30,11 +30,10 @@ export function DevTagSeries({
       <div className="flex flex-col gap-1 mb-2">
         <Link
           href="/dev"
-          className={`flex-1 text-s text-center py-1 rounded transition-colors ${
-            isAllActive
-              ? 'font-bold text-primary bg-primary/10 underline'
-              : 'hover:font-bold'
-          }`}
+          className={`flex-1 text-s text-center py-1 rounded transition-colors ${isAllActive
+            ? 'font-bold text-primary bg-primary/10 underline'
+            : 'hover:font-bold'
+            }`}
         >
           所有文章
         </Link>
@@ -58,11 +57,10 @@ export function DevTagSeries({
               <Link
                 key={s.id}
                 href={`/dev?type=DevPost&series_id=${s.id}`}
-                className={`flex-1 text-s text-center py-1 rounded transition-colors ${
-                  isActive
-                    ? 'font-bold text-primary bg-primary/10 underline'
-                    : 'hover:font-bold'
-                }`}
+                className={`flex-1 text-s text-center py-1 rounded transition-colors ${isActive
+                  ? 'font-bold text-primary bg-primary/10 underline'
+                  : 'hover:font-bold'
+                  }`}
               >
                 {s.series_name}
               </Link>
@@ -72,7 +70,7 @@ export function DevTagSeries({
       </div>
       <div className="flex flex-row gap-1 mt-8">
         <div className="flex-1"></div>
-        <div className="flex-2 text-l text-center font-bold my-6 py-1 border-b-2 border-gray-400">
+        <div className="flex-2 text-l text-center font-bold py-1 border-b-2 border-gray-400">
           標籤
         </div>
         <div className="flex-1"></div>
@@ -83,7 +81,7 @@ export function DevTagSeries({
             尚無標籤
           </span>
         ) : (
-          <div className="flex flex-wrap gap-2 justify-center">
+          <div className="flex flex-wrap mt-4 gap-2 justify-center">
             {tags.map((t) => (
               <TagComponent
                 key={t.id}

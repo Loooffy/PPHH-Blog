@@ -211,7 +211,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                         className={`flex cursor-pointer items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface transition-all text-text'}`}
                     >
                         <List size={16} />
-                        <span className="text-[11px] font-bold uppercase tracking-widest">目錄</span>
+                        <span className="text-sm font-bold uppercase tracking-widest">目錄</span>
                     </button>
                 )}
             </nav>
@@ -222,8 +222,8 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                     id="article-container"
                     className={`${widths.left} h-full overflow-y-auto bg-surface flex flex-col scroll-smooth border-r border-border dev-post-scrollbar`}
                 >
-                    <div className="max-w-3xl mx-auto w-full px-12 py-16">
-                        <div className="mb-14">
+                    <div className="max-w-4xl mx-auto w-full px-12 py-4">
+                        <div className="mb-6">
                             {post.series && (
                                 <div className="flex items-center gap-3 mb-5">
                                     {seriesId != null ? (
@@ -245,12 +245,12 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                                     )}
                                 </div>
                             )}
-                            <h1 className="text-[34px] font-bold text-text mb-8 tracking-tight leading-[1.3]">
+                            <h1 className="text-xl font-bold text-text mb-4 tracking-tight leading-[1.3]">
                                 {viewMode === 'article' ? post.title : `0${activeStepIndex + 1} ${post.title}`}
                             </h1>
 
-                            <div className="flex items-center justify-between text-[12px] text-text-secondary pb-4 border-b border-border">
-                                <div className="flex gap-4 items-center">
+                            <div className="flex items-center justify-between text-m text-text-secondary pb-4 border-b border-border">
+                                <div className="flex gap-4 text-xs items-center">
                                     <span>最後更新：{new Date(post.updated_at).toLocaleDateString('zh-TW')}</span>
                                 </div>
                                 <div className="flex gap-2">
@@ -263,9 +263,9 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                             </div>
                         </div>
 
-                        <article className="space-y-16">
+                        <article className="space-y-4">
                             {viewMode === 'article' ? (
-                                <div className="text-[17px] leading-[2.1] text-text space-y-8 markdown-body">
+                                <div className="text-l leading-relaxed text-text space-y-4 markdown-body">
                                     <ReactMarkdown remarkPlugins={[remarkGfm, remarkStripCodeFences]}>{articleContent}</ReactMarkdown>
                                 </div>
                             ) : (
@@ -276,7 +276,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                                         onClick={() => jumpToArticleSection(idx)}
                                         className={`cursor-pointer ${activeStepIndex === idx ? 'opacity-100' : 'opacity-20 hover:opacity-40'}`}
                                     >
-                                        <div className="text-[17px] leading-[2.1] text-text space-y-8 markdown-body">
+                                        <div className="text-l leading-relaxed text-text space-y-4 markdown-body">
                                             <ReactMarkdown remarkPlugins={[remarkGfm, remarkStripCodeFences]}>{step.content}</ReactMarkdown>
                                         </div>
                                     </div>
@@ -300,7 +300,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                                 <button
                                     key={file.id}
                                     onClick={() => onCodeTabClick(file.id)}
-                                    className={`flex items-center gap-2 px-4 h-10 text-[11px] font-medium border-b-2 transition-all whitespace-nowrap ${activeFile?.id === file.id ? 'text-primary border-primary bg-primary/10' : 'text-text-secondary border-transparent hover:text-text hover:bg-surface/80 hover:text-primary/80'}`}
+                                    className={`flex items-center gap-2 px-4 h-10 text-sm cursor-pointer font-medium border-b-4 transition-all whitespace-nowrap ${activeFile?.id === file.id ? 'text-primary border-primary bg-primary/10' : 'text-text-secondary border-transparent hover:text-text hover:bg-surface/80 hover:text-primary/80'}`}
                                 >
                                     {file.name === 'setup.sh' ? <TerminalIcon size={12} /> : <File size={12} />} {file.name}
                                 </button>
