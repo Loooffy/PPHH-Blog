@@ -25,6 +25,11 @@ const nextConfig: NextConfig = {
         hostname: '**.mm.bing.net',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'pphh-blog.hostmora.app',
+        pathname: '/**',
+      },
     ],
   },
   // 在 Docker/WSL2 環境中啟用 polling 模式以確保檔案變更能被正確偵測

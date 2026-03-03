@@ -200,10 +200,10 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                             <button
                                 key={m}
                                 onClick={() => setViewMode(m)}
-                                className={`px-4 py-1.5 cursor-pointer rounded-full text-[11px] font-bold transition-all ${viewMode === m
+                                className={`px-4 py-1.5 cursor-pointer rounded-full text-xs font-bold transition-all ${viewMode === m
                                     ? 'bg-primary/15 text-primary ring-1 ring-primary/20'
                                     : 'text-text-secondary hover:text-text hover:bg-surface/50'
-                                }`}
+                                    }`}
                             >
                                 <span className="capitalize">{m === 'balanced' ? 'Balanced' : m === 'code' ? 'Code-First' : 'Article'}</span>
                             </button>
@@ -216,7 +216,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                         className={`flex cursor-pointer items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface transition-all text-text'}`}
                     >
                         <List size={16} />
-                        <span className="text-sm font-bold uppercase tracking-widest">目錄</span>
+                        <span className="text-xs font-bold uppercase tracking-widest">目錄</span>
                     </button>
                 )}
             </nav>
