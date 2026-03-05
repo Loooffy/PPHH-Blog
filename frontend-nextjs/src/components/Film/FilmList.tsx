@@ -55,7 +55,7 @@ export function FilmList({ posts }: FilmListProps) {
             <div className="w-full mt-0 mb-0">
               <img src="/film-divider-bottom.svg" alt="" className="w-full h-auto" />
             </div>
-            <div className="flex flex-col gap-6 items-stretch md:flex-row md:gap-6">
+            <div className="flex flex gap-6 items-stretch md:flex-row md:gap-6">
               {rowIndex % 2 === 0 ? (
                 <>
                   {triple[0] && <WideFilmCard post={triple[0]} {...cardProps} />}

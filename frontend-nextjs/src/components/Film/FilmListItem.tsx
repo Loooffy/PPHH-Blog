@@ -81,9 +81,9 @@ export function NarrowFilmCard({ post, category, theme }: FilmCardProps) {
   const film_country = post.film_country ?? '';
   const film_length = post.film_length ?? '';
   return (
-    <article className="w-1/4 min-w-0 shrink-0 transition-transform hover:-translate-y-1">
+    <article className="w-1/5 min-w-0 shrink-0 transition-transform hover:-translate-y-1">
       <Link href={`/${category}/${post.slug || post.id}`} className="no-underline text-inherit block h-full">
-        <div className="h-[280px] flex flex-col gap-4">
+        <div className="w-full h-[280px] flex flex-col justify-between gap-4">
           {post.image_url && (
             <div className="overflow-hidden rounded-sm">
               <img
