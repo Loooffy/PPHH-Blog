@@ -1,23 +1,4 @@
 services:
-  # PostgreSQL 資料庫服務
-  postgres:
-    image: postgres:17
-    container_name: pp_hh_blog_postgres
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - app-network
-
   # Rails Backend API 服務
   backend:
     build:
@@ -43,18 +24,21 @@ services:
       - ./backend-activeAdmin:/rails
       - backend_bundle:/usr/local/bundle
       - backend_node_modules:/rails/node_modules
-    depends_on:
-      postgres:
-        condition: service_healthy
     command: >
       sh -c "
-        rm -f /rails/tmp/pids/server.pid &&
-        bundle install &&
-        bin/rails db:create db:migrate db:seed &&
-        bin/rails server -b 0.0.0.0 -p ${RAILS_PORT}
+       echo 'Waiting for PostgreSQL to be ready...' &&
+       until pg_isready -h ${DATABASE_HOST} -U ${DATABASE_USERNAME}; do
+         sleep 2;
+       done &&
+       echo 'PostgreSQL is ready, starting Rails...' &&
+       rm -f /rails/tmp/pids/server.pid &&
+       bundle install &&
+       bin/rails db:create db:migrate db:seed &&
+       bin/rails server -b 0.0.0.0 -p ${RAILS_PORT}
       "
     networks:
       - app-network
+      - postgres-shared-net
 
   # Next.js Frontend 服務
   frontend:
@@ -78,8 +62,6 @@ services:
       - app-network
 
 volumes:
-  postgres_data:
-    driver: local
   backend_bundle:
     driver: local
   backend_node_modules:
@@ -88,3 +70,5 @@ volumes:
 networks:
   app-network:
     driver: bridge
+  postgres-shared-net:
+    external: true
