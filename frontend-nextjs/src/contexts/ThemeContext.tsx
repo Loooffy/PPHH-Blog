@@ -1,6 +1,7 @@
 'use client';
 
 import { Category, ThemeMode, getTheme } from '@/lib/theme';
+import { usePathname } from 'next/navigation';
 import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 interface ThemeContextType {
@@ -67,6 +68,9 @@ function initializeTheme() {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isHomePage = pathname === '/';
+
   const [category, setCategory] = useState<Category>('dev');
   const [mode, setMode] = useState<ThemeMode>('light');
   const [mounted, setMounted] = useState(false);
@@ -82,7 +86,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setMode(initMode);
     setMounted(true);
     mountedRef.current = true;
-  }, []);
+    if (pathname === '/') {
+      const theme = getTheme('dev', 'light');
+      applyTheme(theme);
+      document.documentElement.setAttribute('data-theme', 'dev-light');
+    }
+  }, [pathname]);
 
   // 更新 ref 值
   useEffect(() => {
@@ -104,15 +113,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('blog-theme-mode', mode);
   }, [mode, mounted]);
 
-  // 更新 CSS 變數；film 固定 dark、book 固定 light
+  // 更新 CSS 變數；首頁固定 dev-light、film 固定 dark、book 固定 light
   useEffect(() => {
     if (!mounted) return;
+    if (isHomePage) {
+      const theme = getTheme('dev', 'light');
+      applyTheme(theme);
+      document.documentElement.setAttribute('data-theme', 'dev-light');
+      return;
+    }
     const effectiveMode =
       category === 'film' ? 'dark' : category === 'book' ? 'light' : mode;
     const theme = getTheme(category, effectiveMode);
     applyTheme(theme);
     document.documentElement.setAttribute('data-theme', `${category}-${effectiveMode}`);
-  }, [category, mode, mounted]);
+  }, [category, mode, mounted, isHomePage]);
 
   const toggleMode = () => {
     setMode((prevMode) => {

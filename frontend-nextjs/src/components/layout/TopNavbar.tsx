@@ -15,6 +15,10 @@ export function TopNavbar() {
     category === 'film' ? 'dark' : category === 'book' ? 'light' : mode;
   const logoSrc = effectiveMode === 'dark' ? '/blog-logo-white.png' : '/blog-logo-black.png';
 
+  if (pathname === '/') {
+    return null;
+  }
+
   if (pathname.startsWith('/game')) {
     return <GameNavBar />;
   }
