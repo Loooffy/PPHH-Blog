@@ -5,16 +5,15 @@ import { GamePost } from '@/components/Game/GamePost';
 import { MarkdownContent } from '@/components/layout/MarkdownContent';
 import type { PostNavItem } from '@/components/layout/PostNav';
 import { ThemedMain } from '@/components/layout/ThemedMain';
-import { getPost, getPostsByCategory, getSeriesPosts } from '@/lib/api';
+import { getPost, getSeriesPosts } from '@/lib/api';
 import { categoryNames } from '@/lib/theme';
-import type { PostDetail, PostListItem, SeriesPostItem } from '@/types/api';
+import type { PostDetail, SeriesPostItem } from '@/types/api';
 import Link from 'next/link';
 
-/** 根據系列或分類列表計算上一篇／下一篇（回傳 PostNav 所需的最小欄位） */
+/** 根據系列順序計算上一篇／下一篇；無系列時不顯示（回傳 PostNav 所需的最小欄位） */
 function getPrevNextPosts(
   post: PostDetail,
-  seriesPosts: SeriesPostItem[],
-  categoryPosts: PostListItem[]
+  seriesPosts: SeriesPostItem[]
 ): { prevPost: PostNavItem | null; nextPost: PostNavItem | null } {
   const findIndex = (list: { slug?: string; id?: number }[]) =>
     list.findIndex((p) => p.slug === post.slug || p.id === post.id);
@@ -30,15 +29,8 @@ function getPrevNextPosts(
     }
   }
 
-  // Fallback：依分類列表決定 prev/next
-  const currentIndex = findIndex(categoryPosts);
-  return {
-    prevPost:
-      currentIndex >= 0 && currentIndex < categoryPosts.length - 1
-        ? categoryPosts[currentIndex + 1]
-        : null,
-    nextPost: currentIndex > 0 ? categoryPosts[currentIndex - 1] : null,
-  };
+  // 無系列時不顯示 prev/next
+  return { prevPost: null, nextPost: null };
 }
 
 export default async function PostPage({
@@ -64,8 +56,7 @@ export default async function PostPage({
 
   if (category === 'dev') {
     const { posts: seriesPosts, series_id } = await getSeriesPosts(slug);
-    const devPosts = await getPostsByCategory('dev');
-    const { prevPost, nextPost } = getPrevNextPosts(post, seriesPosts, devPosts);
+    const { prevPost, nextPost } = getPrevNextPosts(post, seriesPosts);
 
     return (
       <>
@@ -96,8 +87,7 @@ export default async function PostPage({
 
   if (category === 'game') {
     const { posts: seriesPosts, series_id } = await getSeriesPosts(slug);
-    const gamePosts = await getPostsByCategory('game');
-    const { prevPost, nextPost } = getPrevNextPosts(post, seriesPosts, gamePosts);
+    const { prevPost, nextPost } = getPrevNextPosts(post, seriesPosts);
 
     return (
       <ThemedMain category="game">

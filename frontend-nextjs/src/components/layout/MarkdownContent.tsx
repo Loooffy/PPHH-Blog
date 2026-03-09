@@ -1,3 +1,4 @@
+import { rehypeAddHeadingIds } from '@/lib/rehype-add-heading-ids';
 import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -5,9 +6,11 @@ import remarkGfm from 'remark-gfm';
 interface MarkdownContentProps {
   content: string;
   className?: string;
+  /** 為 h1-h6 標題加上 id，供 TOC 錨點跳轉 */
+  addHeadingIds?: boolean;
 }
 
-export function MarkdownContent({ content, className = '' }: MarkdownContentProps) {
+export function MarkdownContent({ content, className = '', addHeadingIds = false }: MarkdownContentProps) {
   return (
     <div
       className={`leading-relaxed break-words text-text 
@@ -33,7 +36,12 @@ export function MarkdownContent({ content, className = '' }: MarkdownContentProp
         [&_td]:border [&_td]:border-border [&_td]:px-4 [&_td]:py-2
         ${className}`}
     >
-      <ReactMarkdown remarkPlugins={[remarkGfm, remarkStripCodeFences]}>{content || ''}</ReactMarkdown>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm, remarkStripCodeFences]}
+        rehypePlugins={addHeadingIds ? [rehypeAddHeadingIds] : []}
+      >
+        {content || ''}
+      </ReactMarkdown>
     </div>
   );
 }

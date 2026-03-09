@@ -138,6 +138,24 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
         return markdown.trim();
     }, [post.content]);
 
+    // Article 模式 TOC：從 markdown 解析 h1-h6 標題（與 rehypeAddHeadingIds 的 slug 邏輯一致）
+    const articleTocItems = useMemo(() => {
+        const items: { level: number; text: string; slug: string }[] = [];
+        const slugCounts = new Map<string, number>();
+        const regex = /^(#{1,6})\s+(.+)$/gm;
+        let match;
+        while ((match = regex.exec(articleContent)) !== null) {
+            const level = match[1].length;
+            const text = match[2].trim();
+            let slug = text.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\u4e00-\u9fff-]/g, '') || 'heading';
+            const count = slugCounts.get(slug) ?? 0;
+            slugCounts.set(slug, count + 1);
+            if (count > 0) slug += `-${count}`;
+            items.push({ level, text, slug });
+        }
+        return items;
+    }, [articleContent]);
+
     // 同步右側面板到目前的步驟（依 targetId 對應檔案）
     const syncRightPanel = (index: number) => {
         const step = steps[index];
@@ -163,6 +181,17 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                 top: targetOffset,
                 behavior: 'smooth'
             });
+        }
+    };
+
+    // Article 模式：跳轉至指定 heading id
+    const jumpToArticleHeading = (slug: string) => {
+        const container = document.getElementById('article-container');
+        const target = document.getElementById(slug);
+
+        if (container && target) {
+            const targetOffset = target.offsetTop - 80;
+            container.scrollTo({ top: targetOffset, behavior: 'smooth' });
         }
     };
 
@@ -195,7 +224,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                 <nav className="h-16 flex items-center justify-between px-8 bg-surface/80 backdrop-blur-md z-[100] shrink-0">
                     {files.length > 0 && (
                         <div className="flex items-center bg-background p-1">
-                            {(['article', 'balanced', 'code'] as ViewMode[]).map((m) => (
+                            {(['balanced', 'code'] as ViewMode[]).map((m) => (
                                 <button
                                     key={m}
                                     onClick={() => setViewMode(m)}
@@ -221,11 +250,24 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                 </nav>
             )}
 
-            <div className="flex overflow-y-auto flex-1 relative">
+            {/* Article 模式：浮動 TOC 按鈕（navbar 隱藏時顯示） */}
+            {viewMode === 'article' && articleTocItems.length > 0 && !isTocOpen && (
+                <div className="fixed top-24 right-4 z-[99]">
+                    <button
+                        onClick={() => setIsTocOpen(true)}
+                        className="flex cursor-pointer items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface/95 backdrop-blur-md shadow-lg transition-all text-text hover:bg-surface"
+                    >
+                        <List size={16} />
+                        <span className="text-xs font-bold uppercase tracking-widest">目錄</span>
+                    </button>
+                </div>
+            )}
+
+            <div className="flex overflow-hidden flex-1 relative min-h-0">
                 {/* Article Section */}
                 <section
                     id="article-container"
-                    className={`${widths.left} h-full bg-surface flex flex-col scroll-smooth`}
+                    className={`${widths.left} min-h-0 flex flex-col overflow-auto scroll-smooth dev-post-scrollbar`}
                 >
                     <div className="max-w-4xl mx-auto w-full px-12 py-10">
                         <div className="mb-6">
@@ -300,7 +342,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                 </section>
 
                 {/* Code Section */}
-                <section className={`${widths.right} h-full bg-background flex flex-col relative`}>
+                <section className={`${widths.right} min-h-0 bg-background flex flex-col relative`}>
                     <div className="h-10 border-b border-border flex items-center px-4 bg-surface shrink-0 justify-between">
                         <div className="flex items-center h-full">
                             {files.map(file => (
@@ -345,11 +387,11 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
             </div>
 
             <div className="fixed right-0 top-[120px] z-[100] flex items-start">
-                {isTocOpen && viewMode !== 'article' && (
+                {isTocOpen && viewMode && (viewMode === 'article' ? articleTocItems.length > 0 : steps.length > 0) && (
                     <div
                         className="w-72 max-h-[80vh] bg-surface/95 backdrop-blur-md border border-border rounded-l-xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right pointer-events-auto"
                     >
-                        <div className="p-4 border-b border-border flex items-center justify-between bg-background/50">
+                        <div className="p-4 border-b border-border flex items-center justify-between">
                             <span className="text-xs font-bold uppercase tracking-widest text-text-secondary flex items-center gap-2">
                                 <List size={12} /> Table of Contents
                             </span>
@@ -358,28 +400,41 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                             </button>
                         </div>
                         <div className="flex-1 overflow-y-auto p-2 dev-post-toc dev-post-scrollbar">
-                            {steps.map((step, idx) => (
-                                <button
-                                    key={step.id}
-                                    onClick={() => jumpToArticleSection(idx)}
-                                    className={`w-full text-left p-3 rounded-lg text-xs transition-all flex items-start gap-3 group mb-1 last:mb-0 ${activeStepIndex === idx
-                                        ? 'bg-primary/20 text-primary border border-primary/30'
-                                        : 'text-text-secondary hover:bg-border/50 hover:text-text border border-transparent'
-                                        }`}
-                                >
-                                    <span className={`w-5 h-5 shrink-0 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors ${activeStepIndex === idx ? 'bg-primary text-surface' : 'bg-background text-text-secondary group-hover:text-text'
-                                        }`}>
-                                        {idx + 1}
-                                    </span>
-                                    <div className="flex-1 truncate">
-                                        <div className="font-bold truncate">{step.title}</div>
-                                        <div className="text-[10px] opacity-60 mt-0.5 truncate uppercase tracking-tighter">
-                                            {files.find(f => f.id === step.targetId)?.name ?? step.targetId}
+                            {viewMode === 'article' ? (
+                                articleTocItems.map((item, idx) => (
+                                    <button
+                                        key={`${item.slug}-${idx}`}
+                                        onClick={() => jumpToArticleHeading(item.slug)}
+                                        className="w-full text-left p-3 rounded-lg text-xs transition-all flex items-start gap-3 group mb-1 last:mb-0 text-text-secondary hover:bg-border/50 hover:text-text border border-transparent"
+                                        style={{ paddingLeft: `${12 + (item.level - 1) * 12}px` }}
+                                    >
+                                        <span className="font-medium truncate">{item.text}</span>
+                                    </button>
+                                ))
+                            ) : (
+                                steps.map((step, idx) => (
+                                    <button
+                                        key={step.id}
+                                        onClick={() => jumpToArticleSection(idx)}
+                                        className={`w-full text-left p-3 rounded-lg text-xs transition-all flex items-start gap-3 group mb-1 last:mb-0 ${activeStepIndex === idx
+                                            ? 'bg-primary/20 text-primary border border-primary/30'
+                                            : 'text-text-secondary hover:bg-border/50 hover:text-text border border-transparent'
+                                            }`}
+                                    >
+                                        <span className={`w-5 h-5 shrink-0 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors ${activeStepIndex === idx ? 'bg-primary text-surface' : 'bg-background text-text-secondary group-hover:text-text'
+                                            }`}>
+                                            {idx + 1}
+                                        </span>
+                                        <div className="flex-1 truncate">
+                                            <div className="font-bold truncate">{step.title}</div>
+                                            <div className="text-[10px] opacity-60 mt-0.5 truncate uppercase tracking-tighter">
+                                                {files.find(f => f.id === step.targetId)?.name ?? step.targetId}
+                                            </div>
                                         </div>
-                                    </div>
-                                    {activeStepIndex === idx && <ChevronRight size={14} className="mt-1" />}
-                                </button>
-                            ))}
+                                        {activeStepIndex === idx && <ChevronRight size={14} className="mt-1" />}
+                                    </button>
+                                ))
+                            )}
                         </div>
                     </div>
                 )}
