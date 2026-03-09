@@ -31,14 +31,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-TW" className="bg-background" suppressHydrationWarning>
+    <html lang="zh-TW" className="bg-background h-full" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${pottaOne.variable} antialiased bg-background text-text font-body`}
+        className={`${geistSans.variable} ${geistMono.variable} ${pottaOne.variable} antialiased bg-background text-text font-body h-full flex flex-col overflow-hidden`}
         suppressHydrationWarning
       >
         <ThemeProvider>
           <TopNavbar />
-          {children}
+          <div className="flex-1 min-h-0 flex flex-col overflow-auto">
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>

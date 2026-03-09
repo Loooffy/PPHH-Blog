@@ -220,6 +220,15 @@ export function BookPost({ post, backLinkHref, backLinkLabel }: BookPostProps) {
                 [&>h2]:break-inside-avoid [&>h2]:break-after-avoid [&>h2]:mt-8 [&>h2]:mb-4 [&>h2]:text-stone-900
                 [&>h3]:break-inside-avoid [&>h3]:break-after-avoid [&>h3]:mt-8 [&>h3]:mb-4 [&>h3]:text-stone-900
                 [&>img]:rounded-lg [&>img]:shadow-md [&>img]:mx-auto [&>img]:max-h-[60vh] [&>img]:object-contain [&>img]:my-8 [&>img]:break-inside-avoid
+                [&>pre]:break-inside-avoid [&>pre]:my-6 [&>pre]:p-4 [&>pre]:bg-stone-100 [&>pre]:rounded-lg [&>pre]:overflow-x-auto [&>pre]:font-mono [&>pre]:text-sm
+                [&_pre_code]:p-0 [&_pre_code]:bg-transparent
+                [&>code]:font-mono [&>code]:text-sm [&>code]:bg-stone-100 [&>code]:px-1 [&>code]:py-0.5 [&>code]:rounded
+                [&>ul]:my-4 [&>ul]:pl-8 [&>ul]:list-disc [&>ul]:break-inside-avoid
+                [&>ol]:my-4 [&>ol]:pl-8 [&>ol]:list-decimal [&>ol]:break-inside-avoid
+                [&>li]:my-2 [&>li]:[display:list-item]
+                [&>blockquote]:ml-3 [&>blockquote]:pl-6 [&>blockquote]:text-stone-600 [&>blockquote]:border-l-4 [&>blockquote]:border-stone-300 [&>blockquote]:break-inside-avoid
+                [&>a]:text-stone-700 [&>a]:underline [&>a:hover]:text-stone-900
+                [&>strong]:font-bold [&>em]:italic
                 [&>*]:px-8 md:[&>*]:px-16 [&>*]:box-border [&>*]:snap-start [&>*]:max-w-full
               `}
                             style={{ fontSize: `${fontSize}px` }}

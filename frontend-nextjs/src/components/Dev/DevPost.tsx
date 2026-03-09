@@ -1,8 +1,8 @@
 'use client';
 
 import { Tag as TagComponent } from '@/components/atomic/Tag';
+import { MarkdownContent } from '@/components/layout/MarkdownContent';
 import { PostNav, type PostNavItem } from '@/components/layout/PostNav';
-import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
 import type { PostDetail } from '@/types/api';
 import {
     ChevronRight,
@@ -13,8 +13,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 type ViewMode = 'balanced' | 'code' | 'article';
 
@@ -191,46 +189,48 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
             : { left: 'w-[50%]', right: 'w-[50%]' };
 
     return (
-        <div className="flex flex-col h-screen w-full bg-background text-text overflow-hidden">
-            {/* Navbar */}
-            <nav className="h-16 flex items-center justify-between px-8 bg-surface/80 backdrop-blur-md z-[100] shrink-0">
-                {files.length > 0 && (
-                    <div className="flex items-center bg-background p-1">
-                        {(['article', 'balanced', 'code'] as ViewMode[]).map((m) => (
-                            <button
-                                key={m}
-                                onClick={() => setViewMode(m)}
-                                className={`px-4 py-1.5 cursor-pointer rounded-full text-xs font-bold transition-all ${viewMode === m
-                                    ? 'bg-primary/15 text-primary ring-1 ring-primary/20'
-                                    : 'text-text-secondary hover:text-text hover:bg-surface/50'
-                                    }`}
-                            >
-                                <span className="capitalize">{m === 'balanced' ? 'Balanced' : m === 'code' ? 'Code-First' : 'Article'}</span>
-                            </button>
-                        ))}
-                    </div>
-                )}
-                {!isTocOpen && viewMode !== 'article' && steps.length > 0 && (
-                    <button
-                        onClick={() => setIsTocOpen(true)}
-                        className={`flex cursor-pointer items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface transition-all text-text'}`}
-                    >
-                        <List size={16} />
-                        <span className="text-xs font-bold uppercase tracking-widest">目錄</span>
-                    </button>
-                )}
-            </nav>
+        <div className="flex flex-col flex-1 min-h-0 w-full bg-background text-text overflow-hidden">
+            {/* Navbar - hidden in article mode */}
+            {viewMode !== 'article' && (
+                <nav className="h-16 flex items-center justify-between px-8 bg-surface/80 backdrop-blur-md z-[100] shrink-0">
+                    {files.length > 0 && (
+                        <div className="flex items-center bg-background p-1">
+                            {(['article', 'balanced', 'code'] as ViewMode[]).map((m) => (
+                                <button
+                                    key={m}
+                                    onClick={() => setViewMode(m)}
+                                    className={`px-4 py-1.5 cursor-pointer rounded-full text-xs font-bold transition-all ${viewMode === m
+                                        ? 'bg-primary/15 text-primary ring-1 ring-primary/20'
+                                        : 'text-text-secondary hover:text-text hover:bg-surface/50'
+                                        }`}
+                                >
+                                    <span className="capitalize">{m === 'balanced' ? 'Balanced' : m === 'code' ? 'Code-First' : 'Article'}</span>
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                    {!isTocOpen && steps.length > 0 && (
+                        <button
+                            onClick={() => setIsTocOpen(true)}
+                            className={`flex cursor-pointer items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface transition-all text-text'}`}
+                        >
+                            <List size={16} />
+                            <span className="text-xs font-bold uppercase tracking-widest">目錄</span>
+                        </button>
+                    )}
+                </nav>
+            )}
 
-            <div className="flex flex-1 overflow-hidden relative">
+            <div className="flex overflow-y-auto flex-1 relative">
                 {/* Article Section */}
                 <section
                     id="article-container"
-                    className={`${widths.left} h-full overflow-y-auto bg-surface flex flex-col scroll-smooth border-r border-border dev-post-scrollbar`}
+                    className={`${widths.left} h-full bg-surface flex flex-col scroll-smooth`}
                 >
-                    <div className="max-w-4xl mx-auto w-full px-12 py-4">
+                    <div className="max-w-4xl mx-auto w-full px-12 py-10">
                         <div className="mb-6">
                             {post.series && (
-                                <div className="flex items-center gap-3 mb-5">
+                                <div className="flex items-center gap-3 mb-3">
                                     {seriesId != null ? (
                                         <Link
                                             href={`/dev?type=DevPost&series_id=${seriesId}`}
@@ -250,7 +250,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                                     )}
                                 </div>
                             )}
-                            <h1 className="text-xl font-bold text-text mb-4 tracking-tight leading-[1.3]">
+                            <h1 className="text-2xl font-bold text-text mb-4 tracking-tight leading-[1.3]">
                                 {viewMode === 'article' ? post.title : `0${activeStepIndex + 1} ${post.title}`}
                             </h1>
 
@@ -270,9 +270,10 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
 
                         <article className="space-y-4">
                             {viewMode === 'article' ? (
-                                <div className="text-l leading-relaxed text-text space-y-4 markdown-body">
-                                    <ReactMarkdown remarkPlugins={[remarkGfm, remarkStripCodeFences]}>{articleContent}</ReactMarkdown>
-                                </div>
+                                <MarkdownContent
+                                    content={articleContent}
+                                    className="text-l leading-relaxed text-text space-y-4"
+                                />
                             ) : (
                                 steps.map((step, idx) => (
                                     <div
@@ -281,9 +282,10 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                                         onClick={() => jumpToArticleSection(idx)}
                                         className={`cursor-pointer ${activeStepIndex === idx ? 'opacity-100' : 'opacity-20 hover:opacity-40'}`}
                                     >
-                                        <div className="text-l leading-relaxed text-text space-y-4 markdown-body">
-                                            <ReactMarkdown remarkPlugins={[remarkGfm, remarkStripCodeFences]}>{step.content}</ReactMarkdown>
-                                        </div>
+                                        <MarkdownContent
+                                            content={step.content}
+                                            className="text-l leading-relaxed text-text space-y-4"
+                                        />
                                     </div>
                                 ))
                             )}
