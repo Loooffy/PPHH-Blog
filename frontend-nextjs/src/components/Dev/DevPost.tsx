@@ -38,6 +38,18 @@ interface TourStep {
     content: string;
 }
 
+const LANGUAGE_LABELS: Record<string, string> = {
+    python: 'Python', py: 'Python',
+    typescript: 'TypeScript', ts: 'TypeScript', tsx: 'TypeScript',
+    ruby: 'Ruby', rb: 'Ruby',
+    shell: 'Shell', bash: 'Bash', sh: 'Shell',
+    javascript: 'JavaScript', js: 'JavaScript',
+};
+
+function formatLanguageLabel(lang: string): string {
+    return LANGUAGE_LABELS[lang.toLowerCase()] ?? lang.charAt(0).toUpperCase() + lang.slice(1);
+}
+
 export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
     const [activeStepIndex, setActiveStepIndex] = useState(0);
     const [activeFile, setActiveFile] = useState<FileContent | null>(null);
@@ -54,11 +66,13 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
         while ((match = regex.exec(markdown)) !== null) {
             const [, name, rawContent] = match;
 
-            // Extract content from code block if present
+            // Extract content and language from code block if present (```lang\ncontent```)
             let content: string;
-            const codeBlockMatch = rawContent.match(/```(?:\w+)?\s([\s\S]*?)```/);
+            let languageFromFence: string | undefined;
+            const codeBlockMatch = rawContent.match(/```(\w+)?\s*([\s\S]*?)```/);
             if (codeBlockMatch) {
-                content = codeBlockMatch[1].trim();
+                languageFromFence = codeBlockMatch[1] || undefined;
+                content = codeBlockMatch[2].trim();
             } else {
                 content = rawContent.trim();
                 // 移除開頭/結尾的 ``` 或 \`\`\` fence（當 regex 未匹配時）
@@ -69,7 +83,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
             }
 
             const id = name.replace('.', '-');
-            const language = name.split('.').pop() || 'text';
+            const language = languageFromFence ?? name.split('.').pop() ?? 'text';
 
             parsedFiles.push({
                 id,
@@ -357,6 +371,11 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                                 </button>
                             ))}
                         </div>
+                        {activeFile && (
+                            <span className="text-[10px] font-medium uppercase tracking-wider px-2 py-1 rounded bg-border/50 text-text-secondary shrink-0">
+                                {formatLanguageLabel(activeFile.language)}
+                            </span>
+                        )}
                     </div>
 
                     <div className="flex-1 overflow-auto bg-surface p-6 font-mono text-[13px] leading-[1.8] dev-post-scrollbar">

@@ -203,14 +203,20 @@ body::-webkit-scrollbar-thumb:hover {
   flex-shrink: 0;
 }
 
-/* Markdown pre 程式碼區塊 - light 白色、dark 如 VS Code (#1e1e1e) */
+/* Markdown pre 程式碼區塊、行內 code - light 白色、dark 如 VS Code (#1e1e1e) */
 .markdown-content pre,
-.markdown-content pre code.hljs {
+.markdown-content pre code.hljs,
+.markdown-content :not(pre) > code {
   background-color: #ffffff !important;
 }
 
+.markdown-content :not(pre) > code {
+  border-color: color-mix(in srgb, var(--color-border) 50%, transparent) !important;
+}
+
 [data-theme$="-dark"] .markdown-content pre,
-[data-theme$="-dark"] .markdown-content pre code.hljs {
+[data-theme$="-dark"] .markdown-content pre code.hljs,
+[data-theme$="-dark"] .markdown-content :not(pre) > code {
   background-color: #1e1e1e !important;
   color: #c9d1d9 !important;
 }

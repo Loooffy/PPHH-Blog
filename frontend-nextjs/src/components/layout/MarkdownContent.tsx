@@ -1,10 +1,10 @@
 import { rehypeAddHeadingIds } from '@/lib/rehype-add-heading-ids';
 import { rehypeHeadingNumberBadge } from '@/lib/rehype-heading-number-badge';
 import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
+import 'highlight.js/styles/github.min.css';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
-import 'highlight.js/styles/github.min.css';
 
 interface MarkdownContentProps {
   content: string;
@@ -33,7 +33,7 @@ export function MarkdownContent({ content, className = '', addHeadingIds = false
         [&>strong]:font-bold [&>b]:font-bold 
         [&>em]:italic [&>i]:italic 
         [&>a]:text-primary [&>a]:underline [&>a:hover]:text-secondary 
-        [&>code]:font-mono [&>code]:text-sm [&>code]:bg-background [&>code]:my-4 [&>code]:px-1 [&>code]:py-0.5 [&>code]:rounded [&>code]:border [&>code]:border-border 
+        [&_code]:font-mono [&_code]:text-sm [&_code]:bg-surface [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:border [&_code]:border-border/20 
         [&>pre]:block [&>pre]:w-full [&>pre]:font-mono [&>pre]:text-sm [&>pre]:p-4 [&>pre]:my-6 [&>pre]:bg-surface [&>pre]:rounded-lg [&>pre]:overflow-x-auto 
         [&>pre_code]:p-0 [&>pre_code]:bg-transparent [&>pre_code]:border-0
         [&>img]:max-w-full [&>img]:h-auto [&>img]:rounded-lg 
