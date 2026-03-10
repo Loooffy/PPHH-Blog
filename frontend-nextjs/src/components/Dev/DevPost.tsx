@@ -255,7 +255,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                 <div className="fixed top-24 right-4 z-[99]">
                     <button
                         onClick={() => setIsTocOpen(true)}
-                        className="flex cursor-pointer items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface/95 backdrop-blur-md shadow-lg transition-all text-text hover:bg-surface"
+                        className="flex cursor-pointer items-center gap-2 px-4 py-2 rounded-lg border border-border bg-surface/95 transition-all text-text hover:bg-surface"
                     >
                         <List size={16} />
                         <span className="text-xs font-bold uppercase tracking-widest">目錄</span>
@@ -315,6 +315,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                                 <MarkdownContent
                                     content={articleContent}
                                     className="text-l leading-relaxed text-text space-y-4"
+                                    addHeadingIds
                                 />
                             ) : (
                                 steps.map((step, idx) => (
@@ -393,9 +394,9 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                     >
                         <div className="p-4 border-b border-border flex items-center justify-between">
                             <span className="text-xs font-bold uppercase tracking-widest text-text-secondary flex items-center gap-2">
-                                <List size={12} /> Table of Contents
+                                <List size={12} /> 目錄
                             </span>
-                            <button onClick={() => setIsTocOpen(false)} className="text-text-secondary hover:text-text p-1 rounded hover:bg-border transition-colors">
+                            <button onClick={() => setIsTocOpen(false)} className="text-text-secondary hover:text-text p-1 rounded hover:bg-border transition-colors cursor-pointer">
                                 <X size={16} />
                             </button>
                         </div>
@@ -405,7 +406,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                                     <button
                                         key={`${item.slug}-${idx}`}
                                         onClick={() => jumpToArticleHeading(item.slug)}
-                                        className="w-full text-left p-3 rounded-lg text-xs transition-all flex items-start gap-3 group mb-1 last:mb-0 text-text-secondary hover:bg-border/50 hover:text-text border border-transparent"
+                                        className="w-full text-left p-3 rounded-lg text-xs transition-all flex items-start gap-3 group mb-1 last:mb-0 text-text-secondary hover:bg-border/50 hover:text-text border border-transparent cursor-pointer"
                                         style={{ paddingLeft: `${12 + (item.level - 1) * 12}px` }}
                                     >
                                         <span className="font-medium truncate">{item.text}</span>
@@ -416,7 +417,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                                     <button
                                         key={step.id}
                                         onClick={() => jumpToArticleSection(idx)}
-                                        className={`w-full text-left p-3 rounded-lg text-xs transition-all flex items-start gap-3 group mb-1 last:mb-0 ${activeStepIndex === idx
+                                        className={`w-full text-left p-3 rounded-lg text-xs transition-all flex items-start gap-3 group mb-1 last:mb-0 cursor-pointer ${activeStepIndex === idx
                                             ? 'bg-primary/20 text-primary border border-primary/30'
                                             : 'text-text-secondary hover:bg-border/50 hover:text-text border border-transparent'
                                             }`}
