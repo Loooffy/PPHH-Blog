@@ -202,3 +202,103 @@ body::-webkit-scrollbar-thumb:hover {
   font-weight: bold;
   flex-shrink: 0;
 }
+
+/* Markdown pre 程式碼區塊 - light 白色、dark 如 VS Code (#1e1e1e) */
+.markdown-content pre,
+.markdown-content pre code.hljs {
+  background-color: #ffffff !important;
+}
+
+[data-theme$="-dark"] .markdown-content pre,
+[data-theme$="-dark"] .markdown-content pre code.hljs {
+  background-color: #1e1e1e !important;
+  color: #c9d1d9 !important;
+}
+
+/* Dark theme 程式碼語法高亮 - GitHub Dark 配色（淺色字不融入黑底） */
+[data-theme$="-dark"] .markdown-content .hljs-doctag,
+[data-theme$="-dark"] .markdown-content .hljs-keyword,
+[data-theme$="-dark"] .markdown-content .hljs-meta .hljs-keyword,
+[data-theme$="-dark"] .markdown-content .hljs-template-tag,
+[data-theme$="-dark"] .markdown-content .hljs-template-variable,
+[data-theme$="-dark"] .markdown-content .hljs-type,
+[data-theme$="-dark"] .markdown-content .hljs-variable.language_ {
+  color: #ff7b72;
+}
+
+[data-theme$="-dark"] .markdown-content .hljs-title,
+[data-theme$="-dark"] .markdown-content .hljs-title.class_,
+[data-theme$="-dark"] .markdown-content .hljs-title.class_.inherited__,
+[data-theme$="-dark"] .markdown-content .hljs-title.function_ {
+  color: #d2a8ff;
+}
+
+[data-theme$="-dark"] .markdown-content .hljs-attr,
+[data-theme$="-dark"] .markdown-content .hljs-attribute,
+[data-theme$="-dark"] .markdown-content .hljs-literal,
+[data-theme$="-dark"] .markdown-content .hljs-meta,
+[data-theme$="-dark"] .markdown-content .hljs-number,
+[data-theme$="-dark"] .markdown-content .hljs-operator,
+[data-theme$="-dark"] .markdown-content .hljs-selector-attr,
+[data-theme$="-dark"] .markdown-content .hljs-selector-class,
+[data-theme$="-dark"] .markdown-content .hljs-selector-id,
+[data-theme$="-dark"] .markdown-content .hljs-variable {
+  color: #79c0ff;
+}
+
+[data-theme$="-dark"] .markdown-content .hljs-meta .hljs-string,
+[data-theme$="-dark"] .markdown-content .hljs-regexp,
+[data-theme$="-dark"] .markdown-content .hljs-string {
+  color: #a5d6ff;
+}
+
+[data-theme$="-dark"] .markdown-content .hljs-built_in,
+[data-theme$="-dark"] .markdown-content .hljs-symbol {
+  color: #ffa657;
+}
+
+[data-theme$="-dark"] .markdown-content .hljs-code,
+[data-theme$="-dark"] .markdown-content .hljs-comment,
+[data-theme$="-dark"] .markdown-content .hljs-formula {
+  color: #8b949e;
+}
+
+[data-theme$="-dark"] .markdown-content .hljs-name,
+[data-theme$="-dark"] .markdown-content .hljs-quote,
+[data-theme$="-dark"] .markdown-content .hljs-selector-pseudo,
+[data-theme$="-dark"] .markdown-content .hljs-selector-tag {
+  color: #7ee787;
+}
+
+[data-theme$="-dark"] .markdown-content .hljs-subst {
+  color: #c9d1d9;
+}
+
+[data-theme$="-dark"] .markdown-content .hljs-section {
+  color: #1f6feb;
+  font-weight: 700;
+}
+
+[data-theme$="-dark"] .markdown-content .hljs-bullet {
+  color: #f2cc60;
+}
+
+[data-theme$="-dark"] .markdown-content .hljs-emphasis {
+  color: #c9d1d9;
+  font-style: italic;
+}
+
+[data-theme$="-dark"] .markdown-content .hljs-strong {
+  color: #c9d1d9;
+  font-weight: 700;
+}
+
+[data-theme$="-dark"] .markdown-content .hljs-addition {
+  color: #aff5b4;
+  background-color: #033a16;
+}
+
+[data-theme$="-dark"] .markdown-content .hljs-deletion {
+  color: #ffdcd7;
+  background-color: #67060c;
+}

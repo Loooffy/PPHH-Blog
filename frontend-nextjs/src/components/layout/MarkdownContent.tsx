@@ -2,7 +2,9 @@ import { rehypeAddHeadingIds } from '@/lib/rehype-add-heading-ids';
 import { rehypeHeadingNumberBadge } from '@/lib/rehype-heading-number-badge';
 import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
 import ReactMarkdown from 'react-markdown';
+import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
+import 'highlight.js/styles/github.min.css';
 
 interface MarkdownContentProps {
   content: string;
@@ -16,7 +18,7 @@ interface MarkdownContentProps {
 export function MarkdownContent({ content, className = '', addHeadingIds = false, numberedHeadings = false }: MarkdownContentProps) {
   return (
     <div
-      className={`leading-relaxed break-words text-text 
+      className={`markdown-content leading-relaxed break-words text-text 
         ${numberedHeadings ? 'numbered-headings' : ''}
         [&>*]:box-border [&>*:not(p)]:m-0 [&>*]:p-0 
         [&>h1]:text-2xl [&_h1]:font-bold [&>h1]:leading-relaxed [&>h1]:my-8
@@ -32,7 +34,7 @@ export function MarkdownContent({ content, className = '', addHeadingIds = false
         [&>em]:italic [&>i]:italic 
         [&>a]:text-primary [&>a]:underline [&>a:hover]:text-secondary 
         [&>code]:font-mono [&>code]:text-sm [&>code]:bg-background [&>code]:my-4 [&>code]:px-1 [&>code]:py-0.5 [&>code]:rounded [&>code]:border [&>code]:border-border 
-        [&>pre]:block [&>pre]:w-full [&>pre]:font-mono [&>pre]:text-sm [&>pre]:p-4 [&>pre]:my-6 [&>pre]:bg-background [&>pre]:border [&>pre]:border-border [&>pre]:rounded-lg [&>pre]:overflow-x-auto 
+        [&>pre]:block [&>pre]:w-full [&>pre]:font-mono [&>pre]:text-sm [&>pre]:p-4 [&>pre]:my-6 [&>pre]:bg-surface [&>pre]:rounded-lg [&>pre]:overflow-x-auto 
         [&>pre_code]:p-0 [&>pre_code]:bg-transparent [&>pre_code]:border-0
         [&>img]:max-w-full [&>img]:h-auto [&>img]:rounded-lg 
         [&_table]:border-collapse [&_table]:w-full [&_table]:my-4
@@ -43,6 +45,7 @@ export function MarkdownContent({ content, className = '', addHeadingIds = false
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkStripCodeFences]}
         rehypePlugins={[
+          rehypeHighlight,
           ...(numberedHeadings ? [rehypeHeadingNumberBadge] : []),
           ...(addHeadingIds ? [rehypeAddHeadingIds] : []),
         ]}
