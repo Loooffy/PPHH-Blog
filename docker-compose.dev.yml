@@ -45,6 +45,7 @@ services:
 
   # Next.js Frontend 服務
   frontend:
+    user: root
     build:
       context: ./frontend-nextjs
       dockerfile: Dockerfile.dev
@@ -56,11 +57,11 @@ services:
       - "${EXTERNAL_FRONTEND_PORT}:${NEXT_JS_PORT}"
     volumes:
       - ./frontend-nextjs:/app
-      - /app/node_modules
-      - /app/.next
+      - frontend_node_modules_dev:/app/node_modules
+      - frontend_next_dev:/app/.next
     depends_on:
       - backend
-    command: npm run dev
+    command: sh -c "npm ci && npm run dev"
     networks:
       - app-network
 
@@ -68,6 +69,10 @@ volumes:
   backend_bundle_dev:
     driver: local
   backend_node_modules_dev:
+    driver: local
+  frontend_node_modules_dev:
+    driver: local
+  frontend_next_dev:
     driver: local
 
 networks:
