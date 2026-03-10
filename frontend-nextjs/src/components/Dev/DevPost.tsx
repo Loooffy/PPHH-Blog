@@ -316,6 +316,7 @@ export function DevPost({ post, prevPost, nextPost, seriesId }: DevPostProps) {
                                     content={articleContent}
                                     className="text-l leading-relaxed text-text space-y-4"
                                     addHeadingIds
+                                    numberedHeadings
                                 />
                             ) : (
                                 steps.map((step, idx) => (

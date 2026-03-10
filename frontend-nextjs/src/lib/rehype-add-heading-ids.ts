@@ -32,7 +32,8 @@ export function rehypeAddHeadingIds() {
             if (!['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(node.tagName)) return;
             if (node.properties?.id) return; // 已有 id 則跳過
 
-            const text = extractText(node);
+            let text = extractText(node);
+            text = text.replace(/^\d+(?:\.\d+)*\s*/, '').trim() || text;
             let slug = slugify(text) || 'heading';
             const count = slugCounts.get(slug) ?? 0;
             slugCounts.set(slug, count + 1);

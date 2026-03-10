@@ -122,3 +122,83 @@ body::-webkit-scrollbar-thumb:hover {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* 階層標題 badge：依 theme 調整，大標黑/白底、中標小標不同樣式 */
+.numbered-headings h1,
+.numbered-headings h2,
+.numbered-headings h3,
+.numbered-headings h4,
+.numbered-headings h5,
+.numbered-headings h6 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 大標 h1：light 黑底白字、dark 白底黑字，依 theme 切換 */
+[data-theme$="-light"] .numbered-headings .numbered-heading-badge-h1 {
+  background: #000;
+  color: #fff;
+}
+
+[data-theme$="-dark"] .numbered-headings .numbered-heading-badge-h1 {
+  background: #fff;
+  color: #000;
+}
+
+.numbered-headings .numbered-heading-badge-h1 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2em 0.55em;
+  border-radius: 6px;
+  font-size: 0.85em;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+/* 中標 h2：light 淺灰底 + 深字、dark 深灰底 + 淺字 */
+[data-theme$="-light"] .numbered-headings .numbered-heading-badge-h2 {
+  background: #212121;
+  color: #e8e8e8;
+}
+
+[data-theme$="-dark"] .numbered-headings .numbered-heading-badge-h2 {
+  background: #2a2a2a;
+  color: #e0e0e0;
+}
+
+.numbered-headings .numbered-heading-badge-h2 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15em 0.45em;
+  border-radius: 5px;
+  font-size: 0.8em;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+/* 小標 h3：light 更淡背景、dark 更淡背景 */
+[data-theme$="-light"] .numbered-headings .numbered-heading-badge-h3 {
+  background: #f0f0f0;
+  color: #212121;
+  border: 1px solid #bdbdbd;
+}
+
+[data-theme$="-dark"] .numbered-headings .numbered-heading-badge-h3 {
+  background: #333333;
+  color: #e0e0e0;
+  border: 1px solid #555;
+}
+
+.numbered-headings .numbered-heading-badge-h3 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.12em 0.4em;
+  border-radius: 4px;
+  font-size: 0.75em;
+  font-weight: bold;
+  flex-shrink: 0;
+}

@@ -1,4 +1,5 @@
 import { rehypeAddHeadingIds } from '@/lib/rehype-add-heading-ids';
+import { rehypeHeadingNumberBadge } from '@/lib/rehype-heading-number-badge';
 import { remarkStripCodeFences } from '@/lib/remark-strip-code-fences';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -8,12 +9,15 @@ interface MarkdownContentProps {
   className?: string;
   /** 為 h1-h6 標題加上 id，供 TOC 錨點跳轉 */
   addHeadingIds?: boolean;
+  /** 為 h1/h2/h3 加上階層編號 badge（1 / 1.1 / 1.1.1） */
+  numberedHeadings?: boolean;
 }
 
-export function MarkdownContent({ content, className = '', addHeadingIds = false }: MarkdownContentProps) {
+export function MarkdownContent({ content, className = '', addHeadingIds = false, numberedHeadings = false }: MarkdownContentProps) {
   return (
     <div
       className={`leading-relaxed break-words text-text 
+        ${numberedHeadings ? 'numbered-headings' : ''}
         [&>*]:box-border [&>*:not(p)]:m-0 [&>*]:p-0 
         [&>h1]:text-2xl [&_h1]:font-bold [&>h1]:leading-relaxed [&>h1]:my-8
         [&>h2]:text-xl [&_h2]:font-bold [&>h2]:leading-relaxed [&>h2]:my-5
@@ -38,7 +42,10 @@ export function MarkdownContent({ content, className = '', addHeadingIds = false
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkStripCodeFences]}
-        rehypePlugins={addHeadingIds ? [rehypeAddHeadingIds] : []}
+        rehypePlugins={[
+          ...(numberedHeadings ? [rehypeHeadingNumberBadge] : []),
+          ...(addHeadingIds ? [rehypeAddHeadingIds] : []),
+        ]}
       >
         {content || ''}
       </ReactMarkdown>
