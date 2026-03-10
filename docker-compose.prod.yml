@@ -1,0 +1,56 @@
+# 正式環境 Docker Compose
+# 使用方式: docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
+# 注意：需先確保 postgres-shared-net 網路存在，且 PostgreSQL 已就緒
+
+services:
+  # Rails Backend API 服務
+  backend:
+    build:
+      context: ./backend-activeAdmin
+      dockerfile: Dockerfile
+    container_name: pp_hh_blog_backend_prod
+    environment:
+      - RAILS_ENV=production
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - RAILS_MAX_THREADS=${RAILS_MAX_THREADS:-5}
+      - PORT=${RAILS_PORT}
+      - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
+      - R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY}
+      - R2_ENDPOINT=${R2_ENDPOINT}
+      - R2_BUCKET=${R2_BUCKET}
+      - R2_ASSETS_DOMAIN=${R2_ASSETS_DOMAIN}
+      - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
+    ports:
+      - "${EXTERNAL_BACKEND_PORT}:${RAILS_PORT}"
+    restart: unless-stopped
+    networks:
+      - app-network
+      - postgres-shared-net
+
+  # Next.js Frontend 服務
+  frontend:
+    build:
+      context: ./frontend-nextjs
+      dockerfile: Dockerfile.prod
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    container_name: pp_hh_blog_frontend_prod
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    ports:
+      - "${EXTERNAL_FRONTEND_PORT}:${NEXT_JS_PORT}"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+  postgres-shared-net:
+    external: true

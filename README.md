@@ -11,10 +11,21 @@
 
 ## 快速開始
 
+### 開發環境
+
 ```bash
-cp .env.example .env   # 編輯設定
-docker-compose up --build
+cp .env.example.dev .env.dev   # 編輯設定
+docker compose -f docker-compose.dev.yml --env-file .env.dev up -d
 ```
+
+### 正式環境
+
+```bash
+cp .env.example.prod .env.prod   # 編輯設定（含 RAILS_MASTER_KEY、資料庫密碼等）
+docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
+```
+
+### 存取位址
 
 - 前台：`http://localhost:5678`
 - 後台：`http://localhost:6789/admin`
@@ -24,9 +35,17 @@ docker-compose up --build
 
 ```
 PPHH-Blog/
-├── backend-activeAdmin/   # Rails API + ActiveAdmin
-├── frontend-nextjs/       # Next.js App Router
-└── docker-compose.yml
+├── backend-activeAdmin/      # Rails API + ActiveAdmin
+│   ├── Dockerfile            # 正式環境
+│   └── Dockerfile.dev        # 開發環境
+├── frontend-nextjs/          # Next.js App Router
+│   ├── Dockerfile.prod       # 正式環境
+│   └── Dockerfile.dev        # 開發環境
+├── docker-compose.yml        # 開發環境（預設）
+├── docker-compose.dev.yml    # 開發環境
+├── docker-compose.prod.yml   # 正式環境
+├── .env.example.dev          # 開發環境變數範本
+└── .env.example.prod         # 正式環境變數範本
 ```
 
 ## API

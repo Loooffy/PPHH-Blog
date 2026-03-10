@@ -1,16 +1,19 @@
+# 開發環境 Docker Compose
+# 使用方式: docker compose -f docker-compose.dev.yml --env-file .env.dev up -d
+
 services:
   # Rails Backend API 服務
   backend:
     build:
       context: ./backend-activeAdmin
       dockerfile: Dockerfile.dev
-    container_name: pp_hh_blog_backend
+    container_name: pp_hh_blog_backend_dev
     environment:
       - RAILS_ENV=${ENVIRONMENT}
       - DATABASE_HOST=${DATABASE_HOST}
-      - DATABASE_USERNAME=${POSTGRES_USER}
-      - DATABASE_PASSWORD=${POSTGRES_PASSWORD}
-      - DATABASE_NAME=${POSTGRES_DB}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
       - RAILS_MAX_THREADS=5
       - PORT=${RAILS_PORT}
       - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
@@ -22,8 +25,8 @@ services:
       - "${EXTERNAL_BACKEND_PORT}:${RAILS_PORT}"
     volumes:
       - ./backend-activeAdmin:/rails
-      - backend_bundle:/usr/local/bundle
-      - backend_node_modules:/rails/node_modules
+      - backend_bundle_dev:/usr/local/bundle
+      - backend_node_modules_dev:/rails/node_modules
     command: >
       sh -c "
        echo 'Waiting for PostgreSQL to be ready...' &&
@@ -45,7 +48,7 @@ services:
     build:
       context: ./frontend-nextjs
       dockerfile: Dockerfile.dev
-    container_name: pp_hh_blog_frontend
+    container_name: pp_hh_blog_frontend_dev
     environment:
       - NODE_ENV=${ENVIRONMENT}
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
@@ -62,9 +65,9 @@ services:
       - app-network
 
 volumes:
-  backend_bundle:
+  backend_bundle_dev:
     driver: local
-  backend_node_modules:
+  backend_node_modules_dev:
     driver: local
 
 networks:

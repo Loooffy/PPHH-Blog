@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  output: "standalone", // 正式環境 Docker 建置所需
   reactCompiler: true,
   images: {
     remotePatterns: [
@@ -28,6 +29,11 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'pphh-blog.hostmora.app',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.r2.dev',
         pathname: '/**',
       },
     ],
