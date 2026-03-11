@@ -13,8 +13,8 @@ function extractText(node: Element): string {
     return text;
 }
 
-/** 匹配標題開頭的階層數字：4、4.1、4.1.1 等 */
-const NUMBER_PATTERN = /^(\d+(?:\.\d+)*)\s*(.*)$/s;
+/** 匹配標題開頭的階層數字：4、4.1、4.1.1 等（使用 [\s\S]* 取代 .* 以相容 ES2017，無需 s flag） */
+const NUMBER_PATTERN = /^(\d+(?:\.\d+)*)\s*([\s\S]*)$/;
 
 /**
  * Rehype plugin: 擷取標題開頭的數字，顯示為 badge，並從標題文字中移除該數字

@@ -23,5 +23,8 @@ module BackendActiveAdmin
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Rate limiting / DDoS protection (需在 CORS 之後，才能正確取得 IP)
+    config.middleware.use Rack::Attack
   end
 end

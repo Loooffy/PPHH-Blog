@@ -53,6 +53,7 @@ services:
     environment:
       - NODE_ENV=${ENVIRONMENT}
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - API_INTERNAL_URL=${API_INTERNAL_URL}
     ports:
       - "${EXTERNAL_FRONTEND_PORT}:${NEXT_JS_PORT}"
     volumes:

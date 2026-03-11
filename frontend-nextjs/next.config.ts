@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   output: "standalone", // 正式環境 Docker 建置所需
+  // Next.js 16 預設使用 Turbopack，需明確設定以相容既有 webpack config
+  turbopack: {},
   reactCompiler: true,
   images: {
     remotePatterns: [

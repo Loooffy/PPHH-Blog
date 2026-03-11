@@ -20,8 +20,8 @@ export const getApiBaseUrl = () => {
       'http://172.27.0.3:3001' // fallback 到已知的 backend IP
     );
   }
-  // 在客戶端（Client Component），使用 localhost
-  return 'http://localhost:3001';
+  // 在客戶端（Client Component）：production 用 NEXT_PUBLIC_API_URL，開發用 localhost
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 };
 
 const API_BASE_URL = getApiBaseUrl();
